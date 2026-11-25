@@ -373,16 +373,25 @@
 #tchips{top:calc(var(--st) + 98px);right:calc(var(--sr) + 10px);display:flex;gap:6px}
 #tchips .chip{position:static;width:42px;height:40px;border-radius:10px;font-size:.9rem}
 #tchips .chip.act{border-color:#fbbf24;background:rgba(180,83,9,.6);opacity:1}
+#tlean{left:calc(var(--sl) + 30px);bottom:calc(var(--sb) + 176px);display:flex;gap:12px}
+#tlean .tb{position:static;width:52px;height:52px;font-size:1.05rem}
+.tb.lat{border-color:#38bdf8;background:rgba(14,116,144,.65);opacity:1}
+#tzoom{right:calc(var(--sr) + 196px);bottom:calc(var(--sb) + 90px);display:flex;flex-direction:column;gap:8px}
+#tzoom .tb{position:static;width:46px;height:46px;font-size:.9rem}
 body.mob{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 body.mob #fps-counter{display:none!important}
 body.mob .hud-minimap{top:calc(var(--st) + 6px);left:calc(var(--sl) + 8px);width:104px;height:104px;border-width:1px;opacity:.85}
 body.mob #minimap-canvas{width:104px;height:104px}
 body.mob .hud-top-center{top:calc(var(--st) + 4px);transform:translateX(-50%) scale(.76);transform-origin:top center}
-body.mob .hud-killfeed{top:calc(var(--st) + 116px);left:calc(var(--sl) + 8px);right:auto;width:170px;max-height:66px;overflow:hidden;align-items:flex-start;font-size:.68rem;opacity:.92}
-body.mob .hud-bottom-left{left:50%;transform:translateX(-50%);bottom:calc(var(--sb) + 68px);min-width:0;width:168px;padding:5px 9px;border-radius:8px}
-body.mob .hud-bottom-left .hp-val{font-size:1.05rem}
-body.mob .hud-bottom-left>div:nth-child(3) span:first-child,body.mob #hud-stance{display:none}
-body.mob .hud-bottom-left>div:nth-child(3){justify-content:flex-end!important}
+body.mob .hud-killfeed{top:calc(var(--st) + 56px);left:calc(var(--sl) + 118px);right:auto;width:170px;max-height:50px;overflow:hidden;align-items:flex-start;font-size:.68rem;opacity:.92}
+body.mob .hud-bottom-left{top:calc(var(--st) + 6px);left:calc(var(--sl) + 118px);bottom:auto;right:auto;transform:none;min-width:0;width:92px;padding:3px 6px;border-radius:6px;background:rgba(10,14,22,.5);border:none}
+body.mob .hud-bottom-left .hp-row{justify-content:flex-start;margin:0 0 2px}
+body.mob #hud-team-badge,body.mob #hud-stance,body.mob .hud-bottom-left>div:nth-child(3) span:first-child{display:none}
+body.mob .hud-bottom-left .hp-val{font-size:.82rem;line-height:1.1}
+body.mob .hp-val::before{content:'❤ ';font-size:.6rem;color:#f87171}
+body.mob #hud-armor::before{content:'🛡 ';font-size:.55rem}
+body.mob .hud-bottom-left .bar-bg{height:4px!important;margin:0 0 3px!important}
+body.mob .hud-bottom-left>div:nth-child(3){font-size:.62rem!important;margin:0 0 1px!important;justify-content:flex-start!important}
 body.mob .hud-bottom-right{top:calc(var(--st) + 54px);bottom:auto;right:calc(var(--sr) + 10px);min-width:0;padding:3px 10px;display:flex;gap:10px;align-items:baseline;border-radius:8px}
 body.mob .weapon-name-hud{font-size:.78rem}body.mob .ammo-hud{font-size:1.15rem}body.mob .ammo-hud span{font-size:.65rem}
 body.mob .slot-strip{display:none!important}
@@ -399,7 +408,9 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
 <div id="tmenu" class="hidden"><div class="tb mi" id="t-set">⚙️ ตั้งค่า</div><div class="tb mi" id="t-loadout">🔫 เปลี่ยนปืน</div><div class="tb mi" id="t-inv">🎒 คลังปืน</div><div class="tb mi" id="t-score">📊 คะแนน</div><div class="tb mi" id="t-fs">⛶ เต็มจอ</div><div class="tb mi" id="t-pc-mode">🖥 โหมด PC</div></div>
 <div id="tchips"><div class="tb chip" id="t-1">1<small>หลัก</small></div><div class="tb chip" id="t-2">2<small>พก</small></div><div class="tb chip" id="t-3">3<small>มีด</small></div><div class="tb chip" id="t-4">4<small>ระเบิด</small></div></div>
 <div class="tb" id="t-fire">ยิง</div><div class="tb" id="t-aim">เล็ง</div><div class="tb" id="t-jump">กระโดด</div><div class="tb" id="t-reload">รีโหลด</div><div class="tb" id="t-swap">สลับ<br>ปืน</div>
-<div id="tstance"><div class="tb" id="t-leanL">เอียง<br>ซ้าย</div><div class="tb" id="t-crouch">ย่อ</div><div class="tb" id="t-prone">นอน</div><div class="tb" id="t-leanR">เอียง<br>ขวา</div></div></div>
+<div id="tstance"><div class="tb" id="t-crouch">ย่อ</div><div class="tb" id="t-prone">นอน</div></div>
+<div id="tlean"><div class="tb" id="t-leanL">⟲<small>เอียงซ้าย</small></div><div class="tb" id="t-leanR">⟳<small>เอียงขวา</small></div></div>
+<div id="tzoom" class="hidden"><div class="tb" id="t-zin">🔍+</div><div class="tb" id="t-zout">🔍−</div></div></div>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js" } }</script>
 
   <script type="module">
@@ -531,14 +542,20 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       bullet_whiz_1:'sound/bullet-hit.mp3', bullet_hit:'sound/bullethit.mp3'
     };
     class SoundEngine {
-      constructor() { this.ctx=null; this.buffers=new Map(); this.loading=false; this.noiseBuf=null; this.timers=[]; this.bgmSource=null; this.bgmGain=null; }
+      constructor() { this.ctx=null; this.buffers=new Map(); this.loading=false; this.noiseBuf=null; this.timers=[]; this.bgmSource=null; this.bgmGain=null; this.act=new Set(); this.last=new Map(); this.out=null; }
       init() {
         if (!this.ctx) {
           this.ctx = new (window.AudioContext||window.webkitAudioContext)();
           const sr = this.ctx.sampleRate; this.noiseBuf = this.ctx.createBuffer(1, sr*1.5, sr);
           const d = this.noiseBuf.getChannelData(0); for (let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+          // master bus + limiter กันเสียงแตก/ล้นตอนคนยิงพร้อมกันเยอะ ๆ
+          this.out=this.ctx.createGain(); this.out.gain.value=0.9;
+          const cp=this.ctx.createDynamicsCompressor(); cp.threshold.value=-14; cp.knee.value=12; cp.ratio.value=6; cp.attack.value=0.003; cp.release.value=0.2;
+          this.out.connect(cp); cp.connect(this.ctx.destination);
+          this.ctx.onstatechange=()=>{ if(this.ctx.state!=='running') this.ctx.resume().catch(()=>{}); };
+          setInterval(()=>{ if(this.ctx&&this.ctx.state!=='running'&&document.visibilityState==='visible') this.ctx.resume().catch(()=>{}); },1500);
         }
-        if (this.ctx.state==='suspended') this.ctx.resume();
+        if (this.ctx.state!=='running') this.ctx.resume().catch(()=>{});
         if (!this.loading) { this.loading=true; this.preloadAll(); }
         this.startBackgroundMusic();
       }
@@ -550,7 +567,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
         if(!this.ctx||!buffer||this.bgmSource)return;
         const source=this.ctx.createBufferSource(),gain=this.ctx.createGain();
         source.buffer=buffer;source.loop=true;gain.gain.value=0.2;
-        source.connect(gain);gain.connect(this.ctx.destination);
+        source.connect(gain);gain.connect(this.out);
         source.onended=()=>{if(this.bgmSource===source)this.bgmSource=null;};
         source.start();this.bgmSource=source;this.bgmGain=gain;
       }
@@ -562,28 +579,39 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
         const gain = Math.min(1, 1/(1+Math.pow(dist/16,1.35))), right = new THREE.Vector3(Math.cos(player.yaw),0,-Math.sin(player.yaw));
         return { gain, pan: Math.max(-0.95,Math.min(0.95,right.dot(wp.clone().sub(camera.position).normalize()))), lp: Math.max(850,18000-dist*110) };
       }
+      // จำกัดจำนวนเสียงพร้อมกัน (voice pool) + ตัดเสียงไกลที่แทบไม่ได้ยิน + กันเสียงเดิมรัวถี่ -> เสียงไม่หายตอนบอท/ผู้เล่นเยอะ
+      _acq(pri,ms){const n=performance.now();for(const v of this.act)if(v.e<n)this.act.delete(v);const mx=(matchMedia('(pointer:coarse)').matches?14:24)+(pri?8:0);if(this.act.size>=mx)return null;const t={e:n+ms+400};this.act.add(t);return t;}
+      _rel(t,...nodes){this.act.delete(t);for(const x of nodes){try{x.disconnect();}catch(e){}}}
+      _near(k){const n=performance.now();if(n-(this.last.get(k)||0)<45)return true;this.last.set(k,n);return false;}
       playBuffer(k, vol=0.85, wp=null) {
         this.init(); const sp=this.calcSpatial(wp); if(!sp) return false; const b=this.buffers.get(k); if(!b) return false;
+        if(wp&&(sp.gain*vol<0.035||this._near(k))) return true;
+        const tok=this._acq(!wp,b.duration*1000); if(!tok) return true;
         const s=this.ctx.createBufferSource(); s.buffer=b;
         const f=this.ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=sp.lp;
         const p=this.ctx.createStereoPanner(); p.pan.value=sp.pan;
         const g=this.ctx.createGain(); g.gain.value=vol*sp.gain;
-        s.connect(f); f.connect(p); p.connect(g); g.connect(this.ctx.destination); s.start(); return true;
+        s.onended=()=>this._rel(tok,s,f,p,g);
+        s.connect(f); f.connect(p); p.connect(g); g.connect(this.out); s.start(); return true;
       }
       playNoise(dur, freq, q=1, gv=0.3, type='lowpass', delay=0, wp=null) {
-        if (!this.ctx) return; const sp=this.calcSpatial(wp); if(!sp) return;
+        if (!this.ctx) return; const sp=this.calcSpatial(wp); if(!sp) return; if(wp&&sp.gain*gv<0.01) return;
+        const tok=this._acq(!wp,(dur+delay)*1000); if(!tok) return;
         const t=this.ctx.currentTime+delay, s=this.ctx.createBufferSource(); s.buffer=this.noiseBuf;
         const f=this.ctx.createBiquadFilter(); f.type=type; f.frequency.setValueAtTime(Math.min(freq,sp.lp),t); f.Q.value=q;
         const p=this.ctx.createStereoPanner(); p.pan.value=sp.pan;
         const g=this.ctx.createGain(); g.gain.setValueAtTime(Math.max(0.002,gv*sp.gain),t); g.gain.exponentialRampToValueAtTime(0.001,t+dur);
-        s.connect(f); f.connect(p); p.connect(g); g.connect(this.ctx.destination); s.start(t); s.stop(t+dur);
+        s.onended=()=>this._rel(tok,s,f,p,g);
+        s.connect(f); f.connect(p); p.connect(g); g.connect(this.out); s.start(t); s.stop(t+dur);
       }
       playTone(f1, f2, dur, type='sine', gv=0.25, delay=0, wp=null) {
-        if (!this.ctx) return; const sp=this.calcSpatial(wp); if(!sp) return;
+        if (!this.ctx) return; const sp=this.calcSpatial(wp); if(!sp) return; if(wp&&sp.gain*gv<0.01) return;
+        const tok=this._acq(!wp,(dur+delay)*1000); if(!tok) return;
         const t=this.ctx.currentTime+delay, o=this.ctx.createOscillator(); o.type=type; o.frequency.setValueAtTime(f1,t); o.frequency.exponentialRampToValueAtTime(Math.max(20,f2),t+dur);
         const p=this.ctx.createStereoPanner(); p.pan.value=sp.pan;
         const g=this.ctx.createGain(); g.gain.setValueAtTime(Math.max(0.002,gv*sp.gain),t); g.gain.exponentialRampToValueAtTime(0.001,t+dur);
-        o.connect(p); p.connect(g); g.connect(this.ctx.destination); o.start(t); o.stop(t+dur);
+        o.onended=()=>this._rel(tok,o,p,g);
+        o.connect(p); p.connect(g); g.connect(this.out); o.start(t); o.stop(t+dur);
       }
       playShoot(wid, wp=null, local=false) { const weaponId=wid;wid=WEAPONS[wid]?.model||wid;
         this.init(); let k=null;
@@ -908,7 +936,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       const onRamp=(r,x,z,pad=0)=>{
         const along=r.axis==='z'?(z-r.z)*r.dir:(x-r.x)*r.dir;
         const across=r.axis==='z'?Math.abs(x-r.x):Math.abs(z-r.z);
-        return along>=-pad&&along<=r.length+pad&&across<=r.width/2+pad;
+        return along>=-Math.max(pad,rad+0.05)&&along<=r.length+pad&&across<=r.width/2+pad; // lead-in ก่อนขั้นแรก ไม่ให้ดีดขึ้นขั้น
       };
       const rampHeight=(r,x,z)=>{const along=r.axis==='z'?(z-r.z)*r.dir:(x-r.x)*r.dir;return r.baseY+r.height*Math.max(0,Math.min(r.length,along))/r.length;};
       const rampAt=(x,z,y)=>{
@@ -916,20 +944,25 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
         for(const r of stairRamps){
           if(!onRamp(r,x,z,rad*0.15))continue;
           const gap=y-rampHeight(r,x,z);
-          if(gap< -0.85||gap>0.55)continue;
+          if(gap< -0.6||gap>0.55)continue;
           if(Math.abs(gap)<bestGap){best=r;bestGap=Math.abs(gap);}
         }
         return best;
       };
-      const ta=(ax,dl)=>{if(Math.abs(dl)<1e-8)return;next[ax]+=dl;const activeRamp=rampAt(next.x,next.z,next.y);for(const b of colliders)if(b.stairRamp!==activeRamp&&next.y+h>b.minY+0.05&&next.y<b.maxY-0.05&&next.x+rad>b.minX&&next.x-rad<b.maxX&&next.z+rad>b.minZ&&next.z-rad<b.maxZ){const sd=b.maxY-next.y;if(sd>0&&sd<=SM){let blk=false;for(const b2 of colliders)if(b2!==b&&b2.stairRamp!==activeRamp&&b.maxY+h>b2.minY+0.05&&b.maxY<b2.maxY-0.05&&next.x+rad>b2.minX&&next.x-rad<b2.maxX&&next.z+rad>b2.minZ&&next.z-rad<b2.maxZ){blk=true;break;}if(!blk){next.y=b.maxY;continue;}}next[ax]=dl>0?(ax==='x'?b.minX:b.minZ)-rad:(ax==='x'?b.maxX:b.maxZ)+rad;}};
+      const ta=(ax,dl)=>{if(Math.abs(dl)<1e-8)return;next[ax]+=dl;const activeRamp=rampAt(next.x,next.z,next.y),rampTop=activeRamp?activeRamp.baseY+activeRamp.height+0.05:-1;for(const b of colliders)if(b.stairRamp!==activeRamp&&!(activeRamp&&b.maxY<=rampTop&&!b.stairRamp)&&next.y+h>b.minY+0.05&&next.y<b.maxY-0.05&&next.x+rad>b.minX&&next.x-rad<b.maxX&&next.z+rad>b.minZ&&next.z-rad<b.maxZ){const sd=b.maxY-next.y;if(sd>0&&sd<=SM){let blk=false;for(const b2 of colliders)if(b2!==b&&b2.stairRamp!==activeRamp&&b.maxY+h>b2.minY+0.05&&b.maxY<b2.maxY-0.05&&next.x+rad>b2.minX&&next.x-rad<b2.maxX&&next.z+rad>b2.minZ&&next.z-rad<b2.maxZ){blk=true;break;}if(!blk){next.y=b.maxY;continue;}}next[ax]=dl>0?(ax==='x'?b.minX:b.minZ)-rad:(ax==='x'?b.maxX:b.maxZ)+rad;}};
       ta('x',vel.x*dt);ta('z',vel.z*dt);
-      let og=false; next.y+=vel.y*dt; if(next.y<=0){next.y=0;vel.y=0;og=true;}
+      // ---- แนวตั้ง: รวมพื้น/ทางลาด/ขอบกล่อง เป็น "ความสูงพื้น" เดียว (แก้เด้ง + กระโดดบนบันไดได้) ----
+      let og=false; next.y+=vel.y*dt;
+      let fl=-1e9; if(next.y<=0)fl=0;
       const ramp=rampAt(next.x,next.z,next.y);
-      if(ramp){
-        next.y=rampHeight(ramp,next.x,next.z);if(vel.y<0)vel.y=0;og=true;
+      if(ramp&&vel.y<=0.01)fl=Math.max(fl,rampHeight(ramp,next.x,next.z)); // กำลังพุ่งขึ้น (กระโดด) ห้ามดูดกลับเข้าทางลาด
+      let ny=fl>-1e8?fl:next.y; if(fl>-1e8){og=true;if(vel.y<0)vel.y=0;}
+      const activeRamp=rampAt(next.x,next.z,ny);
+      for(const b of colliders)if(b.stairRamp!==activeRamp&&next.x+rad>b.minX&&next.x-rad<b.maxX&&next.z+rad>b.minZ&&next.z-rad<b.maxZ){
+        if(vel.y<=0&&pos.y>=b.maxY-0.35&&ny<=b.maxY&&(pos.y>=b.maxY-0.02||!activeRamp||b.maxY-ny<=0.12)){ny=b.maxY;vel.y=0;og=true;}
+        else if(vel.y>0&&pos.y+h<=b.minY+0.25&&ny+h>=b.minY){ny=b.minY-h;vel.y=0;}
       }
-      const activeRamp=rampAt(next.x,next.z,next.y);
-      for(const b of colliders)if(b.stairRamp!==activeRamp&&next.x+rad>b.minX&&next.x-rad<b.maxX&&next.z+rad>b.minZ&&next.z-rad<b.maxZ){if(vel.y<=0&&pos.y>=b.maxY-0.35&&next.y<=b.maxY){next.y=b.maxY;vel.y=0;og=true;}else if(vel.y>0&&pos.y+h<=b.minY+0.25&&next.y+h>=b.minY){next.y=b.minY-h;vel.y=0;}}
+      next.y=ny;
       pos.copy(next); return og;
     }
 
@@ -979,7 +1012,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     let zoomWheelAccumulator=0;
     const player={team:'red',pos:new THREE.Vector3(0,0,-108),vel:new THREE.Vector3(),knockback:new THREE.Vector3(),yaw:Math.PI,pitch:0,lean:0,hp:100,maxHp:100,armor:50,maxArmor:100,alive:true,diedAt:0,respawnAt:0,deathRagdoll:null,onGround:false,crouch:false,prone:false,eyeH:1.64,spin:0,zoomVal:0,slot:1,ammo:{},magazines:{},reloading:false,reloadEnd:0,reloadDuration:0,nextFire:0,scoped:false,zoomIdx:0,recoilKick:0,boltAnim:0,drawAnim:0,spreadBloom:0,swingAnim:0,stepTimer:0,heartbeatTimer:0,kills:0,deaths:0,headshots:0};
     let isNextLifeModalOpen=false, isSettingsOpen=false, holdingRespawnForLoadout=false, roundResetPending=false;
-    const activeInputs=new Set();
+    const activeInputs=new Set(); let camOff=0;
     const isAct=n=>activeInputs.has(settings.keys[n]);
 
     function resetPlayerAmmo(){for(const s of[1,2,4]){const w=getWeaponStats(loadout[s]);if(s===4){player.ammo[4]=w.count;player.magazines[4]=0;}else if(w.shellByShell){player.ammo[s]=w.mag;player.magazines[s]=w.reserveShells;}else{player.ammo[s]=w.mag;player.magazines[s]=w.magsCount;}}}
@@ -1661,7 +1694,19 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       const up=e=>{e.preventDefault();for(const t of e.changedTouches)drag.delete(t.identifier);n=Math.max(0,n-1);if(!n){el.classList.remove('dn');activeInputs.delete(K(act));}};
       el.addEventListener('touchend',up);el.addEventListener('touchcancel',up);};
     const tap=(id,fn)=>{const el=$(id);el.addEventListener('touchstart',e=>{e.preventDefault();el.classList.add('dn');setTimeout(()=>el.classList.remove('dn'),140);fn();},{passive:false});};
-    hold('t-fire','fire',true);hold('t-aim','scope',true);hold('t-jump','jump');hold('t-leanL','leanL');hold('t-leanR','leanR');
+    hold('t-fire','fire',true);hold('t-aim','scope',true);hold('t-jump','jump');// เอียง: แตะเร็ว = ล็อกค้างเอียง (แตะซ้ำเพื่อเลิก) / กดค้าง = เอียงตอนกดอยู่ ปล่อยแล้วกลับ
+    const latched={leanL:false,leanR:false};
+    const leanBtn=(id,act,oth,othId)=>{const el=$(id);let t0=0,was=false;
+      el.addEventListener('touchstart',e=>{e.preventDefault();t0=performance.now();was=latched[act];el.classList.add('dn');activeInputs.add(K(act));latched[oth]=false;activeInputs.delete(K(oth));$(othId).classList.remove('lat','dn');},{passive:false});
+      const up=e=>{e.preventDefault();const isTap=performance.now()-t0<280;latched[act]=isTap?!was:false;el.classList.remove('dn');el.classList.toggle('lat',latched[act]);if(!latched[act])activeInputs.delete(K(act));};
+      el.addEventListener('touchend',up);el.addEventListener('touchcancel',up);};
+    leanBtn('t-leanL','leanL','leanR','t-leanR');leanBtn('t-leanR','leanR','leanL','t-leanL');
+    // ปรับซูมสโคป (ปุ่มจะโผล่เมื่อกำลังเล็งด้วยสโคปที่ปรับซูมได้)
+    const zoomOK=()=>{try{if(!player.alive||!player.scoped||player.slot>2)return false;const wid=loadout[player.slot],sg=SIGHT_OPTIONS.find(x=>x.id===attachmentFor(wid).sight);return !!(sg&&sg.max&&getWeaponStats(wid).sightZoom>1.8);}catch(_e){return false;}};
+    const zoomBy=d=>{if(!zoomOK())return;const wid=loadout[player.slot],sg=SIGHT_OPTIONS.find(x=>x.id===attachmentFor(wid).sight),step=Math.max(0.5,(sg.max-sg.min)/12);player.zoomVal=Math.round(Math.max(sg.min,Math.min(sg.max,getCurrentScopeZoom()+d*step))*2)/2;updateScopeUI();};
+    const zoomHold=(id,d)=>{const el=$(id);let iv=null;el.addEventListener('touchstart',e=>{e.preventDefault();el.classList.add('dn');zoomBy(d);clearInterval(iv);iv=setInterval(()=>zoomBy(d),130);},{passive:false});
+      const up=e=>{e.preventDefault();el.classList.remove('dn');clearInterval(iv);};el.addEventListener('touchend',up);el.addEventListener('touchcancel',up);};
+    zoomHold('t-zin',1);zoomHold('t-zout',-1);
     tap('t-reload',()=>handleTriggerDown(K('reload')));tap('t-crouch',()=>handleTriggerDown(K('crouch')));tap('t-prone',()=>handleTriggerDown('KeyZ'));
     for(const n of[1,2,3,4])tap('t-'+n,()=>handleTriggerDown(K('slot'+n)));
     tap('t-swap',()=>handleTriggerDown(K('slot'+(player.slot===1?2:1))));
@@ -1705,7 +1750,9 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     }
     try{if(IS_TOUCH&&!localStorage.getItem('ps3d_cfg'))settings.mobile=true;}catch(_e){}
     setInterval(()=>{if(settings.mobile&&isPlaying&&!isSettingsOpen&&!isNextLifeModalOpen){isPointerLocked=true;$('pause-overlay').classList.add('hidden');}applyExtras();},400);
-    setInterval(()=>{for(const n of[1,2,3,4])$('t-'+n).classList.toggle('act',player.slot===n);},250);
+    setInterval(()=>{for(const n of[1,2,3,4])$('t-'+n).classList.toggle('act',player.slot===n);
+      $('tzoom').classList.toggle('hidden',!zoomOK());
+      if(!player.alive&&(latched.leanL||latched.leanR)){latched.leanL=latched.leanR=false;activeInputs.delete(K('leanL'));activeInputs.delete(K('leanR'));$('t-leanL').classList.remove('lat');$('t-leanR').classList.remove('lat');}},250);
     applyExtras();
 
     // HUD & MINIMAP
@@ -1781,10 +1828,10 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
           player.vel.x=md.x*bs+player.knockback.x; player.vel.z=md.z*bs+player.knockback.z;
           player.knockback.multiplyScalar(Math.exp(-4.2*dt));
           if(isAct('jump')&&player.onGround){player.vel.y=8.9;player.onGround=false;}
-          player.vel.y+=player.knockback.y; player.knockback.y=0; player.vel.y-=24*dt; player.onGround=moveEntityWithCollision(player.pos,player.vel,0.42,player.prone?0.8:player.crouch?1.35:1.9,dt);
+          player.vel.y+=player.knockback.y; player.knockback.y=0; player.vel.y-=24*dt; const _oy=player.pos.y,_wg=player.onGround; player.onGround=moveEntityWithCollision(player.pos,player.vel,0.42,player.prone?0.8:player.crouch?1.35:1.9,dt); {const _dy=player.pos.y-_oy; if(_wg&&player.onGround&&Math.abs(_dy)>0.1&&Math.abs(_dy)<0.8)camOff-=_dy; camOff*=Math.exp(-12*dt); if(Math.abs(camOff)<0.002)camOff=0;}
           if(player.onGround&&md.lengthSq()>0.1){player.stepTimer-=dt*(spr?1.45:1);if(player.stepTimer<=0){SFX.playStep();player.stepTimer=0.42;}}
           if(player.hp<=35){document.getElementById('lowhp-vignette').style.opacity=0.45+0.35*Math.sin(now*0.008);if(now>=player.heartbeatTimer){SFX.playHeartbeat();player.heartbeatTimer=now+850;}}else document.getElementById('lowhp-vignette').style.opacity=0;
-          player.eyeH+=((player.prone?0.5:player.crouch?1.04:1.64)-player.eyeH)*Math.min(1,dt*10); viewmodelGroup.visible=!(player.scoped&&getCurrentScopeZoom()>1.8); camera.position.copy(getEyePos()); try{aimAssistTick(dt);}catch(_e){} camera.rotation.order='YXZ'; camera.rotation.y=player.yaw; camera.rotation.x=player.pitch; camera.rotation.z=-player.lean*0.3+(blastShake>0.002?(Math.random()-0.5)*blastShake:0); blastShake*=0.9;
+          player.eyeH+=((player.prone?0.5:player.crouch?1.04:1.64)-player.eyeH)*Math.min(1,dt*10); viewmodelGroup.visible=!(player.scoped&&getCurrentScopeZoom()>1.8); camera.position.copy(getEyePos()); camera.position.y+=camOff; try{aimAssistTick(dt);}catch(_e){} camera.rotation.order='YXZ'; camera.rotation.y=player.yaw; camera.rotation.x=player.pitch; camera.rotation.z=-player.lean*0.3+(blastShake>0.002?(Math.random()-0.5)*blastShake:0); blastShake*=0.9;
         } else if(player.deathRagdoll) {
           // Death Camera follows live Physics Ragdoll Head Joint!
           const ph=player.deathRagdoll.pts[0].pos, pc=player.deathRagdoll.pts[1].pos;
