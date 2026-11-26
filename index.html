@@ -199,7 +199,8 @@
           <div class="room-list" id="room-list"><div style="color:var(--muted); font-size:0.84rem; text-align:center; padding:18px;">กำลังโหลดรายชื่อห้อง...</div></div>
           <div style="margin-top:auto; border-top:1px solid var(--border); padding-top:10px;">
             <div class="form-group"><label>สร้างห้องออนไลน์ (ชื่อห้อง / ทีม / เวลา)</label><div style="display:flex; gap:6px;"><input type="text" id="new-room-name" placeholder="Abandoned City" maxlength="24" /><select id="online-team" style="width:115px;"><option value="red">ทีมแดง</option><option value="blue">ทีมน้ำเงิน</option></select><input type="number" id="online-minutes" min="1" max="60" value="5" style="width:68px;" /></div></div>
-            <button class="btn btn-blue" style="width:100%;" id="btn-create-room">สร้างห้อง & เข้าเล่นออนไลน์</button>
+            <div class="form-group"><label>ขนาดทีม / เป้าคะแนน (โหมด Team Deathmatch)</label><div style="display:flex; gap:6px;"><select id="online-perteam"><option value="1">1 vs 1</option><option value="2">2 vs 2</option><option value="3">3 vs 3</option><option value="5" selected>5 vs 5</option><option value="10">10 vs 10</option></select><select id="online-score"><option value="25">ถึง 25 คะแนน</option><option value="50" selected>ถึง 50 คะแนน</option><option value="100">ถึง 100 คะแนน</option></select></div></div>
+            <button class="btn btn-blue" style="width:100%;" id="btn-create-room">สร้างห้อง & เข้าห้องรอ</button>
           </div>
         </div>
       </div>
@@ -322,6 +323,18 @@
     </div>
   </div>
 
+  <div id="room-screen" class="screen hidden">
+    <div class="card" style="width:780px; max-width:96vw; max-height:94vh; overflow-y:auto;">
+      <h2 id="room-title" style="color:var(--gold);">ห้องรอ</h2>
+      <small id="room-info" style="color:var(--muted);"></small>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:14px 0;">
+        <div><div class="section-title"><span style="color:#f87171;">ทีมแดง <b id="room-count-red"></b></span></div><div class="room-list" id="room-red" style="max-height:260px; min-height:90px;"></div><button class="btn btn-ghost" style="width:100%;" id="btn-join-red">เข้าทีมแดง</button><button class="btn btn-ghost" style="width:100%; margin-top:6px;" id="btn-bot-red">+ เพิ่มบอททีมแดง</button></div>
+        <div><div class="section-title"><span style="color:#60a5fa;">ทีมน้ำเงิน <b id="room-count-blue"></b></span></div><div class="room-list" id="room-blue" style="max-height:260px; min-height:90px;"></div><button class="btn btn-ghost" style="width:100%;" id="btn-join-blue">เข้าทีมน้ำเงิน</button><button class="btn btn-ghost" style="width:100%; margin-top:6px;" id="btn-bot-blue">+ เพิ่มบอททีมน้ำเงิน</button></div>
+      </div>
+      <div style="display:flex; gap:10px;"><button class="btn btn-ghost" style="flex:1;" id="btn-room-leave">ออกจากห้อง</button><button class="btn btn-green" style="flex:2;" id="btn-room-start">เริ่มเกม</button></div>
+      <div id="room-wait-note" style="color:var(--muted); text-align:center; margin-top:10px;">รอหัวห้องกดเริ่มเกม... (เลือกฝั่งได้ตามต้องการ)</div>
+    </div>
+  </div>
   <div id="results-overlay" class="modal-overlay results-overlay hidden">
     <div class="card results-card">
       <h2 id="results-title" style="color:var(--gold);">จบการแข่งขัน</h2>
@@ -405,7 +418,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
 <div class="inv-box"><b>ไอเทมที่ใช้ได้</b><div id="inv-items" style="margin-top:8px"></div></div></div></div>
 <div id="touch"><div id="joyzone"></div><div id="joy"><div id="joyk"></div></div>
 <div class="tb" id="t-menu">☰</div>
-<div id="tmenu" class="hidden"><div class="tb mi" id="t-set">⚙️ ตั้งค่า</div><div class="tb mi" id="t-loadout">🔫 เปลี่ยนปืน</div><div class="tb mi" id="t-inv">🎒 คลังปืน</div><div class="tb mi" id="t-score">📊 คะแนน</div><div class="tb mi" id="t-fs">⛶ เต็มจอ</div><div class="tb mi" id="t-pc-mode">🖥 โหมด PC</div></div>
+<div id="tmenu" class="hidden"><div class="tb mi" id="t-set">⚙️ ตั้งค่า</div><div class="tb mi" id="t-loadout">🔫 เปลี่ยนปืน</div><div class="tb mi" id="t-inv">🎒 คลังปืน</div><div class="tb mi" id="t-score">📊 คะแนน</div><div class="tb mi" id="t-fs">⛶ เต็มจอ</div><div class="tb mi" id="t-exit" style="background:rgba(127,29,29,.92);">🚪 ออกจากด่าน</div><div class="tb mi" id="t-pc-mode">🖥 โหมด PC</div></div>
 <div id="tchips"><div class="tb chip" id="t-1">1<small>หลัก</small></div><div class="tb chip" id="t-2">2<small>พก</small></div><div class="tb chip" id="t-3">3<small>มีด</small></div><div class="tb chip" id="t-4">4<small>ระเบิด</small></div></div>
 <div class="tb" id="t-fire">ยิง</div><div class="tb" id="t-aim">เล็ง</div><div class="tb" id="t-jump">กระโดด</div><div class="tb" id="t-reload">รีโหลด</div><div class="tb" id="t-swap">สลับ<br>ปืน</div>
 <div id="tstance"><div class="tb" id="t-crouch">ย่อ</div><div class="tb" id="t-prone">นอน</div></div>
@@ -724,7 +737,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       const aL=mp(sharedGeo.arm,cm,-0.39,0.4,-0.14);aL.rotation.x=0.85; const aR=mp(sharedGeo.arm,cm,0.39,0.4,-0.16);aR.rotation.x=1.05;
       const wh=new THREE.Group(); wh.position.set(0.26,0.43,-0.38); wh.add(createWeaponModel(wid));
       ub.add(hg,aL,aR,wh); root.add(ub);
-      root.userData={legL,legR,upperBody:ub,headGroup:hg,weaponHolder:wh,currentWeaponId:wid}; return root;
+      root.rotation.order='YXZ'; root.userData={legL,legR,upperBody:ub,headGroup:hg,weaponHolder:wh,currentWeaponId:wid,armL:aL,armR:aR}; return root;
     }
 
     const ragdolls = [], UP_VEC = new THREE.Vector3(0,1,0);
@@ -1007,7 +1020,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     // PLAYER & COMBAT
     let currentUser={uid:'guest_'+Math.floor(Math.random()*99999),username:'Soldier',isGuest:true};
     let gameMode='none',offlineSubMode='tdm',botDifficulty='normal',matchDurationMin=5,currentRoomId=null,isPlaying=false,isPointerLocked=false,matchEndTime=0;
-    const SCORE_LIMIT=50; let teamScores={red:0,blue:0};
+    let SCORE_LIMIT=50; let teamScores={red:0,blue:0}; let isHost=false,roomMeta=null,roomPlayers={},onlineStarted=false,lastBotNet=0;
     const loadout={1:'ar_aug',2:'p_deagle',3:'m_knife',4:'g_frag'}, pendingLoadout={1:'ar_aug',2:'p_deagle',3:'m_knife',4:'g_frag'};
     let zoomWheelAccumulator=0;
     const player={team:'red',pos:new THREE.Vector3(0,0,-108),vel:new THREE.Vector3(),knockback:new THREE.Vector3(),yaw:Math.PI,pitch:0,lean:0,hp:100,maxHp:100,armor:50,maxArmor:100,alive:true,diedAt:0,respawnAt:0,deathRagdoll:null,onGround:false,crouch:false,prone:false,eyeH:1.64,spin:0,zoomVal:0,slot:1,ammo:{},magazines:{},reloading:false,reloadEnd:0,reloadDuration:0,nextFire:0,scoped:false,zoomIdx:0,recoilKick:0,boltAnim:0,drawAnim:0,spreadBloom:0,swingAnim:0,stepTimer:0,heartbeatTimer:0,kills:0,deaths:0,headshots:0};
@@ -1192,7 +1205,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
         showBanner(offlineSubMode==='permadeath'?`คุณเสียชีวิต! กำลังเข้าสิงร่างเพื่อน...<br><small style="font-size:0.95rem;color:#cbd5e1">กด [${formatBind(settings.keys.loadoutMenu)}] เลือกอาวุธได้ (จะรอจนกว่าจะเลือกเสร็จ)</small>`:`ถูกสังหารโดย ${attName}<br><small style="font-size:0.95rem;color:#cbd5e1">กด [${formatBind(settings.keys.loadoutMenu)}] เปลี่ยนอาวุธได้ (จะรอจนกว่าจะเลือกเสร็จ)</small>`,'#ef4444',3400);
         const opp=player.team==='red'?'blue':'red';
         if(gameMode==='offline'){teamScores[opp]++;const ba=bots.find(b=>b.id===attId);if(ba){ba.kills++;if(hs)ba.headshots++;}addKillfeed(attName,opp,currentUser.username,player.team,wid,hs);offlineSubMode==='permadeath'?checkPermadeathRoundEnd():checkMatchEnd();}
-        else if(gameMode==='online'){saveUserStat(0,1,0);sendOnlineEvent({type:'kill',killerUid:attId,killerName:attName,killerTeam:opp,victimUid:currentUser.uid,victimName:currentUser.username,victimTeam:player.team,weaponId:wid,headshot:hs,pos:player.pos.toArray(),dir:hitDir.toArray(),yaw:player.yaw});incrementOnlineTeamScore(opp);}
+        else if(gameMode==='online'){saveUserStat(0,1,0);addKillfeed(attName,opp,currentUser.username,player.team,wid,hs);{const kb0=bots.find(x=>x.id===attId);if(kb0){kb0.kills++;if(hs)kb0.headshots=(kb0.headshots||0)+1;}}sendOnlineEvent({type:'kill',killerUid:attId,killerName:attName,killerTeam:opp,victimUid:currentUser.uid,victimName:currentUser.username,victimTeam:player.team,weaponId:wid,headshot:hs,pos:player.pos.toArray(),dir:hitDir.toArray(),yaw:player.yaw});incrementOnlineTeamScore(opp);}
       }
       updateHUD();
     }
@@ -1213,20 +1226,20 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     }
     const clearAllRagdolls=()=>{for(const rg of ragdolls)scene.remove(rg.group);ragdolls.length=0;};
     function finishOfflineMatch(reason,winner=null){
-      if(!isPlaying||gameMode!=='offline'||roundResetPending)return;
+      if(!isPlaying||(gameMode!=='offline'&&gameMode!=='online')||roundResetPending)return;
       roundResetPending=true;isPlaying=false;activeInputs.clear();player.scoped=false;updateScopeUI();
       if(document.pointerLockElement)document.exitPointerLock?.();
       const result=winner||(teamScores.red>teamScores.blue?'red':teamScores.blue>teamScores.red?'blue':'tie');
       document.getElementById('results-title').textContent=result==='tie'?'เสมอ!':`${result==='red'?'ทีมแดง':'ทีมน้ำเงิน'} ชนะ!`;
       document.getElementById('results-reason').textContent=reason==='timeout'?'หมดเวลาการแข่งขัน':reason==='elimination'?'ฝ่ายหนึ่งไม่มีผู้รอดชีวิต':'ถึงคะแนนเป้าหมาย';
       document.getElementById('results-score').textContent=`ทีมแดง ${teamScores.red} — ${teamScores.blue} ทีมน้ำเงิน`;
-      const rows=[{name:currentUser.username,team:player.team,kills:player.kills,deaths:player.deaths,headshots:player.headshots,me:true},...bots.map(b=>({name:b.name,team:b.team,kills:b.kills,deaths:b.deaths,headshots:b.headshots||0}))].sort((x,y)=>y.kills-x.kills);
+      const rows=[{name:currentUser.username,team:player.team,kills:player.kills,deaths:player.deaths,headshots:player.headshots,me:true},...(gameMode==='online'?[...remotePlayers.values()].map(r=>({name:r.data.name,team:r.data.team,kills:r.data.kills||0,deaths:r.data.deaths||0,headshots:r.data.hs||0})):[]),...bots.map(b=>({name:b.name,team:b.team,kills:b.kills,deaths:b.deaths,headshots:b.headshots||0}))].sort((x,y)=>y.kills-x.kills);
       for(const tm of['red','blue'])document.getElementById('results-'+tm).replaceChildren(...rows.filter(r=>r.team===tm).map(row=>{
         const tr=document.createElement('tr');if(row.me)tr.style.fontWeight='900';
         for(const v of[row.name,row.kills,row.deaths,row.headshots]){const td=document.createElement('td');td.textContent=v;tr.appendChild(td);}return tr;}));
       if(document.exitPointerLock)document.exitPointerLock();
       document.getElementById('pause-overlay').classList.add('hidden');
-      document.getElementById('results-overlay').classList.remove('hidden');
+      document.getElementById('btn-restart-match').style.display=gameMode==='online'?'none':'';document.getElementById('results-overlay').classList.remove('hidden');
     }
     function checkPermadeathRoundEnd(timeExp=false){
       if(roundResetPending||!isPlaying)return;
@@ -1274,10 +1287,10 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     function steerBot(pos,dir){const eye=pos.clone().add(new THREE.Vector3(0,0.9,0));if(hasMovementLineOfSight(eye,eye.clone().addScaledVector(dir,2.3)))return dir;const ld=dir.clone().applyAxisAngle(UP_VEC,0.65),rd=dir.clone().applyAxisAngle(UP_VEC,-0.65),lc=hasMovementLineOfSight(eye,eye.clone().addScaledVector(ld,2.6)),rc=hasMovementLineOfSight(eye,eye.clone().addScaledVector(rd,2.6));if(lc&&!rc)return ld;if(rc&&!lc)return rd;if(lc&&rc)return Math.random()<0.5?ld:rd;const sl=dir.clone().applyAxisAngle(UP_VEC,1.45);return hasMovementLineOfSight(eye,eye.clone().addScaledVector(sl,2.0))?sl:dir.clone().applyAxisAngle(UP_VEC,-1.45);}
     function assignBotLoadout(){const pr=['ar_aug','ak47','m4a1','thompson','mp40','vector','kar98','sg_spas','sr_l115','smg_kriss','lmg_mk46'],ps=['p_deagle','p_glock','p_usp','revolver'],pId=pr[Math.floor(Math.random()*pr.length)],sId=ps[Math.floor(Math.random()*ps.length)],pw=WEAPONS[pId];return{primary:pId,secondary:sId,activeGun:pId,magAmmo:pw.mag,spareMags:pw.shellByShell?pw.reserveShells:pw.magsCount,secMagAmmo:WEAPONS[sId].mag,secSpareMags:WEAPONS[sId].magsCount,smokeLeft:1,fragLeft:1};}
 
-    function spawnBots(tot,pTeam){
+    function spawnBots(tot,pTeam,ex){
       for(const b of bots)scene.remove(b.mesh); bots.length=0;
       const names=['Alpha','Viper','Ghost','Kobra','Raven','Delta','Titan','Nova','Wolf','Reaper','Shadow','Hawk'], sh=tot<=20;
-      const rn=Math.floor(tot/2)-(pTeam==='red'?1:0), bn=Math.ceil(tot/2)-(pTeam==='blue'?1:0);
+      const rn=ex?ex.red:Math.floor(tot/2)-(pTeam==='red'?1:0), bn=ex?ex.blue:Math.ceil(tot/2)-(pTeam==='blue'?1:0);
       const mk=(tm,idx)=>{
         const ld=assignBotLoadout(), bs=spawnPoints[tm][idx%spawnPoints[tm].length], sp=bs.clone().add(new THREE.Vector3((Math.random()-0.5)*16,0,(Math.random()-0.5)*12));
         sp.x=Math.max(-MAP_HALF+4,Math.min(MAP_HALF-4,sp.x)); sp.z=Math.max(-MAP_HALF+4,Math.min(MAP_HALF-4,sp.z));
@@ -1296,12 +1309,12 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       if(bot.hp<35+(1-bot.courage)*45&&performance.now()>bot.inCoverUntil&&performance.now()>bot.nextCoverCheck){
         bot.nextCoverCheck=performance.now()+1400;
         const cov=findRealCover(bot.pos,sp);
-        if(cov){bot.coverPos=cov;bot.inCoverUntil=performance.now()+3000;if(bot.smokeLeft>0&&bot.courage<0.55){bot.smokeLeft--;throwGrenade(bot.pos.clone().add(new THREE.Vector3(0,1.4,0)),sp.clone().sub(bot.pos).normalize(),'g_smoke',bot.id,bot.name,bot.team,14);}}
+        if(cov){bot.coverPos=cov;bot.inCoverUntil=performance.now()+3000;if(gameMode==='offline'&&bot.smokeLeft>0&&bot.courage<0.55){bot.smokeLeft--;throwGrenade(bot.pos.clone().add(new THREE.Vector3(0,1.4,0)),sp.clone().sub(bot.pos).normalize(),'g_smoke',bot.id,bot.name,bot.team,14);}}
       }
       if(bot.hp<=0){
         bot.hp=0; bot.alive=false; bot.deaths++; bot.mesh.visible=false; bot.respawnAt=offlineSubMode==='permadeath'?Infinity:performance.now()+4000;
         spawnPhysicsRagdoll(bot.pos,bot.yaw,bot.team,bot.weaponId,hitDir,hs,false,4+Math.min(11,raw*0.075)); spawnDroppedLoot(bot.pos); spawnWeaponDrop(bot.pos,bot.weaponId);
-        const kt=bot.team==='red'?'blue':'red'; teamScores[kt]++;
+        const kt=bot.team==='red'?'blue':'red'; if(gameMode==='online'){sendOnlineEvent({type:'kill',killerUid:attId,killerName:attName,killerTeam:kt,victimUid:bot.id,victimName:bot.name,victimTeam:bot.team,weaponId:wid,headshot:hs,pos:bot.pos.toArray(),dir:hitDir.toArray(),yaw:bot.yaw});incrementOnlineTeamScore(kt);}else teamScores[kt]++;
         if(attId===currentUser.uid){player.kills++;if(hs)player.headshots++;showKillConfirmation(bot.name,hs);} else{const kb=bots.find(x=>x.id===attId);if(kb){kb.kills++;if(hs)kb.headshots++;}}
         addKillfeed(attName,kt,bot.name,bot.team,wid,hs); offlineSubMode==='permadeath'?checkPermadeathRoundEnd():checkMatchEnd();
       }
@@ -1328,7 +1341,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       const dir=aim.sub(bEye).normalize(),inc=b.weaponId==='sr_l115'?dp.inacc*0.5:dp.inacc;
       dir.x+=(Math.random()-0.5)*inc;dir.y+=(Math.random()-0.5)*inc;dir.z+=(Math.random()-0.5)*inc;dir.normalize();
       SFX.playShoot(b.weaponId,bEye,false);const mz=bEye.clone().addScaledVector(dir,0.8);spawnCasing(b.weaponId,bEye.clone().addScaledVector(dir,0.25),b.yaw);
-      for(let p=0;p<w.pellets;p++){const pd=dir.clone();if(w.pellets>1){pd.x+=(Math.random()-0.5)*0.075;pd.y+=(Math.random()-0.5)*0.075;pd.z+=(Math.random()-0.5)*0.075;}spawnBullet(mz,pd,b.weaponId,b.id,b.name,b.team,false);}
+      for(let p=0;p<w.pellets;p++){const pd=dir.clone();if(w.pellets>1){pd.x+=(Math.random()-0.5)*0.075;pd.y+=(Math.random()-0.5)*0.075;pd.z+=(Math.random()-0.5)*0.075;}spawnBullet(mz,pd,b.weaponId,b.id,b.name,b.team,false);if(gameMode==='online')sendOnlineEvent({type:'shoot',fromUid:b.id,fromName:b.name,weaponId:b.weaponId,pos:mz.toArray(),dir:pd.toArray(),team:b.team});}
     }
 
     let aiTick=0;
@@ -1354,6 +1367,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
           let best=null,bestD=92,ne=0,na=0;
           if(player.alive){const d=bEye.distanceTo(getEyePos());if(player.team!==b.team){if(d<28)ne++;if(d<bestD&&hasLineOfSight(bEye,getEyePos())){bestD=d;best={pos:player.pos.clone(),eye:getEyePos(),dist:d};}}else if(d<20)na++;}
           for(let j=0;j<bots.length;j++){const ob=bots[j];if(!ob.alive||j===i)continue;const d=b.pos.distanceTo(ob.pos);if(ob.team===b.team){if(d<20)na++;continue;}if(d<28)ne++;if(d<bestD){const oe=ob.pos.clone().add(new THREE.Vector3(0,ob.crouching?1.1:1.55,0));if(hasLineOfSight(bEye,oe)){bestD=d;best={pos:ob.pos.clone(),eye:oe,dist:d};}}}
+          if(gameMode==='online')for(const[,rp]of remotePlayers){const rd=rp.data;if(rd.isBot||!rd.alive||rd.team===b.team)continue;const re=rp.mesh.position.clone().add(new THREE.Vector3(0,rd.crouch?1.1:1.55,0)),d=bEye.distanceTo(re);if(d<28)ne++;if(d<bestD&&hasLineOfSight(bEye,re)){bestD=d;best={pos:rp.mesh.position.clone(),eye:re,dist:d};}}
           if(best)for(const sz of smokeZones)if(now<sz.end&&best.eye.distanceTo(sz.pos)<8.5){best=null;break;}
           if(best&&!b.cachedTarget)b.reactReadyAt=now+dp.reactionMs;
           b.cachedTarget=best; b.outnumbered=ne>na+1;
@@ -1389,7 +1403,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
           b.strafeTimer-=dt; if(b.strafeTimer<=0){b.strafeDir=Math.random()<0.5?-1:1;b.strafeTimer=1+Math.random()*1.4;}
           if((b.weaponId==='sr_l115'&&tgt.dist>16)||(tgt.dist>28&&b.courage<0.55)){b.crouching=true;mSpd=0;}
           else{const rt=new THREE.Vector3(Math.cos(b.yaw),0,-Math.sin(b.yaw)),fw=new THREE.Vector3(-Math.sin(b.yaw),0,-Math.cos(b.yaw));dDir.addScaledVector(rt,b.strafeDir*0.6);const id=b.weaponId==='sg_spas'?9:b.weaponId==='smg_kriss'?14:21;if(tgt.dist>id*1.12)dDir.addScaledVector(fw,b.courage>0.6?0.7:0.42);else if(tgt.dist<id*0.72)dDir.addScaledVector(fw,-0.85);if(tgt.dist<3.2)dDir.addScaledVector(fw,-1.2);if(dDir.lengthSq()>0.01)dDir.normalize();}
-          if(b.fragLeft>0&&now>=b.nextGrenade&&tgt.dist>11&&tgt.dist<34&&Math.random()<0.35){b.fragLeft--;b.nextGrenade=now+18000;const gd=tgt.eye.clone().sub(bEye).add(new THREE.Vector3(0,3.5,0)).normalize();throwGrenade(bEye.clone().addScaledVector(gd,0.8),gd,'g_frag',b.id,b.name,b.team,22);}
+          if(gameMode==='offline'&&b.fragLeft>0&&now>=b.nextGrenade&&tgt.dist>11&&tgt.dist<34&&Math.random()<0.35){b.fragLeft--;b.nextGrenade=now+18000;const gd=tgt.eye.clone().sub(bEye).add(new THREE.Vector3(0,3.5,0)).normalize();throwGrenade(bEye.clone().addScaledVector(gd,0.8),gd,'g_frag',b.id,b.name,b.team,22);}
         } else {
           if(b.mesh.userData.upperBody)b.mesh.userData.upperBody.rotation.x=0;
           if(now<b.alertUntil&&b.alertPos){const ta=b.alertPos.clone().sub(b.pos);ta.y=0;if(ta.length()>2){dDir.copy(ta.normalize());b.yaw=Math.atan2(-dDir.x,-dDir.z);}else b.alertUntil=0;}
@@ -1430,21 +1444,89 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     onAuthStateChanged(auth,async u=>{if(u){const s=await get(ref(db,`users/${u.uid}`));currentUser={uid:u.uid,isGuest:false,...(s.val()||{username:u.email.split('@')[0],kills:0,deaths:0,headshots:0})};openLobby();}});
     const saveUserStat=(ak,ad,ahs)=>{if(currentUser.isGuest)return;currentUser.kills=(currentUser.kills||0)+ak;currentUser.deaths=(currentUser.deaths||0)+ad;currentUser.headshots=(currentUser.headshots||0)+ahs;update(ref(db,`users/${currentUser.uid}`),{kills:currentUser.kills,deaths:currentUser.deaths,headshots:currentUser.headshots});};
     function openLobby(){document.getElementById('auth-screen').classList.add('hidden');document.getElementById('lobby-screen').classList.remove('hidden');document.getElementById('lobby-user-label').textContent=`พลทหาร: ${currentUser.username}`+(currentUser.isGuest?' (Guest)':'');document.getElementById('lobby-stats-label').textContent=`Kills: ${currentUser.kills||0} | Deaths: ${currentUser.deaths||0} | Headshots: ${currentUser.headshots||0}`;document.getElementById('online-status-note').innerHTML=currentUser.isGuest?'<span style="color:#fca5a5;">เข้าแบบ Guest (เล่นออนไลน์และออฟไลน์ได้ทันที)</span>':'<span style="color:#6ee7b7;">เชื่อมต่อ Firebase RTDB พร้อมรบออนไลน์</span>';refreshRoomList();}
-    async function refreshRoomList(){const ls=document.getElementById('room-list');ls.innerHTML='<div style="color:var(--muted);text-align:center;padding:12px;">กำลังโหลดห้อง...</div>';try{const rms=(await get(ref(db,'rooms'))).val()||{};ls.innerHTML='';const ent=Object.entries(rms);if(!ent.length){ls.innerHTML='<div style="color:var(--muted);text-align:center;padding:18px;">ยังไม่มีห้องออนไลน์ — สร้างห้องใหม่ได้เลย!</div>';return;}for(const[rid,rd]of ent){const pc=rd.players?Object.keys(rd.players).length:0,m=rd.meta||{name:'Room',redScore:0,blueScore:0,minutes:5},d=document.createElement('div');d.className='room-item';d.innerHTML=`<div><strong>${m.name}</strong><small>ผู้เล่น: ${pc}/20 | เวลา ${m.minutes||5} นาที | Red ${m.redScore||0} : ${m.blueScore||0} Blue</small></div><button class="btn btn-green" style="padding:7px 14px;font-size:0.82rem;">เข้าร่วม</button>`;d.querySelector('button').onclick=()=>joinOnlineRoom(rid,document.getElementById('online-team').value,m.minutes||5);ls.appendChild(d);}}catch(e){ls.innerHTML=`<div style="color:#fca5a5;padding:12px;">โหลดไม่สำเร็จ: ${e.message}</div>`;}}
+    async function refreshRoomList(){const ls=document.getElementById('room-list');ls.innerHTML='<div style="color:var(--muted);text-align:center;padding:12px;">กำลังโหลดห้อง...</div>';try{const rms=(await get(ref(db,'rooms'))).val()||{};ls.innerHTML='';const ent=Object.entries(rms);if(!ent.length){ls.innerHTML='<div style="color:var(--muted);text-align:center;padding:18px;">ยังไม่มีห้องออนไลน์ — สร้างห้องใหม่ได้เลย!</div>';return;}for(const[rid,rd]of ent){const pc=rd.players?Object.keys(rd.players).length:0,m=rd.meta||{name:'Room',redScore:0,blueScore:0,minutes:5},d=document.createElement('div');d.className='room-item';d.innerHTML=`<div><strong>${m.name}</strong><small>ผู้เล่น: ${pc}/${(m.perTeam||10)*2}${m.state==='playing'?' • กำลังแข่ง':''} | เวลา ${m.minutes||5} นาที | Red ${m.redScore||0} : ${m.blueScore||0} Blue</small></div><button class="btn btn-green" style="padding:7px 14px;font-size:0.82rem;">เข้าร่วม</button>`;d.querySelector('button').onclick=()=>joinOnlineRoom(rid,document.getElementById('online-team').value);ls.appendChild(d);}}catch(e){ls.innerHTML=`<div style="color:#fca5a5;padding:12px;">โหลดไม่สำเร็จ: ${e.message}</div>`;}}
     document.getElementById('btn-refresh-rooms').onclick=refreshRoomList;
-    document.getElementById('btn-create-room').onclick=async()=>{const rn=document.getElementById('new-room-name').value.trim()||`${currentUser.username}'s City`,tm=document.getElementById('online-team').value,mn=Math.max(1,Math.min(60,parseInt(document.getElementById('online-minutes').value,10)||5)),nr=push(ref(db,'rooms'));await set(ref(db,`rooms/${nr.key}/meta`),{name:rn,hostUid:currentUser.uid,redScore:0,blueScore:0,minutes:mn,createdAt:Date.now()});joinOnlineRoom(nr.key,tm,mn);};
-    async function joinOnlineRoom(rid,tm,mn=5){
-      cleanupOnline();currentRoomId=rid;gameMode='online';offlineSubMode='tdm';matchDurationMin=mn;player.team=tm;matchTs=Date.now();teamScores={red:0,blue:0};
-      for(const b of bots)scene.remove(b.mesh);bots.length=0;onDisconnect(ref(db,`rooms/${rid}/players/${currentUser.uid}`)).remove();
-      const mr=ref(db,`rooms/${rid}/meta`);roomLis.push({r:mr,fn:onValue(mr,s=>{const m=s.val();if(m){teamScores.red=m.redScore||0;teamScores.blue=m.blueScore||0;}})});
-      const pr=ref(db,`rooms/${rid}/players`);roomLis.push({r:pr,fn:onValue(pr,s=>{const all=s.val()||{};for(const[uid,rp]of remotePlayers)if(!all[uid]||uid===currentUser.uid){scene.remove(rp.mesh);remotePlayers.delete(uid);}for(const[uid,pd]of Object.entries(all)){if(uid===currentUser.uid)continue;let rp=remotePlayers.get(uid);if(!rp){const m=createCharacterModel(pd.team||'blue',pd.weaponId||'ar_aug');scene.add(m);rp={data:pd,mesh:m,targetPos:new THREE.Vector3(pd.x||0,pd.y||0,pd.z||0)};remotePlayers.set(uid,rp);}else{if(rp.data.team!==pd.team||rp.mesh.userData.currentWeaponId!==pd.weaponId){scene.remove(rp.mesh);rp.mesh=createCharacterModel(pd.team||'blue',pd.weaponId||'ar_aug');scene.add(rp.mesh);}rp.data=pd;rp.targetPos.set(pd.x||0,pd.y||0,pd.z||0);}rp.mesh.visible=!!pd.alive;}})});
-      const er=ref(db,`rooms/${rid}/events`);roomLis.push({r:er,fn:onChildAdded(er,s=>{const ev=s.val();if(!ev||ev.ts<matchTs-1500||ev.fromUid===currentUser.uid)return;if(ev.type==='shoot'){const o=new THREE.Vector3(...ev.pos);SFX.playShoot(ev.weaponId,o,false);spawnBullet(o,new THREE.Vector3(...ev.dir),ev.weaponId,ev.fromUid,ev.fromName,ev.team,false);}else if(ev.type==='grenade')throwGrenade(new THREE.Vector3(...ev.pos),new THREE.Vector3(...ev.dir),ev.weaponId,ev.fromUid,ev.fromName,ev.team,ev.power||26);else if(ev.type==='hit'&&ev.targetUid===currentUser.uid)applyDamageToLocalPlayer(ev.dmg,ev.fromUid,ev.fromName,ev.weaponId,ev.headshot,ev.dir?new THREE.Vector3(...ev.dir):new THREE.Vector3(0,0,1));else if(ev.type==='kill'){addKillfeed(ev.killerName,ev.killerTeam,ev.victimName,ev.victimTeam,ev.weaponId,ev.headshot);if(ev.pos){const kp=new THREE.Vector3(...ev.pos);spawnPhysicsRagdoll(kp,ev.yaw||0,ev.victimTeam,ev.weaponId,ev.dir?new THREE.Vector3(...ev.dir):new THREE.Vector3(0,0,1),ev.headshot,false);spawnDroppedLoot(kp);}if(ev.killerUid===currentUser.uid){player.kills++;if(ev.headshot)player.headshots++;showKillConfirmation(ev.victimName,ev.headshot);saveUserStat(1,0,ev.headshot?1:0);}}})});
-      startMatchSession();
+    document.getElementById('btn-create-room').onclick=async()=>{const rn=document.getElementById('new-room-name').value.trim()||`${currentUser.username}'s City`,tm=document.getElementById('online-team').value,mn=Math.max(1,Math.min(60,parseInt(document.getElementById('online-minutes').value,10)||5)),pt=parseInt(document.getElementById('online-perteam').value,10)||5,sl=parseInt(document.getElementById('online-score').value,10)||50,nr=push(ref(db,'rooms'));await set(ref(db,`rooms/${nr.key}/meta`),{name:rn,hostUid:currentUser.uid,hostName:currentUser.username,redScore:0,blueScore:0,minutes:mn,perTeam:pt,scoreLimit:sl,state:'waiting',createdAt:Date.now()});joinOnlineRoom(nr.key,tm);};
+    async function joinOnlineRoom(rid,tm){
+      cleanupOnline();
+      const ms=(await get(ref(db,`rooms/${rid}/meta`))).val();if(!ms){alert('ห้องนี้ถูกปิดไปแล้ว');refreshRoomList();return;}
+      const ps=(await get(ref(db,`rooms/${rid}/players`))).val()||{},per=ms.perTeam||5,cnt=t=>Object.values(ps).filter(p=>p.team===t).length;
+      if(cnt(tm)>=per)tm=tm==='red'?'blue':'red';if(cnt(tm)>=per){alert('ห้องเต็มแล้ว');return;}
+      currentRoomId=rid;gameMode='online';offlineSubMode='tdm';isHost=ms.hostUid===currentUser.uid;onlineStarted=false;roomMeta=ms;roomPlayers=ps;player.team=tm;matchTs=Date.now();teamScores={red:0,blue:0};
+      for(const b of bots)scene.remove(b.mesh);bots.length=0;
+      const myRef=ref(db,`rooms/${rid}/players/${currentUser.uid}`);
+      await set(myRef,{name:currentUser.username,team:tm,alive:false,hp:100,x:0,y:0,z:0,yaw:0,kills:0,deaths:0,updatedAt:Date.now()});
+      onDisconnect(isHost?ref(db,`rooms/${rid}`):myRef).remove();
+      document.getElementById('lobby-screen').classList.add('hidden');document.getElementById('room-screen').classList.remove('hidden');
+      const mr=ref(db,`rooms/${rid}/meta`);roomLis.push({r:mr,fn:onValue(mr,s=>{const m=s.val();if(!m){if(isPlaying||!document.getElementById('room-screen').classList.contains('hidden')){alert('ห้องถูกปิดโดยหัวห้อง');leaveMatchToLobby();}return;}roomMeta=m;teamScores.red=m.redScore||0;teamScores.blue=m.blueScore||0;if(m.state==='playing'&&!onlineStarted)startOnlineMatch();renderRoom();})});
+      const pr=ref(db,`rooms/${rid}/players`);roomLis.push({r:pr,fn:onValue(pr,s=>{const all=s.val()||{};roomPlayers=all;
+        for(const[uid,rp]of remotePlayers)if(!all[uid]||uid===currentUser.uid||(isHost&&all[uid].isBot)){scene.remove(rp.mesh);remotePlayers.delete(uid);}
+        for(const[uid,pd]of Object.entries(all)){if(uid===currentUser.uid||(isHost&&pd.isBot))continue;let rp=remotePlayers.get(uid);
+          if(!rp){const m=createCharacterModel(pd.team||'blue',pd.weaponId||'ar_aug');m.position.set(pd.x||0,pd.y||0,pd.z||0);scene.add(m);rp={data:pd,mesh:m,targetPos:new THREE.Vector3(pd.x||0,pd.y||0,pd.z||0),spd:0};remotePlayers.set(uid,rp);}
+          else{if(rp.data.team!==pd.team||rp.mesh.userData.currentWeaponId!==pd.weaponId){const op=rp.mesh.position.clone();scene.remove(rp.mesh);rp.mesh=createCharacterModel(pd.team||'blue',pd.weaponId||'ar_aug');rp.mesh.position.copy(op);scene.add(rp.mesh);}rp.data=pd;rp.targetPos.set(pd.x||0,pd.y||0,pd.z||0);}
+          rp.mesh.visible=!!pd.alive;}
+        renderRoom();})});
+      const er=ref(db,`rooms/${rid}/events`);roomLis.push({r:er,fn:onChildAdded(er,s=>{const ev=s.val();if(!ev||ev.ts<matchTs-1500||ev.src===currentUser.uid)return;if(ev.type==='shoot'){const o=new THREE.Vector3(...ev.pos);SFX.playShoot(ev.weaponId,o,false);spawnBullet(o,new THREE.Vector3(...ev.dir),ev.weaponId,ev.fromUid,ev.fromName,ev.team,false);const rp=remotePlayers.get(ev.fromUid);if(rp){rp.flashUntil=performance.now()+55;rp.kick=1;}}else if(ev.type==='grenade')throwGrenade(new THREE.Vector3(...ev.pos),new THREE.Vector3(...ev.dir),ev.weaponId,ev.fromUid,ev.fromName,ev.team,ev.power||26);else if(ev.type==='hit'&&isHost&&bots.some(x=>x.id===ev.targetUid))damageBot(bots.find(x=>x.id===ev.targetUid),ev.dmg,ev.fromUid,ev.fromName,ev.weaponId,ev.headshot,ev.dir?new THREE.Vector3(...ev.dir):new THREE.Vector3(0,0,1));else if(ev.type==='hit'&&ev.targetUid===currentUser.uid)applyDamageToLocalPlayer(ev.dmg,ev.fromUid,ev.fromName,ev.weaponId,ev.headshot,ev.dir?new THREE.Vector3(...ev.dir):new THREE.Vector3(0,0,1));else if(ev.type==='kill'){const kb=isHost&&bots.find(x=>x.id===ev.killerUid);if(kb){kb.kills++;if(ev.headshot)kb.headshots=(kb.headshots||0)+1;}addKillfeed(ev.killerName,ev.killerTeam,ev.victimName,ev.victimTeam,ev.weaponId,ev.headshot);if(ev.pos){const kp=new THREE.Vector3(...ev.pos);spawnPhysicsRagdoll(kp,ev.yaw||0,ev.victimTeam,ev.weaponId,ev.dir?new THREE.Vector3(...ev.dir):new THREE.Vector3(0,0,1),ev.headshot,false);spawnDroppedLoot(kp);}if(ev.killerUid===currentUser.uid){player.kills++;if(ev.headshot)player.headshots++;showKillConfirmation(ev.victimName,ev.headshot);saveUserStat(1,0,ev.headshot?1:0);}}})});
     }
-    const sendOnlineEvent=p=>{if(currentRoomId)set(push(ref(db,`rooms/${currentRoomId}/events`)),{...p,fromUid:currentUser.uid,fromName:currentUser.username,ts:Date.now()});};
+    function startOnlineMatch(){
+      if(onlineStarted)return;onlineStarted=true;const m=roomMeta;matchDurationMin=m.minutes||5;SCORE_LIMIT=m.scoreLimit||50;
+      document.getElementById('room-screen').classList.add('hidden');clearAllRagdolls();
+      if(isHost){const ex={red:0,blue:0},rm={};for(const[k,p]of Object.entries(roomPlayers))if(p.isBot){ex[p.team]++;rm[k]=null;}
+        if(Object.keys(rm).length)update(ref(db,`rooms/${currentRoomId}/players`),rm);
+        spawnBots(ex.red+ex.blue,player.team,ex);for(const b of bots)onDisconnect(ref(db,`rooms/${currentRoomId}/players/${b.id}`)).remove();}
+      startMatchSession();
+      matchEndTime=performance.now()+Math.max(1000,(m.startAt||Date.now())+matchDurationMin*60000-Date.now());
+      setTimeout(()=>{if(isPlaying&&!settings.mobile&&!isPointerLocked)document.getElementById('pause-overlay').classList.remove('hidden');},400);
+    }
+    const ROOM_BOT_NAMES=['Alpha','Viper','Ghost','Kobra','Raven','Delta','Titan','Nova','Wolf','Reaper','Shadow','Hawk'];
+    function renderRoom(){
+      const rs=document.getElementById('room-screen');if(rs.classList.contains('hidden'))return;
+      const m=roomMeta||{},per=m.perTeam||5;
+      document.getElementById('room-title').textContent=m.name||'ห้องรอ';
+      document.getElementById('room-info').textContent=`ทีมละ ${per} คน • ${m.minutes||5} นาที • เป้าหมาย ${m.scoreLimit||50} คะแนน • หัวห้อง: ${m.hostName||'-'}`;
+      for(const t of['red','blue']){
+        const list=Object.entries(roomPlayers).filter(([,p])=>p.team===t);
+        document.getElementById('room-'+t).replaceChildren(...list.map(([k,p])=>{const d=document.createElement('div');d.className='room-item';const n=document.createElement('span');n.textContent=(k===m.hostUid?'👑 ':'')+p.name+(k===currentUser.uid?' (คุณ)':'');d.appendChild(n);
+          if(isHost&&p.isBot){const x=document.createElement('button');x.className='btn btn-ghost';x.style.cssText='width:auto;padding:3px 10px;';x.textContent='✕';x.onclick=()=>remove(ref(db,`rooms/${currentRoomId}/players/${k}`));d.appendChild(x);}return d;}));
+        document.getElementById('room-count-'+t).textContent=`(${list.length}/${per})`;
+        document.getElementById('btn-join-'+t).disabled=list.length>=per||player.team===t;
+        const ab=document.getElementById('btn-bot-'+t);ab.style.display=isHost?'':'none';ab.disabled=list.length>=per;
+      }
+      document.getElementById('btn-room-start').style.display=isHost?'':'none';
+      document.getElementById('room-wait-note').style.display=isHost?'none':'';
+    }
+    function changeRoomTeam(t){if(!currentRoomId||onlineStarted)return;player.team=t;update(ref(db,`rooms/${currentRoomId}/players/${currentUser.uid}`),{team:t});renderRoom();}
+    function addRoomBot(t){if(!isHost||!currentRoomId)return;const per=(roomMeta?.perTeam)||5;if(Object.values(roomPlayers).filter(p=>p.team===t).length>=per)return;
+      set(ref(db,`rooms/${currentRoomId}/players/botw_${Date.now().toString(36)}${Math.floor(Math.random()*999)}`),{name:'[BOT] '+ROOM_BOT_NAMES[Math.floor(Math.random()*ROOM_BOT_NAMES.length)],team:t,isBot:true,alive:false});}
+    document.getElementById('btn-join-red').onclick=()=>changeRoomTeam('red');document.getElementById('btn-join-blue').onclick=()=>changeRoomTeam('blue');
+    document.getElementById('btn-bot-red').onclick=()=>addRoomBot('red');document.getElementById('btn-bot-blue').onclick=()=>addRoomBot('blue');
+    document.getElementById('btn-room-leave').onclick=()=>leaveMatchToLobby();
+    document.getElementById('btn-room-start').onclick=()=>{if(!isHost||!currentRoomId)return;const c=t=>Object.values(roomPlayers).filter(p=>p.team===t).length;if(!c('red')||!c('blue')){alert('ต้องมีผู้เล่นหรือบอทอย่างน้อย 1 คนในแต่ละทีมก่อนเริ่ม');return;}update(ref(db,`rooms/${currentRoomId}/meta`),{state:'playing',startAt:Date.now()});};
+    function publishBots(now){
+      if(!isHost||!currentRoomId||now-lastBotNet<90||!bots.length)return;lastBotNet=now;const u={};
+      for(const b of bots)u[b.id]={name:b.name,team:b.team,x:+b.pos.x.toFixed(2),y:+b.pos.y.toFixed(2),z:+b.pos.z.toFixed(2),yaw:+b.yaw.toFixed(3),lean:0,crouch:!!b.crouching,prone:false,scoped:false,pitch:+(b.mesh.userData.upperBody?.rotation.x||0).toFixed(2),hp:b.hp,alive:b.alive,weaponId:b.weaponId,kills:b.kills,deaths:b.deaths,hs:b.headshots||0,isBot:true};
+      update(ref(db,`rooms/${currentRoomId}/players`),u);
+    }
+    function animateRemotes(dt,now){
+      const k=Math.min(1,dt*14);
+      for(const[,rp]of remotePlayers){const m=rp.mesh,d=rp.data||{},u=m.userData;if(!u.legL)continue;
+        const px=m.position.x,pz=m.position.z;m.position.lerp(rp.targetPos,0.25);
+        rp.spd=(rp.spd||0)+(Math.hypot(m.position.x-px,m.position.z-pz)/Math.max(dt,0.001)-(rp.spd||0))*0.2;
+        let dy=(d.yaw||0)-m.rotation.y;dy=Math.atan2(Math.sin(dy),Math.cos(dy));m.rotation.y+=dy*Math.min(1,dt*18);
+        const sw=rp.spd>0.6?Math.sin(now*0.012*(rp.spd>8?1.5:1))*(d.prone?0.2:d.crouch?0.3:0.5):0;u.legL.rotation.x=sw;u.legR.rotation.x=-sw;
+        rp.sy=(rp.sy??1)+((d.crouch&&!d.prone?0.78:1)-(rp.sy??1))*k;m.scale.y=rp.sy;
+        rp.px=(rp.px||0)+((d.prone?-1.45:0)-(rp.px||0))*k;m.rotation.x=rp.px;
+        rp.ads=(rp.ads||0)+((d.scoped?1:0)-(rp.ads||0))*k;rp.kick=Math.max(0,(rp.kick||0)-dt*9);
+        u.upperBody.rotation.z=-(d.lean||0)*0.25;u.upperBody.rotation.x=Math.max(-0.6,Math.min(0.6,d.pitch||0))*(d.isBot?1:0.8)+rp.kick*0.05;
+        if(u.armL){u.armL.rotation.x=0.85+rp.ads*0.5;u.armR.rotation.x=1.05+rp.ads*0.45;}
+        u.weaponHolder.position.set(0.26-rp.ads*0.2,0.43+rp.ads*0.08,-0.38+rp.kick*0.07);
+        const fm=u.weaponHolder.children[0]?.userData?.flashMesh;if(fm){const on=now<(rp.flashUntil||0);fm.visible=on;if(on)fm.rotation.z=Math.random()*3.14;}
+      }
+    }
+    const sendOnlineEvent=p=>{if(currentRoomId)set(push(ref(db,`rooms/${currentRoomId}/events`)),{fromUid:currentUser.uid,fromName:currentUser.username,...p,src:currentUser.uid,ts:Date.now()});};
     const incrementOnlineTeamScore=async t=>{if(!currentRoomId)return;const mr=ref(db,`rooms/${currentRoomId}/meta`),m=(await get(mr)).val()||{},k=t==='red'?'redScore':'blueScore';await update(mr,{[k]:(m[k]||0)+1});};
-    const syncOnlinePlayerState=now=>{if(gameMode!=='online'||!currentRoomId||now-lastNet<55)return;lastNet=now;set(ref(db,`rooms/${currentRoomId}/players/${currentUser.uid}`),{name:currentUser.username,team:player.team,x:+player.pos.x.toFixed(2),y:+player.pos.y.toFixed(2),z:+player.pos.z.toFixed(2),yaw:+player.yaw.toFixed(3),lean:+player.lean.toFixed(2),crouch:player.crouch,hp:player.hp,alive:player.alive,weaponId:loadout[player.slot],kills:player.kills,deaths:player.deaths,updatedAt:Date.now()});};
-    const cleanupOnline=()=>{for(const l of roomLis)off(l.r);roomLis=[];for(const[,rp]of remotePlayers)scene.remove(rp.mesh);remotePlayers.clear();if(currentRoomId){remove(ref(db,`rooms/${currentRoomId}/players/${currentUser.uid}`));currentRoomId=null;}};
+    const syncOnlinePlayerState=now=>{if(gameMode!=='online'||!currentRoomId||now-lastNet<55)return;lastNet=now;set(ref(db,`rooms/${currentRoomId}/players/${currentUser.uid}`),{name:currentUser.username,team:player.team,x:+player.pos.x.toFixed(2),y:+player.pos.y.toFixed(2),z:+player.pos.z.toFixed(2),yaw:+player.yaw.toFixed(3),lean:+player.lean.toFixed(2),crouch:player.crouch,hp:player.hp,prone:player.prone,scoped:player.scoped,pitch:+player.pitch.toFixed(2),hs:player.headshots,alive:player.alive,weaponId:loadout[player.slot],kills:player.kills,deaths:player.deaths,updatedAt:Date.now()});};
+    const cleanupOnline=()=>{for(const l of roomLis)off(l.r);roomLis=[];for(const[,rp]of remotePlayers)scene.remove(rp.mesh);remotePlayers.clear();if(currentRoomId){remove(ref(db,isHost?`rooms/${currentRoomId}`:`rooms/${currentRoomId}/players/${currentUser.uid}`));currentRoomId=null;}isHost=false;onlineStarted=false;roomPlayers={};document.getElementById('room-screen').classList.add('hidden');};
 
     // SETTINGS UI & CUSTOM INPUTS (Keyboard + Mouse Back/Forward)
     let listeningAct = null;
@@ -1530,7 +1612,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     document.getElementById('btn-confirm-t-loadout').onclick=()=>{pendingLoadout[1]=document.getElementById('t-sel-primary').value;pendingLoadout[2]=document.getElementById('t-sel-secondary').value;pendingLoadout[3]=document.getElementById('t-sel-melee').value;pendingLoadout[4]=document.getElementById('t-sel-grenade').value;isNextLifeModalOpen=false;holdingRespawnForLoadout=false;document.getElementById('nextlife-overlay').classList.add('hidden');if(!player.alive&&performance.now()>=player.respawnAt)respawnLocalPlayer();else showPickupToast('บันทึกอาวุธแล้ว! จะได้ใช้ทันทีเมื่อเกิดใหม่');requestLock();};
     document.getElementById('btn-open-t-from-pause').onclick=openNextLifeModal;
 
-    document.getElementById('btn-start-offline').onclick=()=>{gameMode='offline';offlineSubMode=document.getElementById('offline-gamemode').value;botDifficulty=document.getElementById('offline-diff').value;player.team=document.getElementById('offline-team').value;matchDurationMin=Math.max(1,Math.min(60,parseInt(document.getElementById('offline-minutes').value,10)||5));teamScores={red:0,blue:0};clearAllRagdolls();spawnMapSupplyPickups(offlineSubMode);spawnBots(parseInt(document.getElementById('offline-bots').value,10),player.team);startMatchSession();};
+    document.getElementById('btn-start-offline').onclick=()=>{SCORE_LIMIT=50;gameMode='offline';offlineSubMode=document.getElementById('offline-gamemode').value;botDifficulty=document.getElementById('offline-diff').value;player.team=document.getElementById('offline-team').value;matchDurationMin=Math.max(1,Math.min(60,parseInt(document.getElementById('offline-minutes').value,10)||5));teamScores={red:0,blue:0};clearAllRagdolls();spawnMapSupplyPickups(offlineSubMode);spawnBots(parseInt(document.getElementById('offline-bots').value,10),player.team);startMatchSession();};
     function startMatchSession(){
       isPlaying=true;isNextLifeModalOpen=false;holdingRespawnForLoadout=false;roundResetPending=false;player.kills=0;player.deaths=0;player.headshots=0;matchEndTime=performance.now()+matchDurationMin*60*1000;
       document.getElementById('lobby-screen').classList.add('hidden');document.getElementById('hud').classList.remove('hidden');document.getElementById('pause-overlay').classList.add('hidden');document.getElementById('nextlife-overlay').classList.add('hidden');document.getElementById('results-overlay').classList.add('hidden');document.getElementById('attachment-overlay').classList.add('hidden');
@@ -1713,6 +1795,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     // ----- menu -----
     const menuOpen=f=>{const o=f===undefined?tmenu.classList.contains('hidden'):f;tmenu.classList.toggle('hidden',!o);};
     tap('t-menu',()=>menuOpen());
+    tap('t-exit',()=>{menuOpen(false);if(confirm(gameMode==='online'&&isHost?'ออกจากด่าน? (หัวห้องออก = ห้องจะถูกปิด)':'ออกจากด่านและกลับล็อบบี้?'))leaveMatchToLobby();});
     window.addEventListener('touchstart',e=>{if(!tmenu.classList.contains('hidden')&&!e.target.closest('#tmenu,#t-menu'))menuOpen(false);},{passive:true});
     tap('t-set',()=>{menuOpen(false);openSettings();});
     tap('t-loadout',()=>{menuOpen(false);handleTriggerDown(K('loadoutMenu'));});
@@ -1808,7 +1891,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
         hudRefreshTimer+=dt;minimapRefreshTimer+=dt;
         const rem=Math.max(0,Math.floor((matchEndTime-now)/1000));
         if(rem!==lastDisplayedSeconds){document.getElementById('hud-timer').textContent=`${String(Math.floor(rem/60)).padStart(2,'0')}:${String(rem%60).padStart(2,'0')}`;lastDisplayedSeconds=rem;}
-        if(rem===0&&gameMode==='offline')offlineSubMode==='permadeath'?checkPermadeathRoundEnd(true):checkMatchEnd();
+        if(gameMode==='online')checkMatchEnd();if(rem===0&&gameMode==='offline')offlineSubMode==='permadeath'?checkPermadeathRoundEnd(true):checkMatchEnd();
         if(!player.alive&&!holdingRespawnForLoadout&&!roundResetPending&&now>=player.respawnAt)respawnLocalPlayer();
         if(player.reloading){
           const w=getWeaponStats(loadout[player.slot]),pct=Math.min(100,100-((player.reloadEnd-now)/player.reloadDuration)*100);
@@ -1870,11 +1953,11 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
           }
         }
 
-        if(gameMode==='offline'){
+        if(gameMode==='offline'||(gameMode==='online'&&isHost)){
           botUpdateAccumulator+=dt;
           if(botUpdateAccumulator>=BOT_UPDATE_INTERVAL){const botDt=botUpdateAccumulator;botUpdateAccumulator=0;updateBots(botDt,now);}
         }
-        else if(gameMode==='online'){syncOnlinePlayerState(now);for(const[,rp]of remotePlayers){rp.mesh.position.lerp(rp.targetPos,0.25);rp.mesh.rotation.y=rp.data.yaw||0;if(rp.mesh.userData.upperBody)rp.mesh.userData.upperBody.rotation.z=-(rp.data.lean||0)*0.25;}}
+        if(gameMode==='online'){syncOnlinePlayerState(now);publishBots(now);animateRemotes(dt,now);}
 
         updateRagdolls(dt,now);
 
@@ -1884,22 +1967,28 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
           b.trailTimer-=dt;if(settings.tracers&&b.trailTimer<=0&&!(b.isLocalOwner&&b.startPos.distanceTo(b.pos)<3)){spawnTrail(prev,b.pos,b.isLocalOwner);b.trailTimer=0.08;}
 
           // Bullet fly-by whiz sound (bullet-hit.mp3 / bullethit.mp3)
-          if(!b.whizzed&&!b.isLocalOwner&&player.alive&&b.pos.distanceTo(camera.position)<4.2){b.whizzed=true;SFX.playBulletFlyby(b.pos);}
+          if(!b.whizzed&&!b.isLocalOwner&&player.alive&&segmentPointDistanceSq(prev,b.pos,camera.position)<17.6){b.whizzed=true;SFX.playBulletFlyby(b.pos);}
 
           let wallT=2; for(const box of getColliderCandidates(prev,b.pos,0.05)){const t=intersectSegmentAABB(prev,b.pos,box);if(t!==null&&t<wallT)wallT=t;}
           if(b.pos.y<=0&&prev.y>0){const ft=prev.y/(prev.y-b.pos.y);if(ft<wallT)wallT=ft;}
           let hit=false; const bDir=b.vel.clone().normalize();
 
           if(b.isLocalOwner){
-            if(gameMode==='offline'){
+            if(gameMode==='offline'||(gameMode==='online'&&isHost)){
               let target=null,impact=null;
               for(const bot of bots){if(!bot.alive||bot.team===b.team)continue;const res=checkBulletHitChar(prev,b.pos,bot.pos,bot.crouching);if(res&&res.t<wallT&&(!impact||res.t<impact.t)){target=bot;impact=res;}}
               if(target){const hp=prev.clone().lerp(b.pos,impact.t),bd=computeBulletDmg(b,hp);damageBot(target,impact.headshot?Math.round(bd*2.5):bd,b.ownerId,b.ownerName,b.weaponId,impact.headshot,bDir);showHitmarker(impact.headshot);spawnParticles(hp,0xdc2626,7,5,0.08,0.3);hit=true;}
-            } else if(gameMode==='online'){
+            }
+            if(!hit&&gameMode==='online'){
               let target=null,targetUid=null,impact=null;
               for(const[uid,rp]of remotePlayers){if(!rp.data.alive||rp.data.team===b.team)continue;const res=checkBulletHitChar(prev,b.pos,rp.mesh.position,rp.data.crouch);if(res&&res.t<wallT&&(!impact||res.t<impact.t)){target=rp;targetUid=uid;impact=res;}}
               if(target){const hp=prev.clone().lerp(b.pos,impact.t),bd=computeBulletDmg(b,hp);showHitmarker(impact.headshot);sendOnlineEvent({type:'hit',targetUid,dmg:impact.headshot?Math.round(bd*2.5):bd,weaponId:b.weaponId,headshot:impact.headshot,dir:bDir.toArray()});spawnParticles(hp,0xdc2626,7,5,0.08,0.3);hit=true;}
             }
+          } else if(gameMode==='online'&&isHost&&String(b.ownerId).startsWith('bot_')){
+            let tu=null,imp=null;
+            if(player.alive&&b.team!==player.team){const r=checkBulletHitChar(prev,b.pos,player.pos,player.crouch||player.prone);if(r&&r.t<wallT){const bd=computeBulletDmg(b,prev.clone().lerp(b.pos,r.t));applyDamageToLocalPlayer(r.headshot?Math.round(bd*1.8):bd,b.ownerId,b.ownerName,b.weaponId,r.headshot,bDir);hit=true;}}
+            if(!hit)for(const[uid,rp]of remotePlayers){if(rp.data.isBot||!rp.data.alive||rp.data.team===b.team)continue;const r=checkBulletHitChar(prev,b.pos,rp.mesh.position,rp.data.crouch);if(r&&r.t<wallT&&(!imp||r.t<imp.t)){tu=uid;imp=r;}}
+            if(!hit&&tu){const bd=computeBulletDmg(b,prev.clone().lerp(b.pos,imp.t));sendOnlineEvent({type:'hit',targetUid:tu,fromUid:b.ownerId,fromName:b.ownerName,dmg:imp.headshot?Math.round(bd*1.8):bd,weaponId:b.weaponId,headshot:imp.headshot,dir:bDir.toArray()});hit=true;}
           } else if(gameMode==='offline'&&player.alive&&b.team!==player.team){
             const res=checkBulletHitChar(prev,b.pos,player.pos,player.crouch||player.prone);
             if(res&&res.t<wallT){const hp=prev.clone().lerp(b.pos,res.t),bd=computeBulletDmg(b,hp);applyDamageToLocalPlayer(res.headshot?Math.round(bd*1.8):bd,b.ownerId,b.ownerName,b.weaponId,res.headshot,bDir);hit=true;}
