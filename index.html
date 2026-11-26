@@ -1217,9 +1217,10 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     const dustMesh=buildAbandonedCityMap(scene);buildColliderGrid();
     const lootItems=[], bullets=[], grenades=[], particles=[], debrisItems=[], smokeZones=[], bots=[], remotePlayers=new Map();
 
+    let mobilePerfScale=1;
     function applyGraphicsSettings(){
       const mobileGraphics=IS_TOUCH||settings.mobile;
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio,mobileGraphics?1.0:1.5)*Math.min(settings.resScale,mobileGraphics?0.8:1.5));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio,mobileGraphics?1.0:1.5)*Math.min(settings.resScale,mobileGraphics?0.8:1.5)*(mobileGraphics?mobilePerfScale:1));
       renderer.shadowMap.enabled=settings.shadows&&!mobileGraphics;
       if(sunRef){sunRef.castShadow=settings.shadows&&!mobileGraphics;if(sunRef.shadow.mapSize.width!==settings.shadowRes){sunRef.shadow.mapSize.set(settings.shadowRes,settings.shadowRes);if(sunRef.shadow.map){sunRef.shadow.map.dispose();sunRef.shadow.map=null;}}}
       scene.fog.near=25; scene.fog.far=mobileGraphics?Math.min(settings.fogDist,180):settings.fogDist; renderer.toneMappingExposure=settings.exposure;
@@ -2237,7 +2238,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       gyroEuler.set(e.beta*rad,e.alpha*rad,-e.gamma*rad,'YXZ');gyroCurrent.setFromEuler(gyroEuler).multiply(gyroFix).multiply(gyroScreen.setFromAxisAngle(gyroScreenAxis,-screenAngle));
       if(!gyroReady){gyroPrevious.copy(gyroCurrent);gyroReady=true;return;}
       gyroDelta.copy(gyroPrevious).invert().multiply(gyroCurrent);gyroDeltaEuler.setFromQuaternion(gyroDelta,'YXZ');
-      const s=settings.gyroSens||1;player.yaw-=gyroDeltaEuler.y*s;player.pitch=Math.max(-1.5,Math.min(1.5,player.pitch-gyroDeltaEuler.x*s));gyroPrevious.copy(gyroCurrent);
+      const s=settings.gyroSens||1;player.yaw+=gyroDeltaEuler.y*s;player.pitch=Math.max(-1.5,Math.min(1.5,player.pitch+gyroDeltaEuler.x*s));gyroPrevious.copy(gyroCurrent);
     }
     window.addEventListener('deviceorientation',handleGyroscope,{passive:true});window.addEventListener('orientationchange',()=>{gyroReady=false;});
     async function setGyroscopeEnabled(on){
@@ -2321,9 +2322,11 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     $('set-aimstr').oninput=e=>{settings.aimStr=+e.target.value;$('val-aimstr').textContent=settings.aimStr+'%';};
     const _rs2=renderSettingsUI;renderSettingsUI=function(){_rs2();$('set-aimassist').checked=settings.aimAssist!==false;$('set-aimstr').value=settings.aimStr||60;$('val-aimstr').textContent=(settings.aimStr||60)+'%';};
     const wrapA=a=>((a+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;
+    let aimAssistElapsed=0;
     function aimAssistTick(dt){
+      if(!settings.mobile||settings.aimAssist===false||!player.alive||!isPlaying||isSettingsOpen){aaFriction=1;aimAssistElapsed=0;return;}
+      if(IS_TOUCH||settings.mobile){aimAssistElapsed+=dt;if(aimAssistElapsed<1/20)return;dt=aimAssistElapsed;aimAssistElapsed=0;}
       aaFriction=1;
-      if(!settings.mobile||settings.aimAssist===false||!player.alive||!isPlaying||isSettingsOpen)return;
       const s=Math.max(0.1,Math.min(1,(settings.aimStr||60)/100)),eye=camera.position,cand=[];
       for(const b of bots)if(b.alive&&b.team!==player.team)cand.push([b.pos,b.crouching]);
       if(gameMode==='online')for(const[,rp]of remotePlayers){const d=rp.data||{};if(d.team!==player.team&&!(d.hp<=0)&&d.alive!==false)cand.push([rp.mesh.position,false]);}
@@ -2386,13 +2389,15 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     // MAIN LOOP
     let prevTime=performance.now(), fpsFrames=0, fpsTimer=0, lastLightUpdate=0, lastMenuRender=0;
     let botUpdateAccumulator=0, hudRefreshTimer=0, minimapRefreshTimer=0, lastDisplayedSeconds=-1, previousCrosshairGap=-1;
-    const BOT_UPDATE_INTERVAL=1/30;
+    const BOT_UPDATE_INTERVAL=1/30,BOT_UPDATE_INTERVAL_MOBILE=1/20;
     const crosshairParts=['.ch-top','.ch-bot','.ch-left','.ch-right'].map(selector=>document.querySelector(selector));
     function animate(){
       requestAnimationFrame(animate);
       const now=performance.now(), dt=Math.min(0.05,(now-prevTime)/1000); prevTime=now;
       fpsFrames++; fpsTimer+=dt;
-      if(fpsTimer>=0.5){document.getElementById('fps-counter').textContent=`FPS: ${Math.round(fpsFrames/fpsTimer)} | ${(dt*1000).toFixed(1)}ms`;fpsFrames=0;fpsTimer=0;}
+      if(fpsTimer>=0.5){const measuredFps=fpsFrames/fpsTimer;document.getElementById('fps-counter').textContent=`FPS: ${Math.round(measuredFps)} | ${(dt*1000).toFixed(1)}ms`;fpsFrames=0;fpsTimer=0;
+        if(IS_TOUCH||settings.mobile){const nextScale=measuredFps<32?Math.max(0.65,mobilePerfScale-0.1):measuredFps>48?Math.min(1,mobilePerfScale+0.05):mobilePerfScale;if(nextScale!==mobilePerfScale){mobilePerfScale=nextScale;applyGraphicsSettings();}}
+      }
       if(now-lastLightUpdate>=100){for(const fl of flickeringLights){const n=Math.sin(now*0.015+fl.phase)*Math.sin(now*0.043+fl.phase);fl.light.intensity=n>0.6?0.25:fl.base;}lastLightUpdate=now;}
       dustMesh.rotation.y+=0.012*dt;
 
@@ -2479,7 +2484,8 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
 
         if(gameMode==='offline'||(gameMode==='online'&&isHost)){
           botUpdateAccumulator+=dt;
-          if(botUpdateAccumulator>=BOT_UPDATE_INTERVAL){const botDt=botUpdateAccumulator;botUpdateAccumulator=0;updateBots(botDt,now);}
+          const botInterval=IS_TOUCH||settings.mobile?BOT_UPDATE_INTERVAL_MOBILE:BOT_UPDATE_INTERVAL;
+          if(botUpdateAccumulator>=botInterval){const botDt=botUpdateAccumulator;botUpdateAccumulator=0;updateBots(botDt,now);}
         }
         if(gameMode==='online'){syncOnlinePlayerState(now);publishBots(now);animateRemotes(dt,now);}
 
