@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#000000" />
-  <title>POINT STRIKE 3D — Abandoned City Edition</title>
+  <title>3D STRIKE — Abandoned City Edition</title>
   <style>
     :root { --panel: rgba(13,18,28,0.94); --border: rgba(255,255,255,0.14); --red: #ef4444; --blue: #3b82f6; --gold: #f59e0b; --green: #10b981; --cyan: #06b6d4; --text: #f1f5f9; --muted: #94a3b8; }
     * { box-sizing: border-box; user-select: none; margin: 0; padding: 0; }
@@ -147,7 +147,7 @@
 
   <div id="auth-screen" class="screen">
     <div class="card" style="width: 400px;">
-      <div class="brand"><h1>POINT STRIKE 3D</h1><p>Abandoned City • Physics Ragdoll • Tactical AI</p></div>
+      <div class="brand"><h1>3D STRIKE</h1><p>Abandoned City • Physics Ragdoll • Tactical AI</p></div>
       <div class="tabs"><button class="tab-btn active" id="tab-login">เข้าสู่ระบบ</button><button class="tab-btn" id="tab-reg">สมัครบัญชีใหม่</button></div>
       <form id="auth-form">
         <div class="form-group"><label>ชื่อผู้ใช้ (Username)</label><input type="text" id="auth-username" placeholder="เช่น SniperTH01" required minlength="3" maxlength="16" autocomplete="username" /></div>
@@ -378,6 +378,7 @@
 #t-aim{right:calc(var(--sr) + 122px);bottom:calc(var(--sb) + 84px);width:62px;height:62px}
 #t-reload{right:calc(var(--sr) + 120px);bottom:calc(var(--sb) + 158px);width:50px;height:50px;font-size:.66rem}
 #t-swap{right:calc(var(--sr) + 196px);bottom:calc(var(--sb) + 30px);width:48px;height:48px;font-size:.62rem}
+#t-split{right:calc(var(--sr) + 196px);bottom:calc(var(--sb) + 84px);width:48px;height:48px;font-size:.62rem}
 #tstance{left:50%;transform:translateX(-50%);bottom:calc(var(--sb) + 12px);display:flex;gap:8px}
 #tstance .tb{width:48px;height:48px;font-size:.62rem;position:static}
 #t-menu{top:calc(var(--st) + 8px);right:calc(var(--sr) + 10px);width:42px;height:42px;border-radius:12px;font-size:1.2rem}
@@ -420,7 +421,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
 <div class="tb" id="t-menu">☰</div>
 <div id="tmenu" class="hidden"><div class="tb mi" id="t-set">⚙️ ตั้งค่า</div><div class="tb mi" id="t-loadout">🔫 เปลี่ยนปืน</div><div class="tb mi" id="t-inv">🎒 คลังปืน</div><div class="tb mi" id="t-score">📊 คะแนน</div><div class="tb mi" id="t-fs">⛶ เต็มจอ</div><div class="tb mi" id="t-exit" style="background:rgba(127,29,29,.92);">🚪 ออกจากด่าน</div><div class="tb mi" id="t-pc-mode">🖥 โหมด PC</div></div>
 <div id="tchips"><div class="tb chip" id="t-1">1<small>หลัก</small></div><div class="tb chip" id="t-2">2<small>พก</small></div><div class="tb chip" id="t-3">3<small>มีด</small></div><div class="tb chip" id="t-4">4<small>ระเบิด</small></div></div>
-<div class="tb" id="t-fire">ยิง</div><div class="tb" id="t-aim">เล็ง</div><div class="tb" id="t-jump">กระโดด</div><div class="tb" id="t-reload">รีโหลด</div><div class="tb" id="t-swap">สลับ<br>ปืน</div>
+<div class="tb" id="t-fire">ยิง</div><div class="tb" id="t-aim">เล็ง</div><div class="tb" id="t-jump">กระโดด</div><div class="tb" id="t-reload">รีโหลด</div><div class="tb" id="t-swap">สลับ<br>ปืน</div><div class="tb" id="t-split">แยก<br>คู่</div>
 <div id="tstance"><div class="tb" id="t-crouch">ย่อ</div><div class="tb" id="t-prone">นอน</div></div>
 <div id="tlean"><div class="tb" id="t-leanL">⟲<small>เอียงซ้าย</small></div><div class="tb" id="t-leanR">⟳<small>เอียงขวา</small></div></div>
 <div id="tzoom" class="hidden"><div class="tb" id="t-zin">🔍+</div><div class="tb" id="t-zout">🔍−</div></div></div>
@@ -453,13 +454,13 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
 
     // WEAPONS
     const WEAPONS = {
-      ar_aug:    { id:'ar_aug', slot:1, category:'ไรเฟิลจู่โจม (สมดุล)', name:'AUG A3', dmg:36, falloffStart:65, falloffMin:0.65, rpm:650, mag:30, magsCount:7, reloadTime:2.0, speed:620, gravity:11.2, spread:0.011, recoil:0.02, pellets:1, auto:true, moveSpeed:1.0, scope:false, color:0x3f4d36, desc:'สมดุลทุกด้าน แม่นยำระยะกลาง' },
-      sg_spas:   { id:'sg_spas', slot:1, category:'ลูกซอง (โหดระยะใกล้)', name:'SPAS-12', dmg:20, falloffStart:12, falloffMin:0.2, rpm:65, mag:8, reserveShells:48, reloadPerShell:0.48, speed:370, gravity:14.5, spread:0.072, recoil:0.062, pellets:8, auto:false, moveSpeed:0.96, scope:false, shellByShell:true, color:0x262930, desc:'รุนแรงมากระยะใกล้ เบาเมื่อยิงไกล' },
-      sr_l115:   { id:'sr_l115', slot:1, category:'สไนเปอร์ (ระยะไกล)', name:'L115A1', dmg:115, falloffStart:180, falloffMin:0.9, rpm:45, mag:5, magsCount:7, reloadTime:2.6, boltCycle:1.05, speed:820, gravity:10.0, spread:0.0006, hipSpread:0.08, recoil:0.08, pellets:1, auto:false, moveSpeed:0.84, scope:true, color:0x354632, desc:'นัดเดียวร่วงระยะไกล ไม่เล็งยิงไม่ตรง' },
-      smg_kriss: { id:'smg_kriss', slot:1, category:'ปืนกลเบา (ยิงไว+คล่อง)', name:'Kriss S.V', dmg:23, falloffStart:28, falloffMin:0.45, rpm:960, mag:35, magsCount:8, reloadTime:1.0, speed:440, gravity:13.0, spread:0.02, recoil:0.012, pellets:1, auto:true, moveSpeed:1.12, scope:false, color:0x32363e, desc:'ยิงรัวสุด รีโหลด 1 วิ คล่องตัวสูง' },
-      lmg_mk46:  { id:'lmg_mk46', slot:1, category:'ปืนกลหนัก (100 นัด)', name:'Mk.46 Mod 0', dmg:38, falloffStart:70, falloffMin:0.7, rpm:560, mag:100, magsCount:3, reloadTime:8.0, speed:590, gravity:11.5, spread:0.024, recoil:0.027, pellets:1, auto:true, moveSpeed:0.80, scope:false, color:0x2d3238, desc:'100 นัดยิงกดดัน หนักและรีโหลด 8 วิ' },
-      p_deagle:  { id:'p_deagle', slot:2, category:'ปืนพกหนัก', name:'Desert Eagle', dmg:58, falloffStart:35, falloffMin:0.6, rpm:190, mag:7, magsCount:7, reloadTime:2.0, speed:470, gravity:12.5, spread:0.014, recoil:0.052, pellets:1, auto:false, moveSpeed:1.08, scope:false, color:0xcbd5e1 },
-      p_glock:   { id:'p_glock', slot:2, category:'ปืนพกกล', name:'Glock-18', dmg:22, falloffStart:22, falloffMin:0.5, rpm:780, mag:18, magsCount:7, reloadTime:2.0, speed:390, gravity:13.5, spread:0.026, recoil:0.016, pellets:1, auto:true, moveSpeed:1.1, scope:false, color:0x1e293b },
+      ar_aug:    { id:'ar_aug', slot:1, category:'ไรเฟิลจู่โจม (สมดุล)', name:'AUG A3', dmg:36, rpm:650, mag:30, magsCount:7, reloadTime:2.0, spread:0.011, recoil:0.02, pellets:1, auto:true, moveSpeed:1.0, scope:false, color:0x3f4d36, desc:'สมดุลทุกด้าน แม่นยำระยะกลาง' },
+      sg_spas:   { id:'sg_spas', slot:1, category:'ลูกซอง (โหดระยะใกล้)', name:'SPAS-12', dmg:20, rpm:65, mag:8, reserveShells:48, reloadPerShell:0.48, spread:0.072, recoil:0.062, pellets:8, auto:false, moveSpeed:0.96, scope:false, shellByShell:true, color:0x262930, desc:'รุนแรงมากระยะใกล้ เบาเมื่อยิงไกล' },
+      sr_l115:   { id:'sr_l115', slot:1, category:'สไนเปอร์ (ระยะไกล)', name:'L115A1', dmg:115, rpm:45, mag:5, magsCount:7, reloadTime:2.6, boltCycle:1.05, spread:0.0006, hipSpread:0.08, recoil:0.08, pellets:1, auto:false, moveSpeed:0.84, scope:true, color:0x354632, desc:'นัดเดียวร่วงระยะไกล ไม่เล็งยิงไม่ตรง' },
+      smg_kriss: { id:'smg_kriss', slot:1, category:'ปืนกลเบา (ยิงไว+คล่อง)', name:'Kriss S.V', dmg:23, rpm:960, mag:35, magsCount:8, reloadTime:1.0, spread:0.02, recoil:0.012, pellets:1, auto:true, moveSpeed:1.12, scope:false, color:0x32363e, desc:'ยิงรัวสุด รีโหลด 1 วิ คล่องตัวสูง' },
+      lmg_mk46:  { id:'lmg_mk46', slot:1, category:'ปืนกลหนัก (100 นัด)', name:'Mk.46 Mod 0', dmg:38, rpm:560, mag:100, magsCount:3, reloadTime:8.0, spread:0.024, recoil:0.027, pellets:1, auto:true, moveSpeed:0.80, scope:false, color:0x2d3238, desc:'100 นัดยิงกดดัน หนักและรีโหลด 8 วิ' },
+      p_deagle:  { id:'p_deagle', slot:2, category:'ปืนพกหนัก', name:'Desert Eagle', dmg:58, rpm:190, mag:7, magsCount:7, reloadTime:2.0, spread:0.014, recoil:0.052, pellets:1, auto:false, moveSpeed:1.08, scope:false, color:0xcbd5e1 },
+      p_glock:   { id:'p_glock', slot:2, category:'ปืนพกกล', name:'Glock-18', dmg:22, rpm:780, mag:18, magsCount:7, reloadTime:2.0, spread:0.026, recoil:0.016, pellets:1, auto:true, moveSpeed:1.1, scope:false, color:0x1e293b },
       p_usp:     { id:'p_usp', slot:2, category:'ปืนพก 9mm', name:'USP Tactical', dmg:33, falloffStart:30, falloffMin:0.6, rpm:350, mag:12, magsCount:7, reloadTime:2.0, speed:420, gravity:12.5, spread:0.009, recoil:0.019, pellets:1, auto:false, moveSpeed:1.1, scope:false, color:0x334155 },
       m_knife:   { id:'m_knife', slot:3, category:'มีดต่อสู้', name:'M-7 Combat Knife', dmg:55, heavyDmg:95, range:3.2, rpm:150, moveSpeed:1.18, color:0x94a3b8 },
       m_fang:    { id:'m_fang', slot:3, category:'มีดคู่สังหาร', name:'Fang Blade', dmg:65, heavyDmg:105, range:3.5, rpm:130, moveSpeed:1.16, color:0xf59e0b },
@@ -502,14 +503,14 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       ATTACHMENT_SUPPORT[k].stocks=Object.keys(STOCK_OPTIONS);
     }
     const NEWW={
-      ak47:{base:'ar_aug',name:'AK-47',category:'ไรเฟิลจู่โจม (หนัก)',dmg:42,rpm:600,mag:30,spread:0.016,recoil:0.036,speed:600,color:0x5a4632,desc:'ดาเมจสูง แรงดีดแรง'},
+      ak47:{base:'ar_aug',name:'AK-47',category:'ไรเฟิลจู่โจม (หนัก)',dmg:42,rpm:600,mag:30,spread:0.016,recoil:0.036,color:0x5a4632,desc:'ดาเมจสูง แรงดีดแรง'},
       m4a1:{base:'ar_aug',name:'M4A1',category:'ไรเฟิลจู่โจม (คล่อง)',dmg:33,rpm:800,mag:30,reloadTime:3.0,spread:0.012,recoil:0.017,color:0x2b2f36,desc:'ยิงไว แรงดีดต่ำ'},
       thompson:{base:'smg_kriss',name:'Thompson M1928',category:'ปืนกลมือ',dmg:27,rpm:700,mag:30,reloadTime:1.8,spread:0.024,recoil:0.02,color:0x5a4632,desc:'ดาเมจดี ยิงรัว'},
       mp40:{base:'smg_kriss',name:'MP-40',category:'ปืนกลมือ',dmg:25,rpm:520,mag:32,reloadTime:1.9,spread:0.018,recoil:0.016,color:0x3b3f46,desc:'แม่นยำ คุมง่าย'},
       vector:{base:'smg_kriss',name:'Vector .45',category:'ปืนกลมือ (ยิงเร็วสุด)',dmg:21,rpm:1100,mag:25,reloadTime:1.3,spread:0.022,recoil:0.01,color:0x1f2937,desc:'ยิงเร็วมาก แรงดีดน้อย'},
-      kar98:{base:'sr_l115',name:'Kar98k',category:'สไนเปอร์ลูกเลื่อน',dmg:95,rpm:42,mag:5,boltCycle:1.2,speed:760,color:0x6b4f2d,desc:'ดาเมจสูง คล่องกว่า'},
-      m200:{base:'sr_l115',name:'M200 Intervention',category:'สไนเปอร์ระยะไกล',dmg:125,rpm:40,mag:7,speed:900,color:0x3b4a38,desc:'ไกลและแม่น'},
-      barrett:{base:'sr_l115',name:'Barrett M82',category:'สไนเปอร์ .50 กึ่งอัตโนมัติ',dmg:140,rpm:75,mag:10,boltCycle:0.4,auto:false,recoil:0.12,reloadTime:3.2,moveSpeed:0.78,speed:880,color:0x4b5563,desc:'ยิงต่อเนื่อง ดาเมจหนัก'},
+      kar98:{base:'sr_l115',name:'Kar98k',category:'สไนเปอร์ลูกเลื่อน',dmg:95,rpm:42,mag:5,boltCycle:1.2,color:0x6b4f2d,desc:'ดาเมจสูง คล่องกว่า'},
+      m200:{base:'sr_l115',name:'M200 Intervention',category:'สไนเปอร์ระยะไกล',dmg:125,rpm:40,mag:7,color:0x3b4a38,desc:'ไกลและแม่น'},
+      barrett:{base:'sr_l115',name:'Barrett M82',category:'สไนเปอร์ .50 กึ่งอัตโนมัติ',dmg:140,rpm:75,mag:10,boltCycle:0.4,auto:false,recoil:0.12,reloadTime:3.2,moveSpeed:0.78,color:0x4b5563,desc:'ยิงต่อเนื่อง ดาเมจหนัก'},
       vector_dual:{base:'smg_kriss',name:'Vector คู่ (Akimbo)',category:'ปืนกลมือ (พกคู่)',dmg:19,rpm:1900,mag:50,reloadTime:1.6,spread:0.036,recoil:0.014,moveSpeed:0.96,dual:true,splitTo:'vector',color:0x1f2937,desc:'ถือ Vector 2 กระบอก ยิงรัวสุดขีด แต่กระจาย'},
       dual_glock:{base:'p_glock',name:'Glock คู่',category:'ปืนพกคู่',dmg:20,rpm:1300,mag:36,reloadTime:2.2,spread:0.045,recoil:0.02,moveSpeed:1.04,dual:true,splitTo:'p_glock',color:0x1e293b,desc:'ปืนพก 2 กระบอก ยิงถี่'},
       spin_usp:{base:'p_usp',name:'USP ซองควง',category:'ปืนพก (ควงซอง)',dmg:36,rpm:420,mag:12,reloadTime:1.6,spin:true,color:0x475569,desc:'ควงปืนตอนชัก ชักไวเท่ห์'},
@@ -518,11 +519,97 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     };
     for(const[id,o]of Object.entries(NEWW)){const{base,...rest}=o;WEAPONS[id]={...WEAPONS[base],...rest,id,model:base};if(ATTACHMENT_SUPPORT[base]){ATTACHMENT_SUPPORT[id]={...ATTACHMENT_SUPPORT[base]};ATTACHMENT_SUPPORT[id].mags=[...ATTACHMENT_SUPPORT[base].mags,WEAPONS[id].mag].filter((v,i,a)=>a.indexOf(v)===i);}}
     WEAPONS.vector.splitTo='vector_dual';WEAPONS.p_glock.splitTo='dual_glock';WEAPONS.m_knife.splitTo='dual_blades';
-    // ---- ballistics: speed (m/s), gravity, max range (m), full-damage range, zero-ish damage-floor range, min damage multiplier ----
-    const BALL={pistol:{speed:210,gravity:18,range:65,fs:18,fe:55,fm:0.35},sg:{speed:180,gravity:20,range:35,fs:6,fe:25,fm:0.1},smg:{speed:260,gravity:16,range:80,fs:15,fe:65,fm:0.3},ar:{speed:360,gravity:16,range:160,fs:35,fe:125,fm:0.4},lmg:{speed:340,gravity:16,range:170,fs:40,fe:135,fm:0.45},sr:{speed:620,gravity:12,range:300,fs:100,fe:260,fm:0.7}};
+    // ======== REAL-PHYSICS BALLISTICS (BALLISTICS-BEGIN) ========
+    // ความเร็วกระสุน  : v0 = sqrt(2·E_จุดระเบิด·η_ลำกล้อง·η_เกลียว / มวล)   (η_ลำกล้อง = 1-e^(-ความยาว/Lc), η_เกลียว หักแรงเสียดทาน+พลังงานหมุน)
+    // การย้อย         : แรงโน้มถ่วง g=9.81 ดึงกระสุนทุกเฟรม (sub-step)
+    // แรงต้านอากาศ    : a = -½·ρ·Cd·A·|v|·v / m  (Cd เปลี่ยนตามมัค และเสถียรภาพเกลียว)
+    // ความเสียหาย     : dmg = dmgพื้นฐานของปืน × (พลังงานจลน์ ณ ตอนนี้ / พลังงานจลน์ปากกระบอก) = (v/v0)²
+    // arcade = ตัวคูณลดความเร็วจริง ให้เห็นการย้อยในแมพขนาดเล็ก (1.0 = ความเร็วจริงตามฟิสิกส์)
+    const PHYS={g:9.81,rho:1.225,sound:343,arcade:0.42,minV:14};
+    const AMMO={
+      '9x19':  {name:'9×19mm',       m:0.0080, d:0.00901,cd:0.35,E:900,  Lc:0.12,twistOpt:28},
+      '45acp': {name:'.45 ACP',      m:0.0149, d:0.01143,cd:0.38,E:800,  Lc:0.14,twistOpt:35},
+      '50ae':  {name:'.50 AE',       m:0.0213, d:0.01270,cd:0.36,E:4200, Lc:0.15,twistOpt:36},
+      '44mag': {name:'.44 Magnum',   m:0.0156, d:0.01090,cd:0.36,E:3000, Lc:0.17,twistOpt:46},
+      '556':   {name:'5.56×45mm',    m:0.0040, d:0.00570,cd:0.30,E:2200, Lc:0.30,twistOpt:36},
+      '762x39':{name:'7.62×39mm',    m:0.0079, d:0.00790,cd:0.33,E:2750, Lc:0.30,twistOpt:30},
+      '792':   {name:'7.92×57mm',    m:0.0125, d:0.00820,cd:0.30,E:4500, Lc:0.35,twistOpt:29},
+      '338lm': {name:'.338 Lapua',   m:0.0162, d:0.00860,cd:0.28,E:8830, Lc:0.40,twistOpt:30},
+      '408ct': {name:'.408 CheyTac', m:0.0272, d:0.01040,cd:0.28,E:14300,Lc:0.45,twistOpt:32},
+      '50bmg': {name:'.50 BMG',      m:0.0419, d:0.01295,cd:0.30,E:20200,Lc:0.50,twistOpt:30},
+      '12g':   {name:'12ga 00 Buck (ต่อเม็ด)',m:0.00351,d:0.00840,cd:0.47,E:380,Lc:0.25,twistOpt:0}
+    };
+    // L = ความยาวลำกล้อง (เมตร), twist = นิ้วต่อ 1 รอบเกลียว (0 = ลำกล้องเรียบ), rif = ชนิดเกลียว
+    const GUN={
+      ar_aug:{ammo:'556',L:.508,twist:9,rif:'groove'},
+      ak47:{ammo:'762x39',L:.415,twist:9.45,rif:'groove'},
+      m4a1:{ammo:'556',L:.368,twist:7,rif:'groove'},
+      sg_spas:{ammo:'12g',L:.46,twist:0,rif:'smooth'},
+      sr_l115:{ammo:'338lm',L:.686,twist:10,rif:'groove'},
+      kar98:{ammo:'792',L:.600,twist:9.5,rif:'groove'},
+      m200:{ammo:'408ct',L:.737,twist:13,rif:'groove'},
+      barrett:{ammo:'50bmg',L:.737,twist:15,rif:'groove'},
+      smg_kriss:{ammo:'9x19',L:.16,twist:10,rif:'groove'},
+      thompson:{ammo:'45acp',L:.267,twist:16,rif:'groove'},
+      mp40:{ammo:'9x19',L:.251,twist:10,rif:'groove'},
+      vector:{ammo:'45acp',L:.165,twist:16,rif:'groove'},
+      vector_dual:{ammo:'45acp',L:.165,twist:16,rif:'groove'},
+      lmg_mk46:{ammo:'556',L:.52,twist:7,rif:'groove'},
+      p_deagle:{ammo:'50ae',L:.152,twist:18,rif:'poly'},
+      p_glock:{ammo:'9x19',L:.114,twist:9.84,rif:'poly'},
+      dual_glock:{ammo:'9x19',L:.114,twist:9.84,rif:'poly'},
+      p_usp:{ammo:'9x19',L:.108,twist:10,rif:'groove'},
+      spin_usp:{ammo:'9x19',L:.108,twist:10,rif:'groove'},
+      revolver:{ammo:'44mag',L:.203,twist:20,rif:'groove'}
+    };
     const WCLASS={ar_aug:'ar',ak47:'ar',m4a1:'ar',sg_spas:'sg',sr_l115:'sr',kar98:'sr',m200:'sr',barrett:'sr',smg_kriss:'smg',thompson:'smg',mp40:'smg',vector:'smg',vector_dual:'smg',lmg_mk46:'lmg',p_deagle:'pistol',p_glock:'pistol',p_usp:'pistol',dual_glock:'pistol',spin_usp:'pistol',revolver:'pistol'};
-    const WSPD={ak47:0.95,m4a1:1.05,thompson:0.92,vector:0.95,kar98:0.93,m200:1.12,barrett:1.08,revolver:1.1,p_deagle:1.12};
-    for(const[id,c]of Object.entries(WCLASS)){const w=WEAPONS[id],b=BALL[c];if(!w)continue;w.speed=Math.round(b.speed*(WSPD[id]||1));w.gravity=b.gravity;w.maxRange=b.range;w.falloffStart=b.fs;w.falloffEnd=b.fe;w.falloffMin=b.fm;}
+    const CLASS_GUN={pistol:GUN.p_usp,sg:GUN.sg_spas,smg:GUN.smg_kriss,ar:GUN.ar_aug,lmg:GUN.lmg_mk46,sr:GUN.sr_l115};
+    const ZERO_DIST={pistol:20,sg:25,smg:30,ar:50,lmg:50,sr:100};
+    const machCd=M=>M>=1.3?1:M>=0.9?1+0.35*Math.sin(Math.PI*(1.3-M)/0.4):0.8+0.2*Math.min(1,M/0.9);
+    function buildBallistics(id,opt={}){
+      const cls=WCLASS[id],g=GUN[id]||CLASS_GUN[cls],a=AMMO[g.ammo];
+      const L=g.L*(opt.barrelMul||1),m=a.m*(opt.massMul||1),E=a.E*(opt.chargeMul||1);
+      const T=g.twist>0?g.twist*0.0254:0,tanT=T>0?Math.PI*a.d/T:0,mu=g.rif==='poly'?0.09:0.15;
+      const etaB=1-Math.exp(-L/a.Lc),etaR=1/(1+0.5*tanT*tanT+mu*tanT+(T>0?0.01:0));
+      const vReal=Math.sqrt(2*E*etaB*etaR/m),v0=vReal*PHYS.arcade;
+      const mis=T>0?Math.abs(Math.log((T/a.d)/a.twistOpt)):0;          // เกลียวไม่ตรงกับกระสุน -> เสถียรภาพแย่
+      const accMul=(1+0.45*mis)*(1.12-0.2*Math.min(1,L/0.7));           // กระจายตัว
+      const cd=a.cd*(1+0.12*mis)*(opt.cdMul||1),A=Math.PI*a.d*a.d/4;
+      return{key:id+'|'+(opt.barrelMul||1)+'|'+(opt.chargeMul||1)+'|'+(opt.cdMul||1),id,name:a.name,m,L,twist:g.twist,rif:g.rif,
+        k:PHYS.rho*cd*A/(2*m),v0,vReal,ke0:0.5*m*v0*v0,etaB,etaR,mis,accMul,zero:ZERO_DIST[cls]||50};
+    }
+    // จำลองวิถีกระสุน 2 มิติ (x=ระยะราบ, y=ความสูง) -> ตำแหน่ง y/เวลา/ความเร็ว ที่ระยะ Z
+    function _traj(ball,elev,Z){
+      let x=0,y=0,vx=ball.v0*Math.cos(elev),vy=ball.v0*Math.sin(elev),t=0;const h=0.01;
+      for(let i=0;i<2500;i++){
+        const sp=Math.hypot(vx,vy);
+        if(sp<PHYS.minV)return{y,t,v:sp,reach:false};
+        const c=ball.k*machCd(sp/PHYS.arcade/PHYS.sound)*sp;
+        vx-=vx*c*h;vy-=(vy*c+PHYS.g)*h;
+        const px=x,py=y;x+=vx*h;y+=vy*h;t+=h;
+        if(x>=Z){const f=(Z-px)/((x-px)||1);return{y:py+(y-py)*f,t:t-h*(1-f),v:Math.hypot(vx,vy),reach:true};}
+      }
+      return{y,t,v:Math.hypot(vx,vy),reach:false};
+    }
+    // หามุมเงยที่ทำให้กระสุนถึงเป้าที่ระดับเดียวกันที่ระยะ Z + เวลาบิน + ความเร็วตอนถึงเป้า + ดาเมจที่เหลือ(สัดส่วน)
+    const _bsCache=new Map();
+    function ballisticSolve(ball,Z){
+      Z=Math.max(1,Z);const key=ball.key+'|'+Math.round(Z/2);let r=_bsCache.get(key);if(r)return r;
+      const hi=_traj(ball,0.35,Z);
+      if(!hi.reach||hi.y<0){r={elev:0.35,tof:hi.t,v:hi.v,dmgRatio:hi.reach?Math.pow(hi.v/ball.v0,2):0,reach:false};}
+      else{let lo=0,up=0.35,res=null;
+        for(let i=0;i<18;i++){const mid=(lo+up)/2;res=_traj(ball,mid,Z);if(res.reach&&res.y>=0)up=mid;else lo=mid;}
+        res=_traj(ball,up,Z);r={elev:up,tof:res.t,v:res.v,dmgRatio:Math.pow(res.v/ball.v0,2),reach:true};}
+      if(_bsCache.size>4000)_bsCache.clear();
+      _bsCache.set(key,r);return r;
+    }
+    function ballisticSummary(st){
+      const b=st.ball;if(!b)return'';
+      const dm=r=>{const s=ballisticSolve(b,r);return Math.round(st.dmg*s.dmgRatio);};
+      return `${b.name} • ความเร็วปากกระบอก ${Math.round(b.v0)} m/s • พลังงาน ${Math.round(b.ke0)} J • ลำกล้อง ${Math.round(b.L*1000)}mm เกลียว ${b.twist?('1:'+b.twist+'″'):'เรียบ'} • ดาเมจที่ 50/100/200m: ${dm(50)}/${dm(100)}/${dm(200)} • ซีโร ${b.zero}m`;
+    }
+    for(const id of Object.keys(WCLASS)){const w=WEAPONS[id];if(!w)continue;const bl=buildBallistics(id);w.ball=bl;w.speed=bl.v0;w.spread=(w.spread||0)*bl.accMul;}
+    // ======== (BALLISTICS-END) ========
     const DEFAULT_ATTACHMENT = {sight:'iron',mag:'default',barrel:'standard',grip:'none',stock:'none'};
     let weaponAttachments={};
     try { weaponAttachments=JSON.parse(localStorage.getItem('ps3d_attachments')||'{}')||{}; } catch(e) { weaponAttachments={}; }
@@ -532,8 +619,8 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       if(!support)return base;
       const stats={...base}, mag=Number(mods.mag);
       if(support.mags.includes(mag))stats.mag=mag;
-      if(mods.barrel==='range'){stats.falloffStart=Math.round((base.falloffStart||30)*1.3);stats.maxRange=Math.round((base.maxRange||0)*1.2);stats.falloffEnd=Math.round((base.falloffEnd||0)*1.2);stats.speed=(base.speed||0)*1.06;stats.spread=(base.spread||0)*0.92;}
-      else if(mods.barrel==='damage'){stats.dmg=Math.round(base.dmg*1.12);stats.falloffStart=Math.round((base.falloffStart||30)*0.88);stats.falloffEnd=Math.round((base.falloffEnd||0)*0.9);stats.speed=(base.speed||0)*0.96;}
+      {let ob=null;if(mods.barrel==='range')ob={barrelMul:1.3,cdMul:0.92};else if(mods.barrel==='damage')ob={chargeMul:1.12};
+       if(ob&&base.ball){const nb=buildBallistics(wid,ob),bb=base.ball;stats.ball=nb;stats.speed=nb.v0;stats.dmg=Math.round(base.dmg*nb.ke0/bb.ke0);stats.spread=(base.spread||0)*nb.accMul/bb.accMul;}}
       const grip=support.grips?.includes(mods.grip)?GRIP_OPTIONS[mods.grip]:null;
       const stock=support.stocks?.includes(mods.stock)?STOCK_OPTIONS[mods.stock]:null;
       for(const accessory of[grip,stock])if(accessory){
@@ -689,7 +776,137 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     const bm = (w,h,d,mat,x=0,y=0,z=0) => { const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat); m.position.set(x,y,z); m.castShadow=true; return m; };
     const cm = (rt,rb,l,seg,mat,x=0,y=0,z=0,rx=0,rz=0) => { const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,l,seg),mat); m.position.set(x,y,z); m.rotation.set(rx,0,rz); m.castShadow=true; return m; };
 
-    function createWeaponModel(wid0) {
+    // ================= GUN ANIMATION SYSTEM: มือตัวละคร / กลไกปืน / ไก / คัดปลอก / ชักลูกเลื่อน / เปลี่ยนแมก / ป้อนกระสุนทีละนัด / สายกระสุน =================
+    const GA=(()=>{
+      const V=(a,b,c)=>new THREE.Vector3(a,b,c),M=new WeakMap(),M2=new WeakMap(),sm=u=>u*u*(3-2*u),cl=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+      const env=(u,s=.14)=>sm(cl(Math.min(u/s,(1-u)/s)));const K=(p,a)=>{if(p<=a[0][0])return a[0].slice(1);for(let i=1;i<a.length;i++)if(p<=a[i][0]){const A=a[i-1],B=a[i],s=sm((p-A[0])/(B[0]-A[0]));return A.slice(1).map((v,j)=>v+(B[j+1]-v)*s);}return a[a.length-1].slice(1);};
+      const O=(b,x=0,y=0,z=0)=>[b[0]+x,b[1]+y,b[2]+z],L3=(a,b,w)=>[a[0]+(b[0]-a[0])*w,a[1]+(b[1]-a[1])*w,a[2]+(b[2]-a[2])*w];
+      const mt=(c,m=.4,r=.5)=>new THREE.MeshStandardMaterial({color:c,metalness:m,roughness:r});
+      const glove=mt(0x1b1f27,0,.85),sleeve=mt(0x3b4a33,0,.9),brass=mt(0xd4a437,.85,.25),tipM=mt(0xb45309,.6,.35),steel=mt(0x9aa4b2,.9,.25),blk=mt(0x0a0c10,.3,.6),redSh=mt(0xb91c1c,0,.5),dk2=mt(0x1a1d24,.7,.4);
+      const glass=new THREE.MeshStandardMaterial({color:0x0b1220,transparent:true,opacity:.4,roughness:.2,depthWrite:false});
+      // จุดยึดของแต่ละปืน (พิกัดโมเดล): rg=มือขวา lg=มือซ้าย tr=ไก mw=ช่องแมก ej=ช่องคัดปลอก ch=คันรั้ง H=ระยะถอยลูกเลื่อน
+      const CT={
+        ar_aug:{c:'ar',rg:[0,-.09,-.08],lg:[0,-.075,-.28],tr:[0,-.055,-.12],mw:[0,-.04,.17],ej:[.05,.04,0],ch:[.05,.03,-.08],H:.07},
+        smg_kriss:{c:'smg',rg:[0,-.08,.08],lg:[0,-.06,-.2],tr:[0,-.05,.03],mw:[0,-.06,-.14],ej:[.045,.03,-.04],ch:[.045,.03,-.06],H:.06},
+        lmg_mk46:{c:'lmg',rg:[0,-.09,.1],lg:[0,-.06,-.36],tr:[0,-.065,.07],mw:[-.04,-.04,-.08],ej:[.056,.03,0],ch:[.062,.045,0],H:.08,latch:[0,.09,-.08],tray:[-.03,.06,-.08]},
+        sr_l115:{c:'sr',rg:[0,-.075,.28],lg:[0,-.06,-.18],tr:[0,-.05,.22],mw:[0,-.06,-.03],ej:[.04,.05,.05],ch:[.075,.04,.05],H:0},
+        sg_spas:{c:'sg',rg:[0,-.09,.22],lg:[0,-.02,-.3],tr:[0,-.06,.17],mw:[0,-.08,.05],ej:[.045,.03,.05],ch:[0,-.02,-.3],H:0},
+        pi:{c:'pi',rg:[0,-.075,.04],lg:[-.02,-.115,.045],tr:[0,-.035,0],mw:[0,-.1,.04],ej:[.026,.06,0],ch:[.03,.05,.075],H:.08},
+        me:{c:'me',rg:[0,-.03,.06],lg:[0,-.03,.06],tr:[0,0,0],mw:[0,0,0],ej:[0,0,0],ch:[0,0,0],H:0}
+      };
+      const PO=[-.3,-.46,.1],AR_=[.2,-.4,.55],AL_=[-.22,-.4,.5];
+      function rig(g,w0,w,wid,lite){
+        if(lite)return;const mag=g.userData.magGroup,bolt=g.userData.boltGroup,t=CT[w.slot===2?'pi':w.slot>=3?'me':wid];if(!t||!mag||!bolt)return;
+        const ga={t,mag,bolt,b0:bolt.position.clone(),w0,trig:0,adv:0,shots:0,last:-1,shown:-1,ej:0,rpm:w.rpm||600,man:(t.c==='sr'&&w.boltCycle>=.9)||t.c==='sg',cd:Math.max(.5,(w.boltCycle||1)*.8)};
+        const hand=r=>{const h=new THREE.Group();h.add(bm(.07,.05,.095,glove),bm(.068,.026,.05,glove,0,-.034,-.035),bm(.02,.024,.055,glove,r?-.043:.043,.008,-.03),bm(.082,.064,.05,sleeve,0,.004,.07));return h;};
+        ga.hR=hand(1);ga.hL=hand(0);ga.aR=bm(.085,.075,1,sleeve);ga.aL=bm(.085,.075,1,sleeve);
+        ga.ix=new THREE.Group();ga.ix.position.set(-.012,-.012,-.04);ga.ix.add(bm(.014,.014,.05,glove,0,0,-.02));ga.hR.add(ga.ix);g.add(ga.hR,ga.hL,ga.aR,ga.aL);
+        if(t.c==='me'){ga.hL.visible=ga.aL.visible=false;M.set(g,ga);return;}
+        ga.trg=bm(.012,.034,.012,steel,...t.tr);g.add(ga.trg);const e=t.ej;
+        if(t.c==='pi'){ga.ham=new THREE.Group();ga.ham.position.set(0,.066,.09);ga.ham.add(bm(.008,.022,.014,steel,0,.008,.004));g.add(ga.ham);}
+        if(t.c==='ar'||t.c==='smg'||t.c==='lmg'){g.add(bm(.005,.028,.085,blk,e[0]-.001,e[1],e[2]));bolt.add(bm(.008,.022,.07,steel,e[0]-.004,e[1],e[2]));}
+        if(t.c==='sr'){bolt.clear();bolt.position.set(0,.04,.05);ga.b0.copy(bolt.position);const kn=new THREE.Mesh(new THREE.SphereGeometry(.015,10,8),dk2);kn.position.set(.085,0,0);bolt.add(cm(.012,.012,.2,10,steel,0,0,0,Math.PI/2),cm(.006,.006,.075,8,steel,.04,0,0,0,Math.PI/2),kn);}
+        const m0=mag.children[0];
+        if(t.c!=='lmg'&&m0&&m0.geometry.parameters){ // กระสุนมองเห็นในแมกกาซีน + สปริงดันขึ้น
+          const gp=m0.geometry.parameters,N=10,col=new THREE.Group(),pi=t.c==='pi',len=pi?.019:.03;m0.material=glass;col.position.copy(m0.position);ga.top=gp.height/2-.014;ga.step=(gp.height-.03)/(N-1);ga.N=N;ga.rd=[];
+          for(let i=0;i<N;i++){const r=new THREE.Group();r.add(cm(.0072,.0072,len,8,brass,0,0,0,Math.PI/2),cm(.0055,.0072,.014,8,tipM,0,0,-len/2-.006,Math.PI/2));r.position.set((i%2?1:-1)*Math.min(.007,gp.width*.18),ga.top-i*ga.step,0);col.add(r);ga.rd.push(r);}
+          ga.fol=bm(gp.width*.8,.006,gp.depth*.8,steel);col.add(ga.fol);mag.add(col);
+        }
+        if(t.c==='lmg'){ // สายกระสุน 8 ข้อต่อวนลูป + ฝาครอบถาดป้อน
+          ga.belt=new THREE.Group();ga.bl=[];for(let i=0;i<8;i++){const r=new THREE.Group();r.add(cm(.0072,.0072,.046,8,brass,0,0,0,0,Math.PI/2),cm(.0055,.0072,.016,8,tipM,.03,0,0,0,-Math.PI/2),bm(.05,.006,.014,steel,0,-.007,0));ga.belt.add(r);ga.bl.push(r);}g.add(ga.belt);
+          ga.cov=new THREE.Group();ga.cov.position.set(.052,.08,-.08);ga.cov.add(bm(.1,.012,.17,dk2,-.05,0,0));g.add(ga.cov);
+        }
+        if(t.c==='sg'){ga.sh=new THREE.Group();ga.sh.add(cm(.011,.011,.034,10,redSh,0,0,0,Math.PI/2),cm(.0115,.0115,.012,10,brass,0,0,.022,Math.PI/2));ga.sh.visible=false;g.add(ga.sh);}
+        const mw=(dy,dz=0)=>O(t.mw,0,dy,dz);
+        ga.MK=[[0,0,0],[.14,0,0],[.34,-.25,-.04],[.46,-.52,-.1],[.54,-.52,-.1],[.64,-.34,-.02],[.76,0,0],[.8,-.018,0],[.85,0,0],[1,0,0]];
+        ga.LK=E=>[[0,...t.lg],[.1,...mw(-.06)],[.14,...mw(-.09)],[.34,...mw(-.34,-.04)],[.46,...PO],[.54,...PO],[.64,...mw(-.42,-.02)],[.76,...mw(-.09)],[.8,...mw(-.11)],[.85,...mw(-.09)],...(E&&t.H?[[.88,...t.ch],[.93,...O(t.ch,0,0,.09)],[.97,...t.ch]]:[[.9,...t.lg]]),[1,...t.lg]];
+        if(t.c==='lmg'){ga.MK=[[0,0,0],[.3,0,0],[.42,-.3,0],[.5,-.6,0],[.58,-.6,0],[.7,-.3,0],[.76,0,0],[.79,-.02,0],[.82,0,0],[1,0,0]];
+          ga.LK=()=>[[0,...t.lg],[.08,...t.latch],[.14,...t.latch],[.22,...O(t.latch,.06,.08)],[.3,...mw(-.08)],[.42,...mw(-.38)],[.5,...PO],[.58,...PO],[.7,...mw(-.38)],[.76,...mw(-.08)],[.82,...t.tray],[.86,...t.tray],[.9,...t.latch],[.93,...t.ch],[.97,...O(t.ch,0,0,.1)],[1,...t.lg]];}
+        M.set(g,ga);
+      }
+      const _d=V(0,0,0),_a=V(0,0,0),Z=V(0,0,1);
+      function limb(m,h,a){_a.set(h[0],h[1]+.01,h[2]+.06);_d.set(a[0],a[1],a[2]).sub(_a);const l=_d.length();m.position.copy(_a).addScaledVector(_d,.5);m.scale.z=l;m.quaternion.setFromUnitVectors(Z,_d.normalize());}
+      function place(ga,R,L){ga.hR.position.set(R[0],R[1],R[2]);ga.hL.position.set(L[0],L[1],L[2]);limb(ga.aR,R,ga.anR||AR_);if(ga.hL.visible)limb(ga.aL,L,AL_);}
+      function eject(w0,gi){const vm=viewmodelMesh;if(!vm)return;const D=M2.get(vm);let g=vm;if(D){D.n++;g=(gi===0||gi===1)?(gi?D.b:D.a):(D.n%2?D.a:D.b);D.t.set(g,performance.now());const f=g.userData.flashMesh;if(f){f.visible=true;f.rotation.z=Math.random()*3;setTimeout(()=>{f.visible=false;},45);}}const ga=M.get(g),ej=ga?ga.t.ej:[.14,.06,-.12];spawnCasing(w0,g.localToWorld(V(ej[0],ej[1],ej[2])));}
+      function dual(g,side){const ga=M.get(g);if(!ga)return;ga.dual=1;ga.rpm/=2;ga.hL.visible=ga.aL.visible=false;ga.anR=side?[-.2,-.4,.55]:[.2,-.4,.55];}
+      function setDual(g,a,b){M2.set(g,{a,b,n:0,t:new Map()});}
+      // อัปเดตอนิเมชันปืนมุมมองบุคคลที่ 1 — คืน true ถ้าปืนนี้มีระบบอนิเมชัน
+      function update(vm,c){
+        const D=M2.get(vm);if(D){const P=c.pair||{};[D.a,D.b].forEach((g,i)=>update(g,{...c,ammo:P.ammo?P.ammo[i]:Math.ceil(c.ammo/2),max:P.max||Math.max(1,Math.ceil(c.max/2)),fa:(c.now-(D.t.get(g)||0))/1000,rl:P.rl?P.rl[i]:c.rl,rlE:P.rlE?P.rlE[i]:c.rlE,dur:P.dur?P.dur[i]:c.dur}));return true;}
+        const ga=M.get(vm);if(!ga)return false;const t=ga.t,p=c.rl,fa=c.fa,dt=c.dt;let Lp=t.lg.slice(),Rp=t.rg.slice(),dz=0,hu=0,mo=[0,0],mv=true,cv=0,sh=null,ammo=c.ammo,fo=0;if(p>=0)fo=env(p);
+        if(t.c==='me'){place(ga,Rp,Lp);return true;}
+        ga.trig+=((fa<.09?1:0)-ga.trig)*cl(dt*40);
+        const cyc=cl(.8*60/ga.rpm,.035,.12),fk=fa<cyc?Math.sin(Math.PI*fa/cyc):0,lm=t.c==='lmg';
+        if(t.c!=='sg'){
+          if(t.H&&!ga.man){dz=t.H*fk*.9;if(ammo<=0&&!(p>.9))dz=Math.max(dz,t.H);}  // ลูกเลื่อนถอยทุกนัด / ค้างเมื่อกระสุนหมด
+          if(p>=0){
+            Lp=K(p,ga.LK(c.rlE));mo=K(p,ga.MK);mv=!(p>(lm?.44:.36)&&p<(lm?.56:.5));if(p>(lm?.58:.46))ammo=c.max;
+            if(lm){cv=K(p,[[0,0],[.1,0],[.2,1],[.85,1],[.89,0],[1,0]])[0];dz=K(p,[[0,0],[.9,0],[.94,.1],[.97,0],[1,0]])[0];}
+            else if(c.rlE&&t.H)dz=K(p,[[0,t.H],[.86,t.H],[.93,t.H+.02],[.97,0],[1,0]])[0];
+          }
+        }
+        if(t.c==='sr'){ // ลูกเลื่อนมือ: ยกด้าม → ดึงถอย(คัดปลอก) → ดันเข้า → กดล็อก
+          let q=-1;if(p>=.78)q=(p-.78)/.2;else if(p<0&&fa>.18)q=(fa-.18)/ga.cd;
+          if(q>=0&&q<1){if(p<0&&!c.scoped)fo=Math.max(fo,env(q));hu=K(q,[[0,0],[.2,1],[.78,1],[.92,0],[1,0]])[0];dz=K(q,[[0,0],[.2,0],[.5,.11],[.56,.11],[.8,0],[1,0]])[0];
+            Rp=L3(Rp,[ga.b0.x+Math.cos(hu*1.1)*.085,ga.b0.y+Math.sin(hu*1.1)*.085-.01,ga.b0.z+dz],K(q,[[0,0],[.1,1],[.95,1],[1,0]])[0]);
+            if(q>.5&&!ga.ej&&p<0){ga.ej=1;eject(ga.w0);}}
+          if(fa<.1)ga.ej=0;
+        }
+        if(t.c==='sg'){ // ปั๊มลูกซอง + ใส่กระสุนทีละนัด
+          if(p>=0){const el=p*c.dur,n=c.rlN||1,pm=c.rlMs||500,PT=O(t.mw,0,0,0);
+            if(el<n*pm){const i=Math.floor(el/pm),uu=(el-i*pm)/pm;let h=K(uu,[[0,...O(PT,0,-.07)],[.28,...PO],[.38,...PO],[.7,...O(PT,0,-.09)],[.82,...PT],[1,...O(PT,0,-.07)]]);if(i===0)h=L3(t.lg,h,sm(cl(uu/.25)));Lp=h;
+              if(uu>.26&&uu<.84)sh=uu<.7?O(h,0,.01,-.02):L3(O(h,0,.01,-.02),O(PT,0,.01,0),(uu-.7)/.14);}
+            else{const q=(el-n*pm)/450;dz=K(q,[[0,0],[.4,.13],[.6,.13],[1,0]])[0];Lp=L3(O(PT,0,-.07),O(t.lg,0,0,dz),sm(cl(q/.2)));}
+          }else{const q=(fa-.1)/.5;if(q>=0&&q<1){if(!c.scoped)fo=Math.max(fo,env(q));dz=K(q,[[0,0],[.45,.13],[.55,.13],[1,0]])[0];Lp=O(t.lg,0,0,dz);if(q>.45&&!ga.ej){ga.ej=1;eject(ga.w0);}}if(fa<.1)ga.ej=0;}
+        }
+        if(ga.rd){const n=cl(Math.ceil(ammo/c.max*ga.N),ammo>0?1:0,ga.N);if(n!==ga.shown){ga.shown=n;ga.rd.forEach((r,i)=>r.visible=i<n);ga.fol.position.y=ga.top-(Math.max(n,1)-1)*ga.step-.012;}}
+        if(ga.bl){ // สายกระสุน: เลื่อนทีละข้อต่อทุกนัดที่ยิง
+          if(ga.last<0)ga.last=ammo;if(ammo<ga.last&&p<0)ga.shots+=ga.last-ammo;ga.last=ammo;ga.adv+=(ga.shots-ga.adv)*cl(dt*20);
+          ga.bl.forEach((r,i)=>{const q=((i-ga.adv)%8+8)%8;r.visible=q<Math.min(5.3,ammo)&&!(p>.44&&p<.7);if(q<1)r.position.set(.012-.052*q,.045-.015*q,-.08);else r.position.set(-.04,.03-(q-1)*.02,-.08);});
+          ga.cov.rotation.z=-cv*1.4;
+        }
+        ga.trg.position.z=t.tr[2]+ga.trig*.012;ga.ix.rotation.x=-ga.trig*.55;if(ga.ham)ga.ham.rotation.x=-.9*cl(dz/(t.H||.08));
+        ga.bolt.position.set(ga.b0.x,ga.b0.y,ga.b0.z+dz);ga.bolt.rotation.z=hu*1.1;ga.mag.position.set(0,mo[0],mo[1]);ga.mag.visible=mv;
+        if(ga.sh){ga.sh.visible=!!sh;if(sh)ga.sh.position.set(sh[0],sh[1],sh[2]);}if(ga.dual&&p>=0)Rp=Lp;ga.fo=fo;
+        place(ga,Rp,Lp);return true;
+      }
+      // ท่าทางตัวละครบุคคลที่ 3 (บอท/ผู้เล่นออนไลน์): ยิงสะท้อน, ก้มมือซ้ายเปลี่ยนแมก, ป้อนกระสุนทีละนัด
+      function pose(r,now,fa,rl,ads=0,shell=false,add=false){
+        const u=r.userData,wh=u.weaponHolder,wm=wh&&wh.children[0];if(!u.armL||!wm)return;
+        const gl=wh.children.length>1?[wh.children[0],wh.children[1]]:[wm],pr=gl.length>1,k=Math.max(0,1-fa*8),wl=u.wl||0;let dip=0,tilt=0,fo=0;
+        gl.forEach((g,gi)=>{ // ปืนคู่: รีโหลดกระบอกแรกจนเสร็จ แล้วค่อยกระบอกที่สอง
+          let q=rl;if(pr&&rl>=0)q=rl<.5?(gi===0?rl*2:-1):(gi===1?(rl-.5)*2:-1);
+          const mg=g.userData.magGroup,bl=g.userData.boltGroup;let mo=0,mv=true;
+          if(q>=0){fo=Math.max(fo,env(q));if(shell)dip=Math.max(dip,.45*(.5-.5*Math.cos(q*Math.PI*10)));else{dip=Math.max(dip,K(q,[[0,0],[.1,0],[.22,.5],[.45,.85],[.55,.85],[.7,.5],[.86,.5],[.93,0],[1,0]])[0]);mo=K(q,[[0,0],[.14,0],[.34,-.2],[.46,-.45],[.54,-.45],[.64,-.3],[.76,0],[1,0]])[0];mv=!(q>.36&&q<.5);}tilt=Math.max(tilt,Math.sin(q*Math.PI)*.3);}
+          if(mg){mg.position.y=mo;mg.visible=mv;}if(bl)bl.position.z=fa<.07?Math.sin(Math.PI*fa/.07)*.05:0;
+        });
+        u.armL.rotation.x=.85+ads*.5-dip;u.armR.rotation.x=1.05+ads*.45+k*.12-wl*.5;
+        wh.rotation.set(k*.1-fo*.22+wl*1.0,fo*.5,tilt-wl*.2); // ยกปืนขึ้นมาหมุนข้างให้เห็นกลไก / ชิดกำแพงให้ยกปากกระบอกหนี
+        const no=[-fo*.04,fo*.12-wl*.05,fo*.08+wl*.1];
+        if(add){wh.position.x+=no[0];wh.position.y+=no[1];wh.position.z+=no[2];}else wh.position.set(.26+no[0],.43+no[1],-.38+no[2]);
+      }
+      // โหมดดูปืน (กด V): ขยายปืนให้เห็นกลไกชัด หมุนช้า ๆ — ยิง/รีโหลดได้ตามปกติ
+      let ins=false;
+      addEventListener('keydown',e=>{if(e.code==='KeyV'&&isPlaying&&!isSettingsOpen){ins=!ins;showPickupToast(ins?'โหมดดูปืน: คลิกยิง / R รีโหลด / V ออก':'ออกจากโหมดดูปืน');}});
+      function focus(vm){const D=M2.get(vm);if(D){const a=M.get(D.a),b=M.get(D.b);return[a?a.fo||0:0,b?b.fo||0:0];}const g=M.get(vm);return g?(g.fo||0):0;}
+      // ดึงปืนมาตรงกลางจอให้เห็นกลไกเองอัตโนมัติ ตอนรีโหลด/ชักลูกเลื่อน/ปั๊มลูกซอง/ป้อนกระสุน (ไม่ต้องกด V) — ชิดกำแพง (wl) จะลดการดึงมา
+      function inspect(vm,now,wl){
+        const D=M2.get(vm),k=1-(wl||0),sw=Math.sin(now*.0004);
+        if(D){
+          if(ins){vm.position.set(0,-.06,-.6);vm.rotation.set(.1,-.5+sw*.25,0);vm.scale.setScalar(1.3);D.a.position.set(.23,0,0);D.b.position.set(-.23,0,0);D.a.rotation.set(0,0,0);D.b.rotation.set(0,0,0);D.a.scale.setScalar(1);D.b.scale.setScalar(1);return;}
+          if(vm.scale.x!==1)vm.scale.setScalar(1);const fo=focus(vm);
+          [D.a,D.b].forEach((g,i)=>{const s=i?-1:1,f=fo[i]*k,o=fo[1-i]*k,bx=s*.23+s*.1*o,by=-.14*o,bz=.05*o,tx=.02-vm.position.x,ty=-.03-vm.position.y,tz=-.62-vm.position.z;
+            g.position.set(bx+(tx-bx)*f,by+(ty-by)*f,bz+(tz-bz)*f);g.rotation.set(.12*f,(-.95+sw*.3)*f,0);g.scale.setScalar(1+.45*f);});
+          return;
+        }
+        const f=ins?1:focus(vm)*k;
+        if(f>.001){const P=vm.position,R=vm.rotation;P.set(P.x+(.02-P.x)*f,P.y+(-.03-P.y)*f,P.z+(-.62-P.z)*f);R.set(R.x+(.12-R.x)*f,R.y+((-.95+sw*.3)-R.y)*f,R.z*(1-f));vm.scale.setScalar(1+.45*f);}
+        else if(vm.scale.x!==1)vm.scale.setScalar(1);
+      }
+      return{rig,update,pose,eject,inspect,dual,setDual,focus,pairOf:vm=>M2.get(vm)||null,has:vm=>M2.has(vm)||M.has(vm),manual:()=>{const g=M.get(viewmodelMesh);return !!(g&&g.man);}};
+    })();
+
+    function createWeaponModel(wid0,lite=false) {
       const w=WEAPONS[wid0], wid=w.model||wid0, g=new THREE.Group();
       const dk=new THREE.MeshStandardMaterial({color:0x1a1d24,roughness:0.38,metalness:0.72}), bd=new THREE.MeshStandardMaterial({color:w.color,roughness:0.4,metalness:0.48});
       const st=new THREE.MeshStandardMaterial({color:0x94a3b8,roughness:0.22,metalness:0.88}), ln=new THREE.MeshBasicMaterial({color:0xef4444}), br=new THREE.MeshStandardMaterial({color:0xd97706,roughness:0.3,metalness:0.85});
@@ -708,8 +925,9 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       } else if(w.slot===4){
         g.add(new THREE.Mesh(new THREE.SphereGeometry(0.075,14,14),bd),bm(0.035,0.045,0.035,st,0,0.075,0),bm(0.018,0.08,0.025,dk,0.035,0.04,0));
       }
+      const mzv=(()=>{const bb=new THREE.Box3().setFromObject(g),by={ar_aug:.035,sg_spas:.045,sr_l115:.04,smg_kriss:.035,lmg_mk46:.04}[wid];return new THREE.Vector3(0,by??(w.slot===2?.038:.03),isFinite(bb.min.z)&&bb.min.z<0?bb.min.z:-.3);})();
       const fm=new THREE.Mesh(new THREE.OctahedronGeometry(0.09,0),new THREE.MeshBasicMaterial({color:0xfef08a,transparent:true,opacity:0.9}));
-      fm.position.set(0,0.04,-0.82); fm.visible=false; g.add(fm); g.userData.flashMesh=fm;
+      fm.position.set(mzv.x,mzv.y,mzv.z-0.06); fm.visible=false; g.userData.muzzle=mzv; g.add(fm); g.userData.flashMesh=fm;
       g.children.forEach(c=>{if(c!==mag&&c!==bolt&&c.position.y>0.07)c.userData.hideADS=true;});
       const sight=ATTACHMENT_SUPPORT[wid0]?getWeaponStats(wid0).sightId:'iron';
       if(sight==='red-dot'){
@@ -717,11 +935,12 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
         const lens=new THREE.Mesh(new THREE.PlaneGeometry(0.046,0.05),glass);lens.position.set(0,0.1375,0.02);lens.renderOrder=5;
         const dotM=new THREE.MeshBasicMaterial({color:0xff2a2a,depthTest:false,transparent:true});
         const dot=cm(0.0035,0.0035,0.002,10,dotM,0,0.1375,0.02,Math.PI/2);dot.renderOrder=10;
-        const fr=[bm(0.05,0.012,0.07,dk,0,0.1,0.02),bm(0.004,0.055,0.01,dk,-0.026,0.1375,0.02),bm(0.004,0.055,0.01,dk,0.026,0.1375,0.02),bm(0.054,0.004,0.02,dk,0,0.166,0.014)];fr.forEach(f=>f.userData.hideADS=true);g.add(...fr,lens,dot);
+        const fr=[bm(0.05,0.012,0.07,dk,0,0.1,0.02),bm(0.004,0.055,0.01,dk,-0.026,0.1375,0.02),bm(0.004,0.055,0.01,dk,0.026,0.1375,0.02),bm(0.054,0.004,0.02,dk,0,0.166,0.014)];g.add(...fr,lens,dot);
       } else if(sight!=='iron'){
         g.add(cm(0.055,0.055,0.24,16,dk,0,0.12,0.03,Math.PI/2),cm(0.046,0.046,0.035,16,st,0,0.12,-0.095,Math.PI/2),cm(0.046,0.046,0.035,16,st,0,0.12,0.155,Math.PI/2));
         g.add(bm(0.075,0.018,0.12,dk,0,0.065,0.03));
       }
+      GA.rig(g,wid0,w,wid,lite);
       g.userData.adsY=sight==='red-dot'?-0.1375:-0.2;
       const cap=ATTACHMENT_SUPPORT[wid0]?.mags;
       const magazine=Number(attachmentFor(wid0).mag);
@@ -740,7 +959,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       const ub=new THREE.Group(); ub.position.set(0,0.85,0); ub.add(mp(sharedGeo.torso,am,0,0.36,0));
       const hg=new THREE.Group(); hg.position.set(0,0.93,0); hg.add(mp(sharedGeo.head,sharedMat.skin,0,0,0),mp(sharedGeo.helmet,sharedMat.dark,0,0.11,0),mp(sharedGeo.visor,vm,0,0.02,-0.18));
       const aL=mp(sharedGeo.arm,cm,-0.39,0.4,-0.14);aL.rotation.x=0.85; const aR=mp(sharedGeo.arm,cm,0.39,0.4,-0.16);aR.rotation.x=1.05;
-      const wh=new THREE.Group(); wh.position.set(0.26,0.43,-0.38); wh.add(createWeaponModel(wid));
+      const wh=new THREE.Group(); wh.position.set(0.26,0.43,-0.38); {const wmA=createWeaponModel(wid,true);wh.add(wmA);if(WEAPONS[wid]&&WEAPONS[wid].dual){const wmB=createWeaponModel(wid,true);wmB.position.x=-0.52;wh.add(wmB);}}
       ub.add(hg,aL,aR,wh); root.add(ub);
       root.rotation.order='YXZ'; root.userData={legL,legR,upperBody:ub,headGroup:hg,weaponHolder:wh,currentWeaponId:wid,armL:aL,armR:aR}; return root;
     }
@@ -989,7 +1208,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     renderer.setSize(window.innerWidth,window.innerHeight); renderer.shadowMap.type=THREE.PCFSoftShadowMap; renderer.toneMapping=THREE.ACESFilmicToneMapping;
     const scene=new THREE.Scene(), camera=new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.08,450); scene.add(camera);
     const viewmodelGroup=new THREE.Group(); camera.add(viewmodelGroup); let viewmodelMesh=null;
-    const muzzleLight=new THREE.PointLight(0xffb703,0,8); camera.add(muzzleLight);
+    const muzzleLight=new THREE.PointLight(0xffb703,0,3.5); scene.add(muzzleLight);
     const dustMesh=buildAbandonedCityMap(scene);buildColliderGrid();
     const lootItems=[], bullets=[], grenades=[], particles=[], debrisItems=[], smokeZones=[], bots=[], remotePlayers=new Map();
 
@@ -1028,25 +1247,58 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     let SCORE_LIMIT=50; let teamScores={red:0,blue:0}; let isHost=false,roomMeta=null,roomPlayers={},onlineStarted=false,lastBotNet=0,myJoinedAt=0;
     const loadout={1:'ar_aug',2:'p_deagle',3:'m_knife',4:'g_frag'}, pendingLoadout={1:'ar_aug',2:'p_deagle',3:'m_knife',4:'g_frag'};
     let zoomWheelAccumulator=0;
-    const player={team:'red',pos:new THREE.Vector3(0,0,-108),vel:new THREE.Vector3(),knockback:new THREE.Vector3(),yaw:Math.PI,pitch:0,lean:0,hp:100,maxHp:100,armor:50,maxArmor:100,alive:true,diedAt:0,respawnAt:0,deathRagdoll:null,onGround:false,crouch:false,prone:false,eyeH:1.64,spin:0,zoomVal:0,slot:1,ammo:{},magazines:{},reloading:false,reloadEnd:0,reloadDuration:0,nextFire:0,scoped:false,zoomIdx:0,recoilKick:0,boltAnim:0,drawAnim:0,spreadBloom:0,swingAnim:0,stepTimer:0,heartbeatTimer:0,kills:0,deaths:0,headshots:0};
+    const player={team:'red',pos:new THREE.Vector3(0,0,-108),vel:new THREE.Vector3(),knockback:new THREE.Vector3(),yaw:Math.PI,pitch:0,lean:0,hp:100,maxHp:100,armor:50,maxArmor:100,alive:true,diedAt:0,respawnAt:0,deathRagdoll:null,onGround:false,crouch:false,prone:false,eyeH:1.64,spin:0,zoomVal:0,slot:1,ammo:{},magazines:{},reloading:false,reloadEnd:0,reloadDuration:0,nextFire:0,scoped:false,zoomIdx:0,recoilKick:0,recPend:0,recOff:0,recYawPend:0,rkS:0,boltAnim:0,drawAnim:0,spreadBloom:0,swingAnim:0,stepTimer:0,heartbeatTimer:0,kills:0,deaths:0,headshots:0};
+    player.gun={};player.nextGun={};player.rlSeq=null;player.wallBlend=0;
     let isNextLifeModalOpen=false, isSettingsOpen=false, holdingRespawnForLoadout=false, roundResetPending=false;
     const activeInputs=new Set(); let camOff=0;
     const isAct=n=>activeInputs.has(settings.keys[n]);
 
-    function resetPlayerAmmo(){for(const s of[1,2,4]){const w=getWeaponStats(loadout[s]);if(s===4){player.ammo[4]=w.count;player.magazines[4]=0;}else if(w.shellByShell){player.ammo[s]=w.mag;player.magazines[s]=w.reserveShells;}else{player.ammo[s]=w.mag;player.magazines[s]=w.magsCount;}}}
+    // ===== ปืนคู่ (Akimbo): กระสุน/รีโหลดแยกกระบอก, จุดกำเนิดกระสุนที่ปากกระบอก, กันยิงทะลุกำแพง =====
+    const isPair=s=>s<=2&&!!WEAPONS[loadout[s]]?.dual;
+    const gunCap=s=>{const w=getWeaponStats(loadout[s]);return w.dual?Math.max(1,Math.ceil(w.mag/2)):w.mag;};
+    const partialMag=s=>{const w=WEAPONS[loadout[s]];return !!(w&&s<=2&&(w.dual||w.splitTo)&&!w.shellByShell);};
+    const resRounds=s=>Math.floor(player.magazines[s]*gunCap(s)+1e-6);
+    const hasReserve=s=>partialMag(s)?resRounds(s)>0:player.magazines[s]>0;
+    function syncPairAmmo(s){if(s>2)return;if(isPair(s)){const cap=gunCap(s);let g=player.gun[s];if(!g||g.length!==2){const a=player.ammo[s]||0;g=player.gun[s]=[Math.min(cap,Math.ceil(a/2)),Math.min(cap,Math.floor(a/2))];}player.ammo[s]=g[0]+g[1];}else player.gun[s]=null;}
+    function segBlocked(a,b){for(const bx of getColliderCandidates(a,b,0.05))if(intersectSegmentAABB(a,b,bx)!==null)return true;return false;}
+    const _wd=new THREE.Vector3();
+    function wallDist(o,dir,L){_wd.copy(o).addScaledVector(dir,L);let dm=L;for(const bx of getColliderCandidates(o,_wd,0.05)){const t=intersectSegmentAABB(o,_wd,bx);if(t!==null&&t*L<dm)dm=t*L;}return dm;}
+    const _bF=new THREE.Vector3(),_bO=new THREE.Vector3(),_wtF=new THREE.Vector3(),_wtR=new THREE.Vector3(),_wtU=new THREE.Vector3(),_wtO=new THREE.Vector3();
+    function muzzleGun(gi){const D=GA.pairOf(viewmodelMesh);return D?(gi===1?D.b:D.a):viewmodelMesh;}
+    function muzzleWorld(gi,eye,bd){const g=muzzleGun(gi);if(!g||!g.userData.muzzle)return eye.clone().addScaledVector(bd,0.65);g.updateWorldMatrix(true,false);return g.localToWorld(g.userData.muzzle.clone());}
+    function muzzleDirection(gi,fallback){const g=muzzleGun(gi);if(!g)return fallback.clone();g.updateWorldMatrix(true,false);return new THREE.Vector3(0,0,-1).transformDirection(g.matrixWorld);}
+    // ระยะถึงกำแพงตรงหน้า -> 0..1 (1 = ชิดจนต้องยกปากกระบอกหนี)
+    function wallTuckTarget(){
+      if(!viewmodelMesh||player.slot>2||!player.alive)return 0;
+      const D=GA.pairOf(viewmodelMesh),g=D?D.a:viewmodelMesh,m=g.userData.muzzle;if(!m)return 0;
+      const L=Math.abs(m.z)+0.65,q=camera.quaternion;
+      _wtF.set(0,0,-1).applyQuaternion(q);_wtR.set(1,0,0).applyQuaternion(q);_wtU.set(0,1,0).applyQuaternion(q);
+      let d=L;for(const[ox,oy]of(D?[[0,0],[.25,-.2],[-.25,-.2]]:[[0,0],[.27,-.22]])){_wtO.copy(camera.position).addScaledVector(_wtR,ox).addScaledVector(_wtU,oy);d=Math.min(d,wallDist(_wtO,_wtF,L));}
+      return Math.max(0,Math.min(1,(L-d)/(L-0.5)));
+    }
+    function startPairReload(w){
+      const sl=player.slot;syncPairAmmo(sl);const cap=gunCap(sl),g=player.gun[sl],per=((WEAPONS[w.splitTo]||w).reloadTime||1.6)*1000,t0=performance.now();let left=resRounds(sl),tt=t0;const segs=[];
+      for(const gi of[0,1]){const need=cap-g[gi];if(need>0&&left>0){const take=Math.min(need,left);left-=take;segs.push({g:gi,start:tt,end:tt+per,take,empty:g[gi]<=0});tt+=per;}}
+      if(!segs.length)return;
+      SFX.clearTimers();player.rlSeq=segs;player.rlE=g[0]+g[1]<=0;player.reloading=true;player.scoped=false;updateScopeUI();document.getElementById('reload-bar-wrap').style.display='block';
+      player.reloadDuration=tt-t0;player.reloadEnd=tt;
+      const snd=sl===2?'pistol_reload':'kriss_reload';
+      segs.forEach((sg,i)=>{if(i===0)SFX.playBuffer(snd,0.85,null);else SFX.schedule(()=>{if(player.reloading&&player.alive)SFX.playBuffer(snd,0.85,null);},sg.start-t0);});
+    }
+    function resetPlayerAmmo(){for(const s of[1,2,3]){const w0=WEAPONS[loadout[s]];if(w0&&w0.dual&&w0.splitTo&&WEAPONS[w0.splitTo])loadout[s]=w0.splitTo;}player.gun={};player.nextGun={};player.rlSeq=null;for(const s of[1,2,4]){const w=getWeaponStats(loadout[s]);if(s===4){player.ammo[4]=w.count;player.magazines[4]=0;}else if(w.shellByShell){player.ammo[s]=w.mag;player.magazines[s]=w.reserveShells;}else{player.ammo[s]=w.mag;player.magazines[s]=w.magsCount;}}}
     function getEyePos(){
       const b=new THREE.Vector3(player.pos.x,player.pos.y+player.eyeH,player.pos.z);
       if(Math.abs(player.lean)>0.01){const rt=new THREE.Vector3(Math.cos(player.yaw),0,-Math.sin(player.yaw)),tst=b.clone().add(rt.multiplyScalar(player.lean*0.6));if(hasLineOfSight(b,tst)){b.copy(tst);b.y-=Math.abs(player.lean)*0.08;}}
       return b;
     }
     function equipSlot(slot){
-      if(!player.alive)return; SFX.clearTimers(); player.slot=slot; player.reloading=false; player.scoped=false; player.drawAnim=1.0;
+      if(!player.alive)return; SFX.clearTimers(); player.rlSeq=null; player.slot=slot; player.reloading=false; player.scoped=false; player.drawAnim=1.0;
       const wid=loadout[slot],zoom=getWeaponStats(wid).sightZoom,zooms=availableZooms(wid);
       player.zoomVal=zoom;zoomWheelAccumulator=0;
       updateScopeUI(); document.getElementById('reload-bar-wrap').style.display='none';
       for(let i=1;i<=4;i++)document.getElementById(`slot-${i}`).classList.toggle('active',i===slot);
       if(viewmodelMesh)viewmodelGroup.remove(viewmodelMesh);
-      viewmodelMesh=createWeaponModel(loadout[slot]); if(WEAPONS[loadout[slot]]?.dual){const a=viewmodelMesh,b=a.clone(),g=new THREE.Group();a.position.x=0.12;b.position.x=-0.28;g.add(a,b);viewmodelMesh=g;} if(WEAPONS[loadout[slot]]?.spin)player.spin=1; viewmodelMesh.position.set(0.24,-0.22,-0.4); viewmodelGroup.add(viewmodelMesh);
+      viewmodelMesh=createWeaponModel(loadout[slot]); if(WEAPONS[loadout[slot]]?.dual){const a=viewmodelMesh,b=createWeaponModel(loadout[slot]),g=new THREE.Group();a.position.x=0.23;b.position.x=-0.23;g.add(a,b);GA.dual(a,0);GA.dual(b,1);GA.setDual(g,a,b);g.userData.adsY=a.userData.adsY;viewmodelMesh=g;} if(slot<=2)syncPairAmmo(slot); if(WEAPONS[loadout[slot]]?.spin)player.spin=1; viewmodelMesh.position.set(0.24,-0.22,-0.4); viewmodelGroup.add(viewmodelMesh);
       if(slot===2){SFX.playDraw(loadout[slot]);player.nextFire=Math.max(player.nextFire,performance.now()+280);}
       updateHUD();
     }
@@ -1069,11 +1321,11 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     }
     function startReload(){
       if(player.slot>2||player.reloading||!player.alive)return;
-      const wid=loadout[player.slot],w=getWeaponStats(wid); if(player.ammo[player.slot]>=w.mag||player.magazines[player.slot]<=0)return;
-      SFX.clearTimers(); player.reloading=true; player.scoped=false; updateScopeUI(); document.getElementById('reload-bar-wrap').style.display='block';
+      const wid=loadout[player.slot],w=getWeaponStats(wid); if(isPair(player.slot)){startPairReload(w);return;} if(player.ammo[player.slot]>=w.mag||!hasReserve(player.slot))return;
+      SFX.clearTimers(); player.rlSeq=null; player.rlE=player.ammo[player.slot]<=0; player.reloading=true; player.scoped=false; updateScopeUI(); document.getElementById('reload-bar-wrap').style.display='block';
       if(w.shellByShell){
         const nd=Math.min(w.mag-player.ammo[player.slot],player.magazines[player.slot]),pm=w.reloadPerShell*1000,tot=nd*pm+450;
-        player.reloadDuration=tot; player.reloadEnd=performance.now()+tot;
+        player.reloadDuration=tot; player.reloadEnd=performance.now()+tot; player.rlN=nd; player.rlMs=pm;
         for(let i=0;i<nd;i++)SFX.schedule(()=>{if(!player.reloading||!player.alive)return;SFX.playBuffer('ammo_reload',0.85,null);player.ammo[player.slot]++;player.magazines[player.slot]--;player.boltAnim=0.6;updateHUD();},(i+1)*pm-80);
         SFX.schedule(()=>{if(!player.reloading||!player.alive)return;SFX.playBuffer('shotgun_cock',0.85,null);player.boltAnim=1.0;},nd*pm+40);
       } else {
@@ -1103,21 +1355,25 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
         updateHUD(); if(player.ammo[4]===0)setTimeout(()=>{if(player.slot===4)equipSlot(1);},350); return;
       }
       if(player.ammo[player.slot]<=0){startReload();return;}
-      player.ammo[player.slot]--; player.nextFire=now+(wid==='sr_l115'?(w.boltCycle*1000+250):(60000/w.rpm)); player.boltAnim=1.0;
-      SFX.playShoot(wid,null,true); muzzleLight.intensity=5.0;
-      if(viewmodelMesh?.userData.flashMesh){viewmodelMesh.userData.flashMesh.visible=true;viewmodelMesh.userData.flashMesh.rotation.z=Math.random()*Math.PI;}
-      setTimeout(()=>{muzzleLight.intensity=0;if(viewmodelMesh?.userData.flashMesh)viewmodelMesh.userData.flashMesh.visible=false;},45);
-      const eye=getEyePos(),bd=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion),aimPoint=eye.clone().addScaledVector(bd,160);
-      const mz=viewmodelMesh?viewmodelMesh.localToWorld(new THREE.Vector3(0,0.04,-0.82)):eye.clone().addScaledVector(bd,0.65);
-      const shotDir=aimPoint.sub(mz).normalize();
+      let gi=-1;if(isPair(player.slot)){syncPairAmmo(player.slot);const gg=player.gun[player.slot];gi=player.nextGun[player.slot]||0;if(gg[gi]<=0)gi=1-gi;if(gg[gi]<=0){startReload();return;}gg[gi]--;player.nextGun[player.slot]=1-gi;player.ammo[player.slot]=gg[0]+gg[1];}else player.ammo[player.slot]--; player.nextFire=now+(wid==='sr_l115'?(w.boltCycle*1000+250):(60000/w.rpm)); player.boltAnim=1.0;
+      const eye=getEyePos(),bd=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion),muzzlePos=muzzleWorld(gi,eye,bd);
+      const wallRaised=player.wallBlend>0.1,muzzleBlocked=segBlocked(eye,muzzlePos),wallBlocked=wallRaised||muzzleBlocked;
+      const shotOrigin=wallRaised?muzzlePos.clone():muzzleBlocked?eye.clone().addScaledVector(bd,0.1):muzzlePos.clone();
+      const aimPoint=eye.clone().addScaledVector(bd,Math.max(25,w.ball?w.ball.zero:160));
+      const shotDir=wallRaised?muzzleDirection(gi,bd):aimPoint.sub(shotOrigin).normalize();
+      SFX.playShoot(wid,null,true); muzzleLight.position.copy(muzzlePos);muzzleLight.intensity=5.0; player.lastFireT=performance.now(); emitSound(player.pos,SOUND_R[WCLASS[wid]]||70,player.team,'player');
+      const gun=muzzleGun(gi),flashMesh=gun?.userData.flashMesh;if(flashMesh){flashMesh.visible=true;flashMesh.rotation.z=Math.random()*Math.PI;}
+      spawnMuzzleSmoke(muzzlePos,bd);
+      setTimeout(()=>{muzzleLight.intensity=0;if(flashMesh)flashMesh.visible=false;},45);
+      if(w.ball&&!wallBlocked){const el=ballisticSolve(w.ball,w.ball.zero).elev*Math.max(0.2,Math.sqrt(Math.max(0,1-bd.y*bd.y))),ax=new THREE.Vector3().crossVectors(shotDir,new THREE.Vector3(0,1,0));if(ax.lengthSq()>1e-6){ax.normalize();shotDir.applyAxisAngle(ax,el);}}
       const mp=(player.vel.x*player.vel.x+player.vel.z*player.vel.z)>2?0.013:0, sb=(!player.scoped&&w.hipSpread)?w.hipSpread:w.spread;
-      const ts=(sb+player.spreadBloom+mp)*(player.prone?0.45:player.crouch?0.65:1.0)*(player.scoped?0.1:1.0);
-      spawnCasing(wid);
-      for(let i=0;i<w.pellets;i++){const d=shotDir.clone();d.x+=(Math.random()-0.5)*ts*2;d.y+=(Math.random()-0.5)*ts*2;d.z+=(Math.random()-0.5)*ts*2;d.normalize();spawnBullet(mz,d,wid,currentUser.uid,currentUser.username,player.team,true,w);if(gameMode==='online')sendOnlineEvent({type:'shoot',weaponId:wid,pos:mz.toArray(),dir:d.toArray(),team:player.team});}
-      if(gameMode==='offline')for(const b of bots)if(b.alive&&b.team!==player.team&&b.pos.distanceTo(player.pos)<42&&!b.cachedTarget){b.alertPos=player.pos.clone();b.alertUntil=now+3500;}
-      player.pitch=Math.min(Math.PI/2-0.05,player.pitch+w.recoil); player.yaw+=(Math.random()-0.5)*w.recoil*0.4;
+      const ts=wallRaised?0:(sb+player.spreadBloom+mp)*(player.prone?0.45:player.crouch?0.65:1.0)*(player.scoped?0.1:1.0);
+      if(!GA.manual())GA.eject(wid,gi);
+      for(let i=0;i<w.pellets;i++){const d=shotDir.clone();d.x+=(Math.random()-0.5)*ts*2;d.y+=(Math.random()-0.5)*ts*2;d.z+=(Math.random()-0.5)*ts*2;d.normalize();spawnBullet(shotOrigin,d,wid,currentUser.uid,currentUser.username,player.team,true,w);if(gameMode==='online')sendOnlineEvent({type:'shoot',weaponId:wid,pos:shotOrigin.toArray(),dir:d.toArray(),team:player.team});}
+      
+      player.recPend+=w.recoil; player.recYawPend+=(Math.random()-0.5)*w.recoil*0.4;
       player.recoilKick=0.09; player.spreadBloom=Math.min(0.05,player.spreadBloom+w.recoil*0.35); updateHUD();
-      if(player.ammo[player.slot]===0&&player.magazines[player.slot]>0)setTimeout(()=>{if(player.slot<=2&&player.ammo[player.slot]===0)startReload();},220);
+      if(player.ammo[player.slot]===0&&hasReserve(player.slot))setTimeout(()=>{if(player.slot<=2&&player.ammo[player.slot]===0)startReload();},220);
     }
 
     // PROJECTILES & EXPLOSIONS
@@ -1125,9 +1381,11 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     const bMatP=new THREE.MeshBasicMaterial({color:0xffe066,blending:THREE.AdditiveBlending}), bMatE=new THREE.MeshBasicMaterial({color:0xff7a2a,blending:THREE.AdditiveBlending});
     const trailGeo=new THREE.BoxGeometry(1,1,1);
     const MAX_ACTIVE_TRAILS=280; let activeTrailCount=0;
+    const muzzleSmokeGeo=new THREE.SphereGeometry(1,8,6);
+    function spawnMuzzleSmoke(pos,dir){for(let i=0;i<2;i++){const m=new THREE.Mesh(muzzleSmokeGeo,new THREE.MeshBasicMaterial({color:0x9ca3af,transparent:true,opacity:0.34,depthWrite:false}));m.position.copy(pos).addScaledVector(dir,0.05);m.scale.setScalar(0.025+Math.random()*0.012);scene.add(m);particles.push({mesh:m,vel:dir.clone().multiplyScalar(0.35).add(new THREE.Vector3((Math.random()-0.5)*0.25,0.12+Math.random()*0.15,(Math.random()-0.5)*0.25)),life:0.28,maxLife:0.28,gravity:-0.3,grow:0.12,muzzleSmoke:true});}}
     function spawnTrail(a,b,loc){if(activeTrailCount>=MAX_ACTIVE_TRAILS)return;const len=a.distanceTo(b);if(len<0.2)return;const material=new THREE.MeshBasicMaterial({color:loc?0xfff3a0:0xffa060,transparent:true,opacity:0.8,blending:THREE.AdditiveBlending,depthWrite:false}),m=new THREE.Mesh(trailGeo,material);m.position.copy(a).lerp(b,0.5);m.lookAt(b);m.scale.set(0.025,0.025,len);scene.add(m);particles.push({mesh:m,vel:new THREE.Vector3(),life:0.45,maxLife:0.45,gravity:0,grow:0,isTrail:true});activeTrailCount++;}
-    function spawnBullet(o,d,wid,oid,oname,tm,loc,stats=null){const w=stats||WEAPONS[wid],v=d.clone().normalize().multiplyScalar(w.speed),m=new THREE.Mesh(bGeo,loc?bMatP:bMatE);m.position.copy(o);m.lookAt(o.clone().add(v));scene.add(m);bullets.push({startPos:o.clone(),pos:o.clone(),vel:v,gravity:w.gravity,dmg:w.dmg,falloffStart:w.falloffStart,falloffMin:w.falloffMin,falloffEnd:w.falloffEnd,maxRange:w.maxRange,weaponId:wid,ownerId:oid,ownerName:oname,team:tm,isLocalOwner:loc,whizzed:false,mesh:m,life:Math.max(0.5,(w.maxRange||300)/Math.max(60,w.speed)*1.7+0.3),trailTimer:0});}
-    function computeBulletDmg(b,hp){const d=b.startPos.distanceTo(hp),fs=b.falloffStart||30,fe=Math.max(fs+1,b.falloffEnd||fs+60),fm=b.falloffMin??0.5;return d<=fs?b.dmg:Math.round(b.dmg*(d>=fe?fm:1-(1-fm)*(d-fs)/(fe-fs)));}
+    function spawnBullet(o,d,wid,oid,oname,tm,loc,stats=null){const w=stats||WEAPONS[wid],bl=w.ball||WEAPONS[wid].ball,v=d.clone().normalize().multiplyScalar(bl.v0),m=new THREE.Mesh(bGeo,loc?bMatP:bMatE);m.position.copy(o);m.lookAt(o.clone().add(v));scene.add(m);bullets.push({startPos:o.clone(),pos:o.clone(),vel:v,k:bl.k,v0:bl.v0,dmg:w.dmg,weaponId:wid,ownerId:oid,ownerName:oname,team:tm,isLocalOwner:loc,whizzed:false,mesh:m,life:40,trailTimer:0});}
+    function computeBulletDmg(b,hp){const r=Math.max(0.03,Math.min(1.3,Math.pow(b.vel.length()/b.v0,2)));return Math.max(1,Math.round(b.dmg*r));}
     const _pg={};function spawnParticles(pos,col,cnt=8,spd=7,sz=0.09,lf=0.45,gr=14){if(particles.length>350)cnt=Math.min(cnt,2);const g=_pg[sz]||(_pg[sz]=new THREE.BoxGeometry(sz,sz,sz)),mt=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:1});for(let i=0;i<cnt;i++){const m=new THREE.Mesh(g,mt.clone());m.position.copy(pos);scene.add(m);particles.push({mesh:m,vel:new THREE.Vector3((Math.random()-0.5)*spd,Math.random()*spd*0.8+1,(Math.random()-0.5)*spd),life:lf,maxLife:lf,gravity:gr,grow:0});}}
     const casingGeo=new THREE.CylinderGeometry(0.012,0.014,0.065,8),casingMat=new THREE.MeshStandardMaterial({color:0xc89b3c,metalness:0.78,roughness:0.3});
     const debrisGeo=new THREE.BoxGeometry(1,1,1),debrisMats=[0x57534e,0x78716c,0x3f3f46,0x6b5b4b].map(color=>new THREE.MeshStandardMaterial({color,roughness:0.96}));
@@ -1146,7 +1404,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       }
     }
     function spawnSmokeCloud(pos){const g=new THREE.SphereGeometry(1.8,10,10);for(let i=0;i<15;i++){const m=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:0xcbd5e1,transparent:true,opacity:0.58}));m.position.copy(pos).add(new THREE.Vector3((Math.random()-0.5)*6,Math.random()*3.5+0.5,(Math.random()-0.5)*6));scene.add(m);particles.push({mesh:m,vel:new THREE.Vector3((Math.random()-0.5)*0.7,0.3,(Math.random()-0.5)*0.7),life:10,maxLife:10,gravity:0,grow:0.22});}smokeZones.push({pos:pos.clone(),end:performance.now()+10000});}
-    function throwGrenade(o,d,wid,oid,oname,tm,pwr=26){const w=WEAPONS[wid],m=createWeaponModel(wid);m.scale.setScalar(1.6);m.position.copy(o);scene.add(m);grenades.push({pos:o.clone(),vel:d.clone().normalize().multiplyScalar(pwr).add(new THREE.Vector3(0,4.5,0)),weaponId:wid,ownerId:oid,ownerName:oname,team:tm,mesh:m,explodeAt:performance.now()+w.fuse*1000});}
+    function throwGrenade(o,d,wid,oid,oname,tm,pwr=26){const w=WEAPONS[wid],m=createWeaponModel(wid,true);m.scale.setScalar(1.6);m.position.copy(o);scene.add(m);grenades.push({pos:o.clone(),vel:d.clone().normalize().multiplyScalar(pwr).add(new THREE.Vector3(0,4.5,0)),weaponId:wid,ownerId:oid,ownerName:oname,team:tm,mesh:m,explodeAt:performance.now()+w.fuse*1000});}
     let blastShake=0;
     const BLAST_SPH=new THREE.SphereGeometry(1,12,10),BLAST_RING=new THREE.RingGeometry(0.85,1,28);
     function spawnBlast(pos,r){
@@ -1167,7 +1425,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     function explodeGrenade(g){
       const w=WEAPONS[g.weaponId]; scene.remove(g.mesh);
       if(w.type==='frag'){
-        SFX.playExplosion(g.pos); spawnBlast(g.pos,w.radius); spawnParticles(g.pos,0xf97316,IS_TOUCH?22:44,20,0.3,0.8,8); spawnParticles(g.pos,0xfde047,IS_TOUCH?10:20,26,0.14,0.45,4); spawnParticles(g.pos,0x334155,18,10,0.45,1.1,2);
+        SFX.playExplosion(g.pos); emitSound(g.pos,110,g.team,'blast'); spawnBlast(g.pos,w.radius); spawnParticles(g.pos,0xf97316,IS_TOUCH?22:44,20,0.3,0.8,8); spawnParticles(g.pos,0xfde047,IS_TOUCH?10:20,26,0.14,0.45,4); spawnParticles(g.pos,0x334155,18,10,0.45,1.1,2);
         for(const rg of ragdolls) applyImpulseToRagdoll(rg,g.pos,w.radius*1.45,12,0.45);
         spawnDebris(g.pos,12,0.22,15);
         if(player.alive&&(g.team!==player.team||g.ownerId===currentUser.uid)){const pc=player.pos.clone().add(new THREE.Vector3(0,1,0)),d=g.pos.distanceTo(pc);if(d<w.radius)applyDamageToLocalPlayer(Math.round(w.maxDmg*(1-d/w.radius)),g.ownerId,g.ownerName,g.weaponId,false,pc.sub(g.pos).normalize());}
@@ -1220,13 +1478,13 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       if(gameMode==='offline'&&offlineSubMode==='permadeath'){
         const cands=bots.filter(b=>b.alive&&b.team===player.team); if(!cands.length){checkPermadeathRoundEnd();return;}
         const host=cands[Math.floor(Math.random()*cands.length)];
-        player.pos.copy(host.pos);player.vel.set(0,0,0);player.yaw=host.yaw;player.pitch=0;player.lean=0;player.crouch=host.crouching;player.hp=host.hp;player.armor=host.armor;player.alive=true;player.deathRagdoll=null;
+        player.pos.copy(host.pos);player.vel.set(0,0,0);player.yaw=host.yaw;player.pitch=0;player.recOff=0;player.recPend=0;player.recYawPend=0;player.lean=0;player.crouch=host.crouching;player.hp=host.hp;player.armor=host.armor;player.alive=true;player.deathRagdoll=null;
         document.getElementById('death-fade').style.opacity=0;document.getElementById('lowhp-vignette').style.opacity=0;
         scene.remove(host.mesh);bots.splice(bots.indexOf(host),1);resetPlayerAmmo();equipSlot(1);
         showBanner(`เข้าควบคุมร่าง ${host.name}!<br><small style="font-size:0.95rem;color:#93c5fd">เพื่อนร่วมทีมที่เหลือ: ${cands.length-1} คน</small>`,'#38bdf8',2200);updateHUD();return;
       }
       const list=spawnPoints[player.team],sp=list[Math.floor(Math.random()*list.length)].clone();sp.x+=(Math.random()-0.5)*8;sp.z+=(Math.random()-0.5)*6;
-      player.pos.copy(sp);player.vel.set(0,0,0);player.knockback.set(0,0,0);player.yaw=player.team==='red'?Math.PI:0;player.pitch=0;player.lean=0;player.crouch=false;player.prone=false;player.hp=100;player.armor=50;player.alive=true;player.deathRagdoll=null;
+      player.pos.copy(sp);player.vel.set(0,0,0);player.knockback.set(0,0,0);player.yaw=player.team==='red'?Math.PI:0;player.pitch=0;player.recOff=0;player.recPend=0;player.recYawPend=0;player.lean=0;player.crouch=false;player.prone=false;player.hp=100;player.armor=50;player.alive=true;player.deathRagdoll=null;
       document.getElementById('death-fade').style.opacity=0;document.getElementById('lowhp-vignette').style.opacity=0;resetPlayerAmmo();equipSlot(1);updateHUD();
     }
     const clearAllRagdolls=()=>{for(const rg of ragdolls)scene.remove(rg.group);ragdolls.length=0;};
@@ -1262,8 +1520,73 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
 
     // BOT AI
     const DIFF_PARAMS = { dumb:{reactionMs:900,inacc:0.11,fireMul:2.6,coverChance:0.1,leadMult:0.2,speedMul:0.8}, easy:{reactionMs:420,inacc:0.062,fireMul:1.85,coverChance:0.35,leadMult:0.4,speedMul:0.9}, normal:{reactionMs:220,inacc:0.032,fireMul:1.4,coverChance:0.72,leadMult:0.85,speedMul:1}, hard:{reactionMs:90,inacc:0.013,fireMul:1.15,coverChance:0.95,leadMult:1.0,speedMul:1.1}, pro:{reactionMs:40,inacc:0.005,fireMul:1.0,coverChance:1,leadMult:1.0,speedMul:1.25} };
+    // ===== BOT AI v2: สายตา(FOV) / การได้ยิน / ความจำ / หาทาง+หลบสิ่งกีดขวาง =====
+    // fov = ครึ่งมุมมองเห็น(rad) | view = ระยะมองเห็นสูงสุด(m) | turn = ความเร็วหันตัว(rad/s) | memory = จำตำแหน่งศัตรูล่าสุด(วิ) | hear = ตัวคูณการได้ยิน
+    const AI_EXT={dumb:{fov:0.75,view:50,turn:3.2,memory:2,hear:0.7},easy:{fov:0.9,view:65,turn:4.5,memory:3.5,hear:0.85},normal:{fov:1.0,view:85,turn:7,memory:5,hear:1},hard:{fov:1.1,view:105,turn:10,memory:7,hear:1.15},pro:{fov:1.2,view:125,turn:14,memory:9,hear:1.3}};
+    for(const k in AI_EXT)Object.assign(DIFF_PARAMS[k],AI_EXT[k]);
+    const UP06=new THREE.Vector3(0,0.6,0);
+    const wrapPi=a=>{a=(a+Math.PI)%(Math.PI*2);if(a<0)a+=Math.PI*2;return a-Math.PI;};
+    const yawTo=(f,t)=>Math.atan2(-(t.x-f.x),-(t.z-f.z));
+    // ---- การได้ยิน: เสียงปืน/ระเบิด/ฝีเท้า ดังไปถึงบอททีมตรงข้าม (กำแพงบังทำให้เบาลง, ตำแหน่งที่ได้ยินคลาดเคลื่อนตามระยะ) ----
+    const SOUND_R={pistol:55,smg:65,ar:85,lmg:95,sr:120,sg:80};
+    const _sndLast=new Map();
+    function emitSound(pos,radius,team,key){
+      if(radius<=0||!bots.length)return;
+      const now=performance.now();if(now-(_sndLast.get(key)??-1e9)<140)return;_sndLast.set(key,now);
+      const dp=DIFF_PARAMS[botDifficulty]||DIFF_PARAMS.normal;
+      for(const b of bots){
+        if(!b.alive||b.team===team||b.cachedTarget)continue;
+        const d=b.pos.distanceTo(pos),r=radius*dp.hear;if(d>r)continue;
+        let eff=d;if(d>6&&!hasLineOfSight(new THREE.Vector3(b.pos.x,b.pos.y+1.5,b.pos.z),new THREE.Vector3(pos.x,pos.y+1.2,pos.z)))eff=d*1.8;
+        if(eff>r)continue;
+        if(b.alertUntil>now&&b.alertFromSound&&b.alertPrioD<=eff&&now-b.alertSetT<1500)continue;
+        const err=1+d*0.12/dp.hear;
+        b.alertPos=new THREE.Vector3(pos.x+(Math.random()-0.5)*2*err,pos.y,pos.z+(Math.random()-0.5)*2*err);
+        b.alertUntil=now+7000;b.alertSetT=now;b.alertPrioD=eff;b.alertFromSound=true;
+      }
+    }
+    // ---- หาทาง: A* บนกราฟ navNodes + เลือกโหนดเริ่มต้นที่ "เดินถึงได้จริง" (ไม่ใช่แค่ใกล้สุดทะลุกำแพง) ----
+    function navPath(s,g){
+      if(s===g)return[g];
+      const N=navNodes.length,gs=new Array(N).fill(Infinity),f=new Array(N).fill(Infinity),from=new Array(N).fill(-1),closed=new Uint8Array(N),gp=navNodes[g].pos;
+      gs[s]=0;f[s]=navNodes[s].pos.distanceTo(gp);const open=[s];
+      while(open.length){
+        let bi=0;for(let k=1;k<open.length;k++)if(f[open[k]]<f[open[bi]])bi=k;
+        const c=open.splice(bi,1)[0];
+        if(c===g){const p=[];for(let n=g;n!==-1;n=from[n])p.push(n);return p.reverse();}
+        closed[c]=1;
+        for(const n of navNodes[c].neighbors){if(closed[n])continue;const ng=gs[c]+navNodes[c].pos.distanceTo(navNodes[n].pos);if(ng<gs[n]){gs[n]=ng;from[n]=c;f[n]=ng+navNodes[n].pos.distanceTo(gp);if(!open.includes(n))open.push(n);}}
+      }
+      return null;
+    }
+    function nearestVisibleNav(pos){
+      const c=[];for(let i=0;i<navNodes.length;i++)c.push([pos.distanceTo(navNodes[i].pos),i]);
+      c.sort((a,b)=>a[0]-b[0]);const lo=pos.clone().add(UP06);
+      for(let k=0;k<Math.min(8,c.length);k++){const n=navNodes[c[k][1]].pos;if(Math.abs(n.y-pos.y)>2.6)continue;if(hasMovementLineOfSight(lo,n.clone().add(UP06)))return c[k][1];}
+      return c[0][1];
+    }
+    // ทิศเดินไปยังเป้าหมาย (null = ถึงแล้ว): ถ้าเห็นทางตรงก็เดินตรง ไม่งั้นตามเส้นทาง A*
+    function botGoalDir(b,goal,now){
+      const dx=goal.x-b.pos.x,dz=goal.z-b.pos.z,fl=Math.hypot(dx,dz),dy=goal.y-b.pos.y;
+      if(fl<1.1&&Math.abs(dy)<2.5)return null;
+      if(fl<18&&Math.abs(dy)<1.5&&hasMovementLineOfSight(b.pos.clone().add(UP06),goal.clone().add(UP06)))return new THREE.Vector3(dx,0,dz).normalize();
+      const gk=Math.round(goal.x/4)+','+Math.round(goal.z/4)+','+Math.round(goal.y/2.5);
+      if(!b.path||b.pathKey!==gk||now>b.pathExpire){b.pathKey=gk;b.pathExpire=now+8000;b.pathI=0;b.path=navPath(nearestVisibleNav(b.pos),findNearestNav(goal));}
+      let tg=goal;
+      if(b.path){
+        if(now-(b.skipT||0)>200){b.skipT=now;while(b.pathI+1<b.path.length){const nx=navNodes[b.path[b.pathI+1]].pos;if(Math.abs(nx.y-b.pos.y)<1.2&&Math.hypot(nx.x-b.pos.x,nx.z-b.pos.z)<14&&hasMovementLineOfSight(b.pos.clone().add(UP06),nx.clone().add(UP06)))b.pathI++;else break;}}
+        while(b.pathI<b.path.length){const n=navNodes[b.path[b.pathI]].pos;if(Math.hypot(n.x-b.pos.x,n.z-b.pos.z)<2.0&&Math.abs(n.y-b.pos.y)<2.4)b.pathI++;else{tg=n;break;}}
+      }
+      return new THREE.Vector3(tg.x-b.pos.x,0,tg.z-b.pos.z).normalize();
+    }
+    // เช็คว่าเดินไปทิศ d ระยะ len ได้ไหม (ยิงรังสี 3 เส้นระดับเอว + 1 เส้นระดับเข่า กันไหล่/ขาเกี่ยวกำแพง)
+    function botFree(pos,d,len){
+      const base=pos.clone();base.y+=0.9;const px=-d.z,pz=d.x,pl=Math.hypot(px,pz)||1;
+      for(const o of[0,0.42,-0.42]){const s=base.clone();s.x+=px/pl*o;s.z+=pz/pl*o;if(!hasMovementLineOfSight(s,s.clone().addScaledVector(d,len)))return false;}
+      const k=pos.clone();k.y+=0.6;return hasMovementLineOfSight(k,k.clone().addScaledVector(d,len));
+    }
     const findNearestNav=(pos,ph=false)=>{let bi=0,bs=Infinity;for(let i=0;i<navNodes.length;i++){const d=pos.distanceTo(navNodes[i].pos)+(ph&&!navNodes[i].isHigh?14:0);if(d<bs){bs=d;bi=i;}}return bi;};
-    const pickNextNav=b=>{const cur=navNodes[b.navNodeIdx];if(!cur||!cur.neighbors.length)return Math.floor(Math.random()*navNodes.length);const cd=cur.neighbors.filter(n=>n!==b.prevNavNodeIdx),pl=cd.length?cd:cur.neighbors;if(b.weaponId==='sr_l115'){const hi=pl.filter(n=>navNodes[n].isHigh);if(hi.length&&Math.random()<0.75)return hi[Math.floor(Math.random()*hi.length)];}return pl[Math.floor(Math.random()*pl.length)];};
+    const pickNextNav=b=>{const cur=navNodes[b.navNodeIdx];if(!cur||!cur.neighbors.length)return Math.floor(Math.random()*navNodes.length);const cd=cur.neighbors.filter(n=>n!==b.prevNavNodeIdx),pl=cd.length?cd:cur.neighbors;if(b.weaponId==='sr_l115'){const hi=pl.filter(n=>navNodes[n].isHigh);if(hi.length&&Math.random()<0.75)return hi[Math.floor(Math.random()*hi.length)];}let bN=pl[0],bsc=-1e9;for(const n of pl){const np=navNodes[n].pos;let md=60;for(const o of bots){if(o===b||!o.alive||o.team!==b.team)continue;const dd=Math.hypot(o.pos.x-np.x,o.pos.z-np.z);if(dd<md)md=dd;}const sc=md+Math.random()*28;if(sc>bsc){bsc=sc;bN=n;}}return bN;};
     function findRealCover(bp,tp){
       const targetEye=tp.clone().add(new THREE.Vector3(0,1.5,0)), candidates=[], nearby=[];
       for(const b of colliders){
@@ -1289,15 +1612,35 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       }
       return best;
     }
-    function steerBot(pos,dir){const eye=pos.clone().add(new THREE.Vector3(0,0.9,0));if(hasMovementLineOfSight(eye,eye.clone().addScaledVector(dir,2.3)))return dir;const ld=dir.clone().applyAxisAngle(UP_VEC,0.65),rd=dir.clone().applyAxisAngle(UP_VEC,-0.65),lc=hasMovementLineOfSight(eye,eye.clone().addScaledVector(ld,2.6)),rc=hasMovementLineOfSight(eye,eye.clone().addScaledVector(rd,2.6));if(lc&&!rc)return ld;if(rc&&!lc)return rd;if(lc&&rc)return Math.random()<0.5?ld:rd;const sl=dir.clone().applyAxisAngle(UP_VEC,1.45);return hasMovementLineOfSight(eye,eye.clone().addScaledVector(sl,2.0))?sl:dir.clone().applyAxisAngle(UP_VEC,-1.45);}
-    function assignBotLoadout(){const pr=['ar_aug','ak47','m4a1','thompson','mp40','vector','kar98','sg_spas','sr_l115','smg_kriss','lmg_mk46'],ps=['p_deagle','p_glock','p_usp','revolver'],pId=pr[Math.floor(Math.random()*pr.length)],sId=ps[Math.floor(Math.random()*ps.length)],pw=WEAPONS[pId];return{primary:pId,secondary:sId,activeGun:pId,magAmmo:pw.mag,spareMags:pw.shellByShell?pw.reserveShells:pw.magsCount,secMagAmmo:WEAPONS[sId].mag,secSpareMags:WEAPONS[sId].magsCount,smokeLeft:1,fragLeft:2};}
+    function steerBot(pos,dir,b){
+      const now=performance.now();
+      if(b&&b.steerOut&&now-b.steerT<120&&b.steerIn.dot(dir)>0.95)return b.steerOut.clone();
+      let out=null;
+      if(botFree(pos,dir,2.4)){out=dir;if(b)b.steerSide=0;}
+      else{
+        const side=(b&&b.steerSide)||(Math.random()<0.5?1:-1);
+        for(const an of[0.5,0.9,1.3,1.7]){for(const s of[side,-side]){const d=dir.clone().applyAxisAngle(UP_VEC,an*s);if(botFree(pos,d,2.1)){out=d;if(b)b.steerSide=s;break;}}if(out)break;}
+        if(!out){out=dir.clone().negate();if(b)b.steerSide=-(b.steerSide||1);}
+      }
+      if(b){b.steerIn=dir.clone();b.steerOut=out.clone();b.steerT=now;}
+      return out;
+    }
+    function assignBotLoadout(){const pr=['ar_aug','ak47','m4a1','thompson','mp40','vector','kar98','sg_spas','sr_l115','smg_kriss','lmg_mk46'],ps=['p_deagle','p_glock','p_usp','revolver'],p0=pr[Math.floor(Math.random()*pr.length)],s0=ps[Math.floor(Math.random()*ps.length)],pId=(p0==='vector'&&Math.random()<0.4)?'vector_dual':p0,sId=(s0==='p_glock'&&Math.random()<0.4)?'dual_glock':s0,pw=WEAPONS[pId];return{primary:pId,secondary:sId,activeGun:pId,magAmmo:pw.mag,spareMags:pw.shellByShell?pw.reserveShells:pw.magsCount,secMagAmmo:WEAPONS[sId].mag,secSpareMags:WEAPONS[sId].magsCount,smokeLeft:1,fragLeft:2};}
 
+    function botSpawnPos(tm){ // สุ่มจุดเกิดกว้าง ๆ หลีกเลี่ยงสิ่งกีดขวางและบอทตัวอื่น
+      const pts=spawnPoints[tm],dir=tm==='red'?1:-1;let best=null,bd=-1;
+      for(let a=0;a<18;a++){const p=pts[Math.floor(Math.random()*pts.length)].clone();p.x+=(Math.random()-0.5)*46;p.z+=Math.random()*24*dir;p.x=Math.max(-MAP_HALF+4,Math.min(MAP_HALF-4,p.x));
+        if(colliders.some(c=>p.x>c.minX-0.8&&p.x<c.maxX+0.8&&p.z>c.minZ-0.8&&p.z<c.maxZ+0.8&&c.maxY>0.4&&c.minY<1.6))continue;
+        let md=99;for(const o of bots)if(o.alive&&o.pos){const d=Math.hypot(o.pos.x-p.x,o.pos.z-p.z);if(d<md)md=d;}
+        if(md>bd){bd=md;best=p;}if(md>8)break;}
+      return best||pts[0].clone();
+    }
     function spawnBots(tot,pTeam,ex){
       for(const b of bots)scene.remove(b.mesh); bots.length=0;
       const names=['Alpha','Viper','Ghost','Kobra','Raven','Delta','Titan','Nova','Wolf','Reaper','Shadow','Hawk'], sh=tot<=20;
       const rn=ex?ex.red:Math.floor(tot/2)-(pTeam==='red'?1:0), bn=ex?ex.blue:Math.ceil(tot/2)-(pTeam==='blue'?1:0);
       const mk=(tm,idx,ov)=>{
-        const ld=assignBotLoadout(), bs=spawnPoints[tm][idx%spawnPoints[tm].length], sp=bs.clone().add(new THREE.Vector3((Math.random()-0.5)*16,0,(Math.random()-0.5)*12));
+        const ld=assignBotLoadout(), sp=botSpawnPos(tm);
         sp.x=Math.max(-MAP_HALF+4,Math.min(MAP_HALF-4,sp.x)); sp.z=Math.max(-MAP_HALF+4,Math.min(MAP_HALF-4,sp.z));
         if(ov){if(ov.weaponId&&WEAPONS[ov.weaponId]){ld.activeGun=ov.weaponId;ld.magAmmo=WEAPONS[ov.weaponId].mag;}sp.copy(ov.pos);}const m=createCharacterModel(tm,ld.activeGun,sh); m.position.copy(sp); m.visible=!ov||ov.alive; scene.add(m);
         bots.push({id:ov?.id||`bot_${tm}_${idx}`,name:ov?.name||`[BOT] ${names[idx%names.length]}${idx>=12?idx:''}`,team:tm,...ld,weaponId:ld.activeGun,courage:0.18+Math.random()*0.78,pos:sp,vel:new THREE.Vector3(),knockback:new THREE.Vector3(),yaw:ov?ov.yaw:(tm==='red'?Math.PI:0),hp:ov?ov.hp:100,armor:50,alive:ov?ov.alive:true,respawnAt:ov&&!ov.alive?performance.now()+2500:0,nextFire:0,nextGrenade:performance.now()+7000+Math.random()*12000,reloadingUntil:0,reactReadyAt:0,nextCoverCheck:performance.now()+Math.random()*1200,strafeDir:Math.random()<0.5?-1:1,strafeTimer:0,crouching:false,inCoverUntil:0,coverPos:null,alertPos:null,alertUntil:0,cachedTarget:null,navNodeIdx:findNearestNav(sp),prevNavNodeIdx:-1,stuckTimer:0,kills:ov?.kills||0,deaths:ov?.deaths||0,headshots:ov?.hs||0,mesh:m});
@@ -1311,7 +1654,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       window.__showDmg?.(bot.pos.clone().add(new THREE.Vector3(0,hs?1.9:1.4,0)),raw,hs);
       const res=applyArmor(raw,bot.armor,hs); bot.armor=res.newArmor; bot.hp-=res.hpDmg;
       bot.knockback.addScaledVector(hitDir.clone().normalize(),Math.min(9,1.8+raw*0.06)); bot.knockback.y+=hs?1.4:0.3;
-      const sp=bot.pos.clone().sub(hitDir.clone().multiplyScalar(22)); bot.alertPos=sp; bot.alertUntil=performance.now()+5000;
+      const sp=bot.pos.clone().sub(hitDir.clone().multiplyScalar(22)); sp.y=bot.pos.y; bot.alertPos=sp; bot.alertUntil=performance.now()+5000; bot.alertFromSound=false; bot.alertSetT=performance.now(); bot.lastHitT=performance.now(); bot.attackerKey=attId; bot.aware=bot.aware||{}; bot.aware[attId]=Math.max(bot.aware[attId]||0,0.7);
       if(bot.hp<35+(1-bot.courage)*45&&performance.now()>bot.inCoverUntil&&performance.now()>bot.nextCoverCheck){
         bot.nextCoverCheck=performance.now()+1400;
         const cov=findRealCover(bot.pos,sp);
@@ -1326,14 +1669,22 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       }
     }
 
+    const botCap=w=>w.dual?w.mag/2:w.mag, botPartial=w=>!!((w.dual||w.splitTo)&&!w.shellByShell);
+    const botHasRes=(b,w)=>botPartial(w)?Math.floor(b.spareMags*botCap(w)+1e-6)>0:b.spareMags>0;
+    function botMuzzle(b,gi,bEye,dir){
+      const wh=b.mesh.userData.weaponHolder,g=wh&&(wh.children[gi]||wh.children[0]),m=g&&g.userData.muzzle;let mz;
+      if(m){b.mesh.updateWorldMatrix(true,true);mz=g.localToWorld(m.clone());}else mz=bEye.clone().addScaledVector(dir,0.8);
+      if(segBlocked(bEye,mz))mz.copy(bEye).addScaledVector(dir,0.1);
+      return mz;
+    }
     function tryBotFire(b,tgt,bEye,now,dp){
       if(now<b.reactReadyAt||now<b.nextFire||b.reloadingUntil>0||!hasLineOfSight(bEye,tgt.eye))return;
       const w=WEAPONS[b.weaponId];
-      if(w.maxRange&&tgt.dist>w.maxRange*0.85)return;
+      {const _s=ballisticSolve(w.ball,tgt.dist);if(!_s.reach||_s.dmgRatio<0.15||_s.tof>4)return;}
       if(b.magAmmo<=0){
-        if(b.spareMags>0){
-          const rm=w.shellByShell?1800:w.reloadTime*1000;
-          b.reloadingUntil=now+rm;
+        if(botHasRes(b,w)){
+          const rm=w.shellByShell?1800:(w.dual?((WEAPONS[w.splitTo]||w).reloadTime*1000*((w.mag-b.magAmmo)>botCap(w)?2:1)):w.reloadTime*1000);
+          b.reloadingUntil=now+rm;b.mesh.userData.rlDur=rm;
           if(Math.random()<dp.coverChance){const cov=findRealCover(b.pos,tgt.pos);if(cov){b.coverPos=cov;b.inCoverUntil=now+Math.min(3000,rm+700);}}
         } else if(b.weaponId!==b.secondary&&(b.secMagAmmo>0||b.secSpareMags>0)){
           b.weaponId=b.secondary;b.magAmmo=b.secMagAmmo;b.spareMags=b.secSpareMags;
@@ -1344,40 +1695,74 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
         return;
       }
       b.magAmmo--; b.nextFire=now+(60000/w.rpm)*dp.fireMul*(0.85+Math.random()*0.4);
-      const tF=tgt.dist/w.speed,aim=tgt.eye.clone();aim.y+=0.5*w.gravity*tF*tF*dp.leadMult;
-      const dir=aim.sub(bEye).normalize(),inc=b.weaponId==='sr_l115'?dp.inacc*0.5:dp.inacc;
+      b.burst=(b.burst||0)+1;if(b.burst>=(b.burstMax||(b.burstMax=3+Math.floor(Math.random()*6)))){b.burst=0;b.burstMax=0;if(w.auto)b.nextFire+=300+Math.random()*600;}
+      const _bs=ballisticSolve(w.ball,tgt.dist),tF=_bs.tof,aim=tgt.eye.clone();aim.y+=Math.tan(_bs.elev)*tgt.dist*dp.leadMult;
+      const dir=aim.sub(bEye).normalize(),inc=(b.weaponId==='sr_l115'?dp.inacc*0.6:dp.inacc)*2.4*(1+tgt.dist/30)*(Math.hypot(b.vel.x,b.vel.z)>1?1.6:1)*(b.crouching||b.prone?0.75:1)*(now-(b.lastHitT||0)<900?1.6:1);
       dir.x+=(Math.random()-0.5)*inc;dir.y+=(Math.random()-0.5)*inc;dir.z+=(Math.random()-0.5)*inc;dir.normalize();
-      SFX.playShoot(b.weaponId,bEye,false);const mz=bEye.clone().addScaledVector(dir,0.8);spawnCasing(b.weaponId,bEye.clone().addScaledVector(dir,0.25),b.yaw);
-      for(let p=0;p<w.pellets;p++){const pd=dir.clone();if(w.pellets>1){pd.x+=(Math.random()-0.5)*0.075;pd.y+=(Math.random()-0.5)*0.075;pd.z+=(Math.random()-0.5)*0.075;}spawnBullet(mz,pd,b.weaponId,b.id,b.name,b.team,false);if(gameMode==='online')sendOnlineEvent({type:'shoot',fromUid:b.id,fromName:b.name,weaponId:b.weaponId,pos:mz.toArray(),dir:pd.toArray(),team:b.team});}
+      SFX.playShoot(b.weaponId,bEye,false);b.lastFireT=now;emitSound(b.pos,SOUND_R[WCLASS[b.weaponId]]||70,b.team,b.id);b.flashUntil=now+45;const gi=w.dual?(b.gi=((b.gi||0)^1)):0;const mz=botMuzzle(b,gi,bEye,dir);const dir2=bEye.clone().addScaledVector(dir,Math.max(8,tgt.dist)).sub(mz).normalize();spawnCasing(b.weaponId,bEye.clone().lerp(mz,0.5),b.yaw);
+      for(let p=0;p<w.pellets;p++){const pd=dir2.clone();if(w.pellets>1){pd.x+=(Math.random()-0.5)*0.075;pd.y+=(Math.random()-0.5)*0.075;pd.z+=(Math.random()-0.5)*0.075;}spawnBullet(mz,pd,b.weaponId,b.id,b.name,b.team,false);if(gameMode==='online')sendOnlineEvent({type:'shoot',fromUid:b.id,fromName:b.name,weaponId:b.weaponId,pos:mz.toArray(),dir:pd.toArray(),team:b.team});}
     }
 
     let aiTick=0;
     function updateBots(dt,now){
       aiTick++; const bk=aiTick%3, dp=DIFF_PARAMS[botDifficulty]||DIFF_PARAMS.normal;
+      // รายชื่อผู้ถูกมองเห็นได้ (สร้างครั้งเดียวต่อรอบ)
+      const ents=[];
+      if(player.alive)ents.push({key:currentUser.uid,team:player.team,pos:player.pos,eyeY:player.prone?0.5:player.crouch?1.1:1.6,mv:Math.hypot(player.vel.x,player.vel.z),crouch:player.crouch,prone:player.prone,fireT:player.lastFireT||0});
+      for(const ob of bots)if(ob.alive)ents.push({key:ob.id,team:ob.team,pos:ob.pos,eyeY:ob.prone?0.45:ob.crouching?1.1:1.55,mv:Math.hypot(ob.vel.x,ob.vel.z),crouch:ob.crouching,prone:ob.prone,fireT:ob.lastFireT||0});
+      if(gameMode==='online')for(const[uid,rp]of remotePlayers){const rd=rp.data;if(rd.isBot||!rd.alive)continue;ents.push({key:uid,team:rd.team,pos:rp.mesh.position,eyeY:rd.prone?0.45:rd.crouch?1.1:1.55,mv:3,crouch:!!rd.crouch,prone:!!rd.prone,fireT:0});}
       for(let i=0;i<bots.length;i++){
         const b=bots[i];
         if(!b.alive){
           if(offlineSubMode!=='permadeath'&&now>=b.respawnAt){
             const ld=assignBotLoadout(); Object.assign(b,ld); b.weaponId=ld.activeGun;
             scene.remove(b.mesh); b.mesh=createCharacterModel(b.team,b.weaponId,bots.length<=20); scene.add(b.mesh);
-            const sp=spawnPoints[b.team][Math.floor(Math.random()*spawnPoints[b.team].length)].clone(); sp.x+=(Math.random()-0.5)*12; sp.z+=(Math.random()-0.5)*10;
+            const sp=botSpawnPos(b.team);
             b.pos.copy(sp); b.vel.set(0,0,0); b.knockback.set(0,0,0); b.hp=100; b.armor=50; b.alive=true; b.reloadingUntil=0; b.cachedTarget=null; b.navNodeIdx=findNearestNav(sp); b.prevNavNodeIdx=-1;
+            b.aware={};b.lastKnown=null;b.path=null;b.targetKey=null;b.alertUntil=0;b.scanUntil=0;b.stk=null;b.unstuckUntil=0;b.stuckCount=0;b.coverPos=null;b.inCoverUntil=0;
           }
           continue;
         }
         if(b.reloadingUntil>0&&now>=b.reloadingUntil){
           b.reloadingUntil=0; const w=WEAPONS[b.weaponId];
-          if(w.shellByShell){const tk=Math.min(w.mag-b.magAmmo,b.spareMags);b.magAmmo+=tk;b.spareMags-=tk;} else if(b.spareMags>0){b.spareMags--;b.magAmmo=w.mag;}b.outOfAmmo=false;
+          if(w.shellByShell){const tk=Math.min(w.mag-b.magAmmo,b.spareMags);b.magAmmo+=tk;b.spareMags-=tk;} else if(botPartial(w)){const cp=botCap(w),tk=Math.min(w.mag-b.magAmmo,Math.floor(b.spareMags*cp+1e-6));b.magAmmo+=tk;b.spareMags=Math.max(0,b.spareMags-tk/cp);}else if(b.spareMags>0){b.spareMags--;b.magAmmo=w.mag;}b.outOfAmmo=false;
         }
         const bEye=b.pos.clone().add(new THREE.Vector3(0,b.prone?0.45:b.crouching?1.1:1.58,0));
+        // ================= การรับรู้: มุมมอง(FOV) + ระยะ + สิ่งบัง + เวลาสังเกตเห็น =================
         if(i%3===bk){
-          let best=null,bestD=92,ne=0,na=0;
-          if(player.alive){const d=bEye.distanceTo(getEyePos());if(player.team!==b.team){if(d<28)ne++;if(d<bestD&&hasLineOfSight(bEye,getEyePos())){bestD=d;best={pos:player.pos.clone(),eye:getEyePos(),dist:d};}}else if(d<20)na++;}
-          for(let j=0;j<bots.length;j++){const ob=bots[j];if(!ob.alive||j===i)continue;const d=b.pos.distanceTo(ob.pos);if(ob.team===b.team){if(d<20)na++;continue;}if(d<28)ne++;if(d<bestD){const oe=ob.pos.clone().add(new THREE.Vector3(0,ob.prone?0.45:ob.crouching?1.1:1.55,0));if(hasLineOfSight(bEye,oe)){bestD=d;best={pos:ob.pos.clone(),eye:oe,dist:d};}}}
-          if(gameMode==='online')for(const[,rp]of remotePlayers){const rd=rp.data;if(rd.isBot||!rd.alive||rd.team===b.team)continue;const re=rp.mesh.position.clone().add(new THREE.Vector3(0,rd.prone?0.45:rd.crouch?1.1:1.55,0)),d=bEye.distanceTo(re);if(d<28)ne++;if(d<bestD&&hasLineOfSight(bEye,re)){bestD=d;best={pos:rp.mesh.position.clone(),eye:re,dist:d};}}
-          if(best)for(const sz of smokeZones)if(now<sz.end&&best.eye.distanceTo(sz.pos)<8.5){best=null;break;}
-          if(best&&!b.cachedTarget)b.reactReadyAt=now+dp.reactionMs;
-          b.cachedTarget=best; b.outnumbered=ne>na+1;
+          const step=Math.min(0.5,(now-(b.lastPerc||now-100))/1000); b.lastPerc=now;
+          if(!b.aware)b.aware={};
+          let best=null,bestScore=Infinity,ne=0,na=0;
+          for(const e of ents){
+            if(e.key===b.id)continue;
+            const dx=e.pos.x-b.pos.x,dz=e.pos.z-b.pos.z,dy=e.pos.y-b.pos.y,d=Math.hypot(dx,dy,dz);
+            if(e.team===b.team){if(d<20)na++;continue;}
+            if(d<28)ne++;
+            let seen=false,ang=0,vr=1,ee=null;
+            let vm=e.prone?0.5:e.crouch?0.7:1; if(e.mv<0.6)vm*=0.8; if(now-e.fireT<800)vm*=1.6;
+            vr=dp.view*vm;
+            if(d<=vr){
+              ang=Math.abs(wrapPi(Math.atan2(-dx,-dz)-b.yaw));
+              if(ang<=dp.fov||d<2.5){
+                ee=new THREE.Vector3(e.pos.x,e.pos.y+e.eyeY,e.pos.z);
+                seen=hasLineOfSight(bEye,ee)||hasLineOfSight(bEye,new THREE.Vector3(e.pos.x,e.pos.y+e.eyeY*0.55,e.pos.z));
+                if(seen)for(const sz of smokeZones)if(now<sz.end&&segmentPointDistanceSq(bEye,ee,sz.pos)<72){seen=false;break;}
+              }
+            }
+            if(seen){
+              const spot=(dp.reactionMs/1000+0.15)*(0.55+1.1*d/vr)*(1+0.9*Math.min(1,ang/dp.fov))*(e.mv>3?0.8:1)/(now-e.fireT<800?2:1);
+              const lvl=b.aware[e.key]=Math.min(1.5,(b.aware[e.key]||0)+step/spot);
+              if(lvl>=1){
+                const sc=d*(b.targetKey===e.key?0.72:1)*(b.attackerKey===e.key&&now-(b.lastHitT||0)<4000?0.6:1);
+                if(sc<bestScore){bestScore=sc;best={key:e.key,pos:e.pos.clone(),eye:ee,dist:bEye.distanceTo(ee)};}
+              }
+            } else if(b.aware[e.key]!==undefined){const l=b.aware[e.key]-step*0.6;if(l<=0)delete b.aware[e.key];else b.aware[e.key]=l;}
+          }
+          if(best){
+            if(!b.cachedTarget)b.reactReadyAt=now+dp.reactionMs*0.35+60+Math.random()*120;
+            b.targetKey=best.key;b.lastKnown={pos:best.pos.clone(),t:now,key:best.key};b.cachedTarget=best;
+          } else b.cachedTarget=null;
+          b.outnumbered=ne>na+1;
         }
         const tgt=b.cachedTarget, spd=(b.weaponId==='smg_kriss'?6.2:5.4)*(dp.speedMul||1); b.crouching=false; b.prone=false;
         const sep=new THREE.Vector3();
@@ -1385,9 +1770,9 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
           if(j===i)continue;
           const ob=bots[j];if(!ob.alive)continue;
           const dx=b.pos.x-ob.pos.x,dz=b.pos.z-ob.pos.z,d2=dx*dx+dz*dz;
-          if(d2<6.25){
-            const d=Math.sqrt(Math.max(0.001,d2)),want=ob.team===b.team?2.15:1.75;
-            const force=Math.min(6.5,Math.max(0,(want-d)*5.5));
+          if(d2<(ob.team===b.team?64:6.25)){
+            const d=Math.sqrt(Math.max(0.001,d2)),want=ob.team===b.team?6:1.75;
+            const force=Math.min(ob.team===b.team?3.2:6.5,Math.max(0,(want-d)*(ob.team===b.team?1.4:5.5)));
             if(d2>0.001){sep.x+=dx/d*force;sep.z+=dz/d*force;}
             else{const a=(i<j?1:-1)*(i+j+1)*2.399;sep.x+=Math.cos(a)*force;sep.z+=Math.sin(a)*force;}
           }
@@ -1397,47 +1782,92 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
           if(d2<6.25&&d2>0.001){const d=Math.sqrt(d2),force=Math.min(6.5,Math.max(0,(1.9-d)*5));sep.x+=dx/d*force;sep.z+=dz/d*force;}
         }
         sep.clampLength(0,7);
-        let dDir=new THREE.Vector3(), mSpd=spd;
+        let dDir=new THREE.Vector3(), mSpd=spd, lookYaw=b.yaw, facingMove=false;
         if(tgt&&((b.outnumbered&&b.courage<0.6)||(b.hp<40&&b.courage<0.5))&&now>b.inCoverUntil&&now>b.nextCoverCheck){
           b.nextCoverCheck=now+1400;
           const cov=findRealCover(b.pos,tgt.pos);if(cov){b.coverPos=cov;b.inCoverUntil=now+3200;}
         }
+        // ================= การตัดสินใจ =================
         if(now<b.inCoverUntil&&b.coverPos){
-          const tc=b.coverPos.clone().sub(b.pos);tc.y=0; if(tc.length()>1.0){dDir.copy(tc.normalize());b.yaw=Math.atan2(-dDir.x,-dDir.z);}else{b.crouching=true;mSpd=0;}
-        } else if(tgt&&b.reloadingUntil===0){
-          const toT=tgt.eye.clone().sub(bEye); b.yaw=Math.atan2(-toT.x,-toT.z);
+          const gd=botGoalDir(b,b.coverPos,now);
+          if(gd){dDir.copy(gd);facingMove=true;}else{b.crouching=true;mSpd=0;if(tgt)lookYaw=yawTo(b.pos,tgt.pos);}
+        } else if(tgt){
+          lookYaw=yawTo(b.pos,tgt.pos);
+          const toT=tgt.eye.clone().sub(bEye);
           if(b.mesh.userData.upperBody)b.mesh.userData.upperBody.rotation.x=Math.max(-0.55,Math.min(0.55,Math.atan2(toT.y,Math.hypot(toT.x,toT.z))));
           b.strafeTimer-=dt; if(b.strafeTimer<=0){b.strafeDir=Math.random()<0.5?-1:1;b.strafeTimer=1+Math.random()*1.4;}
+          const rl=b.reloadingUntil>0;
           if((b.weaponId==='sr_l115'&&tgt.dist>16)||(tgt.dist>28&&b.courage<0.55)){b.crouching=true;mSpd=0;}
-          else{const rt=new THREE.Vector3(Math.cos(b.yaw),0,-Math.sin(b.yaw)),fw=new THREE.Vector3(-Math.sin(b.yaw),0,-Math.cos(b.yaw));dDir.addScaledVector(rt,b.strafeDir*0.6);const id=b.weaponId==='sg_spas'?9:b.weaponId==='smg_kriss'?14:21;if(tgt.dist>id*1.12)dDir.addScaledVector(fw,b.courage>0.6?0.7:0.42);else if(tgt.dist<id*0.72)dDir.addScaledVector(fw,-0.85);if(tgt.dist<3.2)dDir.addScaledVector(fw,-1.2);if(dDir.lengthSq()>0.01)dDir.normalize();}
+          else{
+            const rt=new THREE.Vector3(Math.cos(lookYaw),0,-Math.sin(lookYaw)),fw=new THREE.Vector3(-Math.sin(lookYaw),0,-Math.cos(lookYaw));
+            if(!botFree(b.pos,rt.clone().multiplyScalar(b.strafeDir),1.5))b.strafeDir*=-1;
+            dDir.addScaledVector(rt,b.strafeDir*0.6);
+            const id=b.weaponId==='sg_spas'?9:b.weaponId==='smg_kriss'?14:21;
+            if(!rl){if(tgt.dist>id*1.12)dDir.addScaledVector(fw,b.courage>0.6?0.7:0.42);else if(tgt.dist<id*0.72)dDir.addScaledVector(fw,-0.85);}
+            if(tgt.dist<3.2)dDir.addScaledVector(fw,-1.2);
+            if(dDir.lengthSq()>0.01)dDir.normalize();
+          }
           if(b.fragLeft>0&&now>=b.nextGrenade&&tgt.dist>11&&tgt.dist<34&&Math.random()<0.5){b.fragLeft--;b.nextGrenade=now+11000;const gd=tgt.eye.clone().sub(bEye).add(new THREE.Vector3(0,3.5,0)).normalize();{const go=bEye.clone().addScaledVector(gd,0.8);throwGrenade(go,gd,'g_frag',b.id,b.name,b.team,22);if(gameMode==='online')sendOnlineEvent({type:'grenade',fromUid:b.id,fromName:b.name,weaponId:'g_frag',pos:go.toArray(),dir:gd.toArray(),power:22,team:b.team});}}
         } else {
           if(b.mesh.userData.upperBody)b.mesh.userData.upperBody.rotation.x=0;
-          if(now<b.alertUntil&&b.alertPos){const ta=b.alertPos.clone().sub(b.pos);ta.y=0;if(ta.length()>2){dDir.copy(ta.normalize());b.yaw=Math.atan2(-dDir.x,-dDir.z);}else b.alertUntil=0;}
-          else{
+          const lk=b.lastKnown;
+          if(now<(b.scanUntil||0)){                       // ยืนกวาดสายตามองรอบ ๆ หลังเดินไปถึงจุดที่สงสัย
+            mSpd=0; lookYaw=(b.scanBase||b.yaw)+Math.sin(now*0.0035)*1.25;
+          } else if(lk&&now-lk.t<dp.memory*1000){          // เสียศัตรูไป -> เดินไปจุดที่เห็นล่าสุด (ไม่สับสน/หยุดเฉย)
+            const gd=botGoalDir(b,lk.pos,now);
+            if(gd){dDir.copy(gd);facingMove=true;mSpd*=0.85;}
+            else{b.lastKnown=null;b.scanUntil=now+2200;b.scanBase=b.yaw;}
+          } else if(now<b.alertUntil&&b.alertPos){         // ได้ยินเสียง/โดนยิง -> หันไปทางเสียงก่อน แล้วค่อยเดินไปตรวจ
+            const ya=yawTo(b.pos,b.alertPos);lookYaw=ya;
+            if(Math.abs(wrapPi(ya-b.yaw))>0.9)mSpd=0;
+            else{const gd=botGoalDir(b,b.alertPos,now);if(gd){dDir.copy(gd);facingMove=true;mSpd*=0.8;}else{b.alertUntil=0;b.scanUntil=now+1800;b.scanBase=b.yaw;}}
+          } else {
             const needMed=b.hp<78,needArmor=b.armor<42,needAmmo=(b.spareMags<2&&b.secSpareMags<2);
             let pickup=null,pickupDist=25;
             for(const l of lootItems){
               if(!l.active||!(l.type==='medkit'&&needMed||l.type==='armor'&&needArmor||l.type==='ammo'&&needAmmo))continue;
               const d=b.pos.distanceTo(l.pos);if(d<pickupDist){pickup=l;pickupDist=d;}
             }
-            if(pickup){const to=pickup.pos.clone().sub(b.pos);to.y=0;if(to.length()>1.1){dDir.copy(to.normalize());b.yaw=Math.atan2(-dDir.x,-dDir.z);}else dDir.set(0,0,0);}
-            else{const gl=navNodes[b.navNodeIdx].pos,tn=gl.clone().sub(b.pos);if(Math.hypot(tn.x,tn.z)<2.2&&Math.abs(tn.y-b.pos.y)<2){b.prevNavNodeIdx=b.navNodeIdx;b.navNodeIdx=pickNextNav(b);b.stuckTimer=0;}else{dDir.set(tn.x,0,tn.z).normalize();b.yaw=Math.atan2(-dDir.x,-dDir.z);}}
+            if(pickup){const gd=botGoalDir(b,pickup.pos,now);if(gd){dDir.copy(gd);facingMove=true;}}
+            else{
+              const gl=navNodes[b.navNodeIdx].pos;
+              if(Math.hypot(gl.x-b.pos.x,gl.z-b.pos.z)<2.2&&Math.abs(gl.y-b.pos.y)<2){b.prevNavNodeIdx=b.navNodeIdx;b.navNodeIdx=pickNextNav(b);}
+              const gd=botGoalDir(b,navNodes[b.navNodeIdx].pos,now);if(gd){dDir.copy(gd);facingMove=true;}
+            }
           }
         }
         if(tgt&&!(now<b.inCoverUntil&&b.coverPos)){const wc=WCLASS[b.weaponId];if((wc==='sr'&&tgt.dist>40)||(wc==='lmg'&&tgt.dist>55)){b.prone=true;b.crouching=false;mSpd=0;}else if(!b.crouching&&tgt.dist>16&&(((now/3000)|0)+i)%3===0){b.crouching=true;mSpd*=0.5;}}
-        if(tgt&&!(now<b.inCoverUntil&&b.coverPos))tryBotFire(b,tgt,b.prone?bEye.clone().setY(b.pos.y+0.5):b.crouching?bEye.clone().setY(b.pos.y+1.1):bEye,now,dp);
-        if(mSpd>0&&dDir.lengthSq()>0.01){const st=steerBot(b.pos,dDir);b.vel.x=st.x*mSpd+sep.x+b.knockback.x;b.vel.z=st.z*mSpd+sep.z+b.knockback.z;}else{b.vel.x=sep.x*0.5+b.knockback.x;b.vel.z=sep.z*0.5+b.knockback.z;}
+        // ================= เดิน + หลบสิ่งกีดขวาง + แก้ติด =================
+        if(now<(b.unstuckUntil||0)&&b.unstuckDir){dDir.copy(b.unstuckDir);mSpd=Math.max(mSpd,spd*0.8);}
+        const wantMove=mSpd>0&&dDir.lengthSq()>0.01;
+        let st=null;
+        if(wantMove){st=steerBot(b.pos,dDir,b);b.vel.x=st.x*mSpd+sep.x+b.knockback.x;b.vel.z=st.z*mSpd+sep.z+b.knockback.z;}else{b.vel.x=sep.x*0.5+b.knockback.x;b.vel.z=sep.z*0.5+b.knockback.z;}
+        if(facingMove&&st&&now>=(b.unstuckUntil||0))lookYaw=Math.atan2(-st.x,-st.z);
+        const rate=dp.turn*(tgt?1.5:1)*(now-(b.lastHitT||0)<1200?1.8:1);
+        b.yaw+=Math.max(-rate*dt,Math.min(rate*dt,wrapPi(lookYaw-b.yaw)));
+        if(tgt&&!(now<b.inCoverUntil&&b.coverPos)&&Math.abs(wrapPi(yawTo(b.pos,tgt.pos)-b.yaw))<0.3)tryBotFire(b,tgt,b.prone?bEye.clone().setY(b.pos.y+0.5):b.crouching?bEye.clone().setY(b.pos.y+1.1):bEye,now,dp);
         b.knockback.multiplyScalar(Math.exp(-4.2*dt));
-        b.vel.y+=b.knockback.y;b.knockback.y=0;b.vel.y-=24*dt; const prev=b.pos.clone(),gr=moveEntityWithCollision(b.pos,b.vel,0.42,1.9,dt);
-        if(mSpd>0&&prev.distanceTo(b.pos)<0.015){b.stuckTimer+=dt;if(gr&&b.stuckTimer>0.45&&b.stuckTimer<0.6)b.vel.y=8;else if(b.stuckTimer>1.3){b.stuckTimer=0;b.navNodeIdx=findNearestNav(b.pos);b.prevNavNodeIdx=-1;}}else b.stuckTimer=0;
+        b.vel.y+=b.knockback.y;b.knockback.y=0;b.vel.y-=24*dt; const gr=moveEntityWithCollision(b.pos,b.vel,0.42,1.9,dt);
+        // ตรวจติด: ใน 0.65 วิ ขยับน้อยกว่า 0.35m ทั้งที่อยากเดิน -> สไลด์ข้าง/กระโดด/คำนวณเส้นทางใหม่/เปลี่ยนจุดหมาย
+        if(!b.stk)b.stk={x:b.pos.x,z:b.pos.z,t:now};
+        if(now-b.stk.t>650){
+          const mv=Math.hypot(b.pos.x-b.stk.x,b.pos.z-b.stk.z);
+          if(wantMove&&now>=(b.unstuckUntil||0)&&mv<0.35){
+            b.stuckCount=(b.stuckCount||0)+1;b.path=null;b.steerSide=0;b.stuckSide=-(b.stuckSide||1);
+            const px=-dDir.z*b.stuckSide,pz=dDir.x*b.stuckSide;b.unstuckDir=new THREE.Vector3(px-dDir.x*0.3,0,pz-dDir.z*0.3).normalize();b.unstuckUntil=now+550;
+            if(gr&&b.stuckCount%2===0)b.vel.y=8;
+            if(b.stuckCount>=3){b.stuckCount=0;b.navNodeIdx=Math.floor(Math.random()*navNodes.length);b.prevNavNodeIdx=-1;b.coverPos=null;b.inCoverUntil=0;b.lastKnown=null;b.alertUntil=0;}
+          } else if(mv>0.9)b.stuckCount=0;
+          b.stk={x:b.pos.x,z:b.pos.z,t:now};
+        }
+        {const hv=Math.hypot(b.vel.x,b.vel.z);if(hv>2.5&&!b.crouching&&!b.prone&&now-(b.stepT||0)>450){b.stepT=now;emitSound(b.pos,8,b.team,b.id+'_s');}}
         for(const l of lootItems)if(l.active&&b.pos.distanceTo(l.pos)<1.5){
           if(l.type==='medkit'&&b.hp<78){b.hp=Math.min(100,b.hp+45);consumeLoot(l,now);}
           else if(l.type==='armor'&&b.armor<42){b.armor=Math.min(100,b.armor+50);consumeLoot(l,now);}
           else if(l.type==='ammo'&&(b.spareMags<2||b.secSpareMags<2)){b.spareMags+=2;b.secSpareMags+=2;b.outOfAmmo=false;consumeLoot(l,now);}
         }
         b.mesh.position.copy(b.pos);b.mesh.rotation.y=b.yaw;{const ud=b.mesh.userData;ud.px=(ud.px||0)+((b.prone?-1.45:0)-(ud.px||0))*0.25;b.mesh.rotation.x=ud.px;}b.mesh.scale.y=b.crouching?0.78:1;
-        const sw=Math.hypot(b.vel.x,b.vel.z)>0.5?Math.sin(now*0.012)*0.45:0; b.mesh.userData.legL.rotation.x=sw;b.mesh.userData.legR.rotation.x=-sw;
+        const sw=Math.hypot(b.vel.x,b.vel.z)>0.5?Math.sin(now*0.012)*0.45:0; b.mesh.userData.legL.rotation.x=sw;b.mesh.userData.legR.rotation.x=-sw;{const ud=b.mesh.userData;if(i%3===bk){_bF.set(-Math.sin(b.yaw),0,-Math.cos(b.yaw));const dd=wallDist(_bO.copy(b.pos).setY(b.pos.y+(b.prone?0.4:b.crouching?1.0:1.35)),_bF,1.5);b.wlT=Math.max(0,Math.min(1,(1.5-dd)/1.0));}ud.wl=(ud.wl||0)+((b.wlT||0)-(ud.wl||0))*0.25;const wh=ud.weaponHolder;if(wh)wh.children.forEach((c,ci)=>{const f=c.userData&&c.userData.flashMesh;if(f){const on=now<(b.flashUntil||0)&&(wh.children.length===1||ci===(b.gi||0));f.visible=on;if(on)f.rotation.z=Math.random()*3;}});}GA.pose(b.mesh,now,(now-(b.lastFireT||0))/1000,b.reloadingUntil>0?1-(b.reloadingUntil-now)/(b.mesh.userData.rlDur||1000):-1,0,!!WEAPONS[b.weaponId].shellByShell);
       }
     }
 
@@ -1474,7 +1904,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
           else{if(rp.data.team!==pd.team||rp.mesh.userData.currentWeaponId!==pd.weaponId){const op=rp.mesh.position.clone();scene.remove(rp.mesh);rp.mesh=createCharacterModel(pd.team||'blue',pd.weaponId||'ar_aug');rp.mesh.position.copy(op);scene.add(rp.mesh);}rp.data=pd;rp.targetPos.set(pd.x||0,pd.y||0,pd.z||0);}
           rp.mesh.visible=!!pd.alive;}
         checkHostMigration();renderRoom();})});
-      const er=ref(db,`rooms/${rid}/events`);roomLis.push({r:er,fn:onChildAdded(er,s=>{const ev=s.val();if(!ev||ev.ts<matchTs-1500||ev.src===currentUser.uid)return;if(ev.type==='shoot'){const o=new THREE.Vector3(...ev.pos);SFX.playShoot(ev.weaponId,o,false);spawnBullet(o,new THREE.Vector3(...ev.dir),ev.weaponId,ev.fromUid,ev.fromName,ev.team,false);const rp=remotePlayers.get(ev.fromUid);if(rp){rp.flashUntil=performance.now()+55;rp.kick=1;}}else if(ev.type==='grenade')throwGrenade(new THREE.Vector3(...ev.pos),new THREE.Vector3(...ev.dir),ev.weaponId,ev.fromUid,ev.fromName,ev.team,ev.power||26);else if(ev.type==='hit'&&isHost&&bots.some(x=>x.id===ev.targetUid))damageBot(bots.find(x=>x.id===ev.targetUid),ev.dmg,ev.fromUid,ev.fromName,ev.weaponId,ev.headshot,ev.dir?new THREE.Vector3(...ev.dir):new THREE.Vector3(0,0,1));else if(ev.type==='hit'&&ev.targetUid===currentUser.uid)applyDamageToLocalPlayer(ev.dmg,ev.fromUid,ev.fromName,ev.weaponId,ev.headshot,ev.dir?new THREE.Vector3(...ev.dir):new THREE.Vector3(0,0,1));else if(ev.type==='kill'){const kb=isHost&&bots.find(x=>x.id===ev.killerUid);if(kb){kb.kills++;if(ev.headshot)kb.headshots=(kb.headshots||0)+1;}addKillfeed(ev.killerName,ev.killerTeam,ev.victimName,ev.victimTeam,ev.weaponId,ev.headshot);if(ev.pos){const kp=new THREE.Vector3(...ev.pos);spawnPhysicsRagdoll(kp,ev.yaw||0,ev.victimTeam,ev.weaponId,ev.dir?new THREE.Vector3(...ev.dir):new THREE.Vector3(0,0,1),ev.headshot,false);spawnDroppedLoot(kp);}if(ev.killerUid===currentUser.uid){player.kills++;if(ev.headshot)player.headshots++;showKillConfirmation(ev.victimName,ev.headshot);saveUserStat(1,0,ev.headshot?1:0);}}})});
+      const er=ref(db,`rooms/${rid}/events`);roomLis.push({r:er,fn:onChildAdded(er,s=>{const ev=s.val();if(!ev||ev.ts<matchTs-1500||ev.src===currentUser.uid)return;if(ev.type==='shoot'){const o=new THREE.Vector3(...ev.pos);SFX.playShoot(ev.weaponId,o,false);emitSound(o,SOUND_R[WCLASS[ev.weaponId]]||70,ev.team,ev.fromUid);spawnBullet(o,new THREE.Vector3(...ev.dir),ev.weaponId,ev.fromUid,ev.fromName,ev.team,false);const rp=remotePlayers.get(ev.fromUid);if(rp){rp.flashUntil=performance.now()+55;rp.kick=1;}}else if(ev.type==='grenade')throwGrenade(new THREE.Vector3(...ev.pos),new THREE.Vector3(...ev.dir),ev.weaponId,ev.fromUid,ev.fromName,ev.team,ev.power||26);else if(ev.type==='hit'&&isHost&&bots.some(x=>x.id===ev.targetUid))damageBot(bots.find(x=>x.id===ev.targetUid),ev.dmg,ev.fromUid,ev.fromName,ev.weaponId,ev.headshot,ev.dir?new THREE.Vector3(...ev.dir):new THREE.Vector3(0,0,1));else if(ev.type==='hit'&&ev.targetUid===currentUser.uid)applyDamageToLocalPlayer(ev.dmg,ev.fromUid,ev.fromName,ev.weaponId,ev.headshot,ev.dir?new THREE.Vector3(...ev.dir):new THREE.Vector3(0,0,1));else if(ev.type==='kill'){const kb=isHost&&bots.find(x=>x.id===ev.killerUid);if(kb){kb.kills++;if(ev.headshot)kb.headshots=(kb.headshots||0)+1;}addKillfeed(ev.killerName,ev.killerTeam,ev.victimName,ev.victimTeam,ev.weaponId,ev.headshot);if(ev.pos){const kp=new THREE.Vector3(...ev.pos);spawnPhysicsRagdoll(kp,ev.yaw||0,ev.victimTeam,ev.weaponId,ev.dir?new THREE.Vector3(...ev.dir):new THREE.Vector3(0,0,1),ev.headshot,false);spawnDroppedLoot(kp);}if(ev.killerUid===currentUser.uid){player.kills++;if(ev.headshot)player.headshots++;showKillConfirmation(ev.victimName,ev.headshot);saveUserStat(1,0,ev.headshot?1:0);}}})});
     }
     function startOnlineMatch(){
       if(onlineStarted)return;onlineStarted=true;const m=roomMeta;matchDurationMin=m.minutes||5;SCORE_LIMIT=m.scoreLimit||50;
@@ -1522,7 +1952,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     document.getElementById('btn-room-start').onclick=()=>{if(!isHost||!currentRoomId)return;const c=t=>Object.values(roomPlayers).filter(p=>p.team===t).length;if(!c('red')||!c('blue')){alert('ต้องมีผู้เล่นหรือบอทอย่างน้อย 1 คนในแต่ละทีมก่อนเริ่ม');return;}update(ref(db,`rooms/${currentRoomId}/meta`),{state:'playing',startAt:Date.now()});};
     function publishBots(now){
       if(!isHost||!currentRoomId||now-lastBotNet<90||!bots.length)return;lastBotNet=now;const u={};
-      for(const b of bots)u[b.id]={name:b.name,team:b.team,x:+b.pos.x.toFixed(2),y:+b.pos.y.toFixed(2),z:+b.pos.z.toFixed(2),yaw:+b.yaw.toFixed(3),lean:0,crouch:!!b.crouching,prone:!!b.prone,scoped:false,pitch:+(b.mesh.userData.upperBody?.rotation.x||0).toFixed(2),hp:b.hp,alive:b.alive,weaponId:b.weaponId,kills:b.kills,deaths:b.deaths,hs:b.headshots||0,isBot:true};
+      for(const b of bots)u[b.id]={name:b.name,team:b.team,x:+b.pos.x.toFixed(2),y:+b.pos.y.toFixed(2),z:+b.pos.z.toFixed(2),yaw:+b.yaw.toFixed(3),lean:0,crouch:!!b.crouching,prone:!!b.prone,scoped:false,pitch:+(b.mesh.userData.upperBody?.rotation.x||0).toFixed(2),hp:b.hp,alive:b.alive,weaponId:b.weaponId,kills:b.kills,deaths:b.deaths,hs:b.headshots||0,isBot:true,rl:b.reloadingUntil>0?+(1-(b.reloadingUntil-now)/(b.mesh.userData.rlDur||1000)).toFixed(3):-1};
       update(ref(db,`rooms/${currentRoomId}/players`),u);
     }
     function animateRemotes(dt,now){
@@ -1538,12 +1968,12 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
         u.upperBody.rotation.z=-(d.lean||0)*0.25;u.upperBody.rotation.x=Math.max(-0.6,Math.min(0.6,d.pitch||0))*(d.isBot?1:0.8)+rp.kick*0.05;
         if(u.armL){u.armL.rotation.x=0.85+rp.ads*0.5;u.armR.rotation.x=1.05+rp.ads*0.45;}
         u.weaponHolder.position.set(0.26-rp.ads*0.2,0.43+rp.ads*0.08,-0.38+rp.kick*0.07);
-        const fm=u.weaponHolder.children[0]?.userData?.flashMesh;if(fm){const on=now<(rp.flashUntil||0);fm.visible=on;if(on)fm.rotation.z=Math.random()*3.14;}
+        u.weaponHolder.children.forEach((_c,_ci,_ar)=>{const fm=_c.userData?.flashMesh;if(fm){const on=now<(rp.flashUntil||0)&&(_ar.length===1||_ci===(Math.floor((rp.flashUntil||0)/50)%2));fm.visible=on;if(on)fm.rotation.z=Math.random()*3.14;}});{const tr=(d.rl>=0)?d.rl:-1;rp.rlS=tr<0?-1:(rp.rlS>=0?rp.rlS+(tr-rp.rlS)*Math.min(1,dt*10):tr);GA.pose(m,now,rp.kick>0?(1-rp.kick)/9:9,rp.rlS,rp.ads,!!(WEAPONS[d.weaponId]&&WEAPONS[d.weaponId].shellByShell),true);}
       }
     }
     const sendOnlineEvent=p=>{if(currentRoomId)set(push(ref(db,`rooms/${currentRoomId}/events`)),{fromUid:currentUser.uid,fromName:currentUser.username,...p,src:currentUser.uid,ts:Date.now()});};
     const incrementOnlineTeamScore=async t=>{if(!currentRoomId)return;const mr=ref(db,`rooms/${currentRoomId}/meta`),m=(await get(mr)).val()||{},k=t==='red'?'redScore':'blueScore';await update(mr,{[k]:(m[k]||0)+1});};
-    const syncOnlinePlayerState=now=>{if(gameMode!=='online'||!currentRoomId||now-lastNet<55)return;lastNet=now;set(ref(db,`rooms/${currentRoomId}/players/${currentUser.uid}`),{name:currentUser.username,team:player.team,x:+player.pos.x.toFixed(2),y:+player.pos.y.toFixed(2),z:+player.pos.z.toFixed(2),yaw:+player.yaw.toFixed(3),lean:+player.lean.toFixed(2),crouch:player.crouch,hp:player.hp,prone:player.prone,scoped:player.scoped,pitch:+player.pitch.toFixed(2),hs:player.headshots,joinedAt:myJoinedAt,alive:player.alive,weaponId:loadout[player.slot],kills:player.kills,deaths:player.deaths,updatedAt:Date.now()});};
+    const syncOnlinePlayerState=now=>{if(gameMode!=='online'||!currentRoomId||now-lastNet<55)return;lastNet=now;set(ref(db,`rooms/${currentRoomId}/players/${currentUser.uid}`),{name:currentUser.username,team:player.team,x:+player.pos.x.toFixed(2),y:+player.pos.y.toFixed(2),z:+player.pos.z.toFixed(2),yaw:+player.yaw.toFixed(3),lean:+player.lean.toFixed(2),crouch:player.crouch,hp:player.hp,prone:player.prone,scoped:player.scoped,pitch:+player.pitch.toFixed(2),hs:player.headshots,joinedAt:myJoinedAt,alive:player.alive,weaponId:loadout[player.slot],rl:player.reloading?+(1-Math.max(0,(player.reloadEnd-now)/player.reloadDuration)).toFixed(3):-1,kills:player.kills,deaths:player.deaths,updatedAt:Date.now()});};
     const cleanupOnline=()=>{for(const l of roomLis)off(l.r);roomLis=[];for(const[,rp]of remotePlayers)scene.remove(rp.mesh);remotePlayers.clear();if(currentRoomId){remove(ref(db,Object.entries(roomPlayers).some(([k,p])=>k!==currentUser.uid&&!p.isBot)?`rooms/${currentRoomId}/players/${currentUser.uid}`:`rooms/${currentRoomId}`));currentRoomId=null;}isHost=false;onlineStarted=false;roomPlayers={};document.getElementById('room-screen').classList.add('hidden');};
 
     // SETTINGS UI & CUSTOM INPUTS (Keyboard + Mouse Back/Forward)
@@ -1597,10 +2027,10 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       const grip=support.grips?.includes(mods.grip)?mods.grip:'none',stock=support.stocks?.includes(mods.stock)?mods.stock:'none';
       fill('attachment-sight',support.sights.map(id=>[id,SIGHT_OPTIONS.find(x=>x.id===id)?.label||id]),sight);
       fill('attachment-mag',[['default',`ค่าเริ่มต้น (${WEAPONS[wid].mag}) นัด`],...support.mags.map(n=>[String(n),`${n} นัด`])],mag);
-      fill('attachment-barrel',[['standard','มาตรฐาน'],...support.barrels.filter(x=>x!=='standard').map(x=>[x,x==='range'?'เพิ่มระยะ +30%':'เพิ่มความเสียหาย +12%'])],barrel);
+      fill('attachment-barrel',[['standard','มาตรฐาน'],...support.barrels.filter(x=>x!=='standard').map(x=>[x,x==='range'?'ลำกล้องยาว +30% (เร็วขึ้น/ลู่กระสุนแบน)':'กระสุนแรงสูง +P (+12% พลังงาน)'])],barrel);
       fill('attachment-grip',[['none','ไม่ติดตั้ง'],...(support.grips||[]).map(id=>[id,GRIP_OPTIONS[id].label])],grip);
       fill('attachment-stock',[['none','ไม่ติดตั้ง'],...(support.stocks||[]).map(id=>[id,STOCK_OPTIONS[id].label])],stock);
-      document.getElementById('attachment-summary').textContent=`${WEAPONS[wid].name}: ดาเมจ ${stats.dmg} • แม็ก ${stats.mag} นัด • ศูนย์ ${sight==='iron'?'เริ่มต้น':`${stats.sightZoom}x`} • ลำกล้อง ${barrel==='range'?'เพิ่มระยะ':barrel==='damage'?'เพิ่มความเสียหาย':'มาตรฐาน'} • ด้าม ${grip==='none'?'ไม่ติดตั้ง':GRIP_OPTIONS[grip].label} • พานท้าย ${stock==='none'?'ไม่ติดตั้ง':STOCK_OPTIONS[stock].label}`;
+      document.getElementById('attachment-summary').textContent=`${WEAPONS[wid].name}: ดาเมจ ${stats.dmg} • แม็ก ${stats.mag} นัด • ศูนย์ ${sight==='iron'?'เริ่มต้น':`${stats.sightZoom}x`} • ลำกล้อง ${barrel==='range'?'ลำกล้องยาว':barrel==='damage'?'กระสุนแรงสูง +P':'มาตรฐาน'} • ด้าม ${grip==='none'?'ไม่ติดตั้ง':GRIP_OPTIONS[grip].label} • พานท้าย ${stock==='none'?'ไม่ติดตั้ง':STOCK_OPTIONS[stock].label} • ${ballisticSummary(stats)}`;
     }
     function saveAttachmentChoice(){
       const wid=attachmentTarget.value;
@@ -1637,7 +2067,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       document.getElementById('hud-alive-bar').classList.toggle('hidden',!(gameMode==='offline'&&offlineSubMode==='permadeath'));
       for(const s of[1,2,3,4])loadout[s]=pendingLoadout[s];
       const sp=spawnPoints[player.team][Math.floor(Math.random()*spawnPoints[player.team].length)].clone();
-      player.pos.copy(sp);player.vel.set(0,0,0);player.knockback.set(0,0,0);player.yaw=player.team==='red'?Math.PI:0;player.pitch=0;player.lean=0;player.crouch=false;player.prone=false;player.hp=100;player.armor=50;player.alive=true;player.deathRagdoll=null;
+      player.pos.copy(sp);player.vel.set(0,0,0);player.knockback.set(0,0,0);player.yaw=player.team==='red'?Math.PI:0;player.pitch=0;player.recOff=0;player.recPend=0;player.recYawPend=0;player.lean=0;player.crouch=false;player.prone=false;player.hp=100;player.armor=50;player.alive=true;player.deathRagdoll=null;
       document.getElementById('death-fade').style.opacity=0;resetPlayerAmmo();equipSlot(1);updateHUD();requestLock();
     }
     const requestLock=()=>{SFX.init();try{const r=canvas.requestPointerLock?.();if(r?.catch)r.catch(()=>{});}catch(e){}};
@@ -1663,7 +2093,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     };
 
     document.addEventListener('pointerlockchange',()=>{isPointerLocked=document.pointerLockElement===canvas;if(isPlaying&&!isNextLifeModalOpen&&!isSettingsOpen)document.getElementById('pause-overlay').classList.toggle('hidden',isPointerLocked);if(!isPointerLocked)activeInputs.clear();});
-    window.addEventListener('mousemove',e=>{if(!isPointerLocked||!player.alive)return;const s=0.0021*(camera.fov/75)*settings.sens;player.yaw-=e.movementX*s;player.pitch-=e.movementY*s;player.pitch=Math.max(-Math.PI/2+0.05,Math.min(Math.PI/2-0.05,player.pitch));});
+    window.addEventListener('mousemove',e=>{if(!isPointerLocked||!player.alive)return;const s=0.0021*(camera.fov/75)*settings.sens;player.yaw-=e.movementX*s;{const dp=e.movementY*s;player.pitch-=dp;if(dp>0)player.recOff=Math.max(0,player.recOff-dp);}player.pitch=Math.max(-Math.PI/2+0.05,Math.min(Math.PI/2-0.05,player.pitch));});
 
     function handleTriggerDown(code){
       if(listeningAct){settings.keys[listeningAct]=code;listeningAct=null;renderSettingsUI();return;}
@@ -1707,7 +2137,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
 
     // ===== INVENTORY (B) =====
     const inv=document.getElementById('inv'); let invOpen=false, invSlot=1, picked=null;
-    const SN=id=>SIGHT_OPTIONS.find(x=>x.id===id)?.label||id, MN=m=>m==='default'?'มาตรฐาน':m+' นัด', BN={standard:'มาตรฐาน',range:'ระยะไกล',damage:'ดาเมจสูง'};
+    const SN=id=>SIGHT_OPTIONS.find(x=>x.id===id)?.label||id, MN=m=>m==='default'?'มาตรฐาน':m+' นัด', BN={standard:'มาตรฐาน',range:'ลำกล้องยาว',damage:'แรงสูง +P'};
     const lbl=(k,v)=>k==='grip'?(v==='none'?'ไม่ติดตั้ง':GRIP_OPTIONS[v]?.label||v):k==='stock'?(v==='none'?'ไม่ติดตั้ง':STOCK_OPTIONS[v]?.label||v):k==='sight'?SN(v):k==='mag'?MN(v):BN[v]||v;
     function setAtt(k,v){const w=loadout[invSlot],a=attachmentFor(w),support=ATTACHMENT_SUPPORT[w];if(k==='grip'&&v!=='none'&&!support?.grips?.includes(v)||k==='stock'&&v!=='none'&&!support?.stocks?.includes(v))return;a[k]=v;weaponAttachments[w]=a;try{localStorage.setItem('ps3d_attachments',JSON.stringify(weaponAttachments));}catch(e){}
       const st=getWeaponStats(w);if(player.ammo[invSlot]>st.mag)player.ammo[invSlot]=st.mag;if(player.slot===invSlot)equipSlot(invSlot);renderInv();}
@@ -1715,7 +2145,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       document.getElementById('inv-tabs').innerHTML=[1,2].map(n=>`<button class="wtab ${n===invSlot?'on':''}" data-s="${n}">${n===1?'ปืนหลัก':'ปืนพก'}: ${WEAPONS[loadout[n]].name}</button>`).join('');
       document.querySelectorAll('#inv-tabs .wtab').forEach(b=>b.onclick=()=>{invSlot=+b.dataset.s;picked=null;renderInv();});
       document.getElementById('inv-name').textContent=WEAPONS[w].name;
-      document.getElementById('inv-stats').textContent=`ดาเมจ ${st.dmg} • แม็ก ${st.mag} • ซูม ${st.sightZoom}x • ระยะเต็มดาเมจ ${st.falloffStart}m • ดาเมจลดถึง ${st.falloffEnd||'-'}m • ระยะสูงสุด ${st.maxRange||'-'}m • ความเร็วกระสุน ${Math.round(st.speed)} m/s`;
+      document.getElementById('inv-stats').textContent=`ดาเมจ ${st.dmg} • แม็ก ${st.mag} • ซูม ${st.sightZoom}x • ${ballisticSummary(st)}`;
       document.querySelectorAll('.zone').forEach(z=>{const k=z.dataset.k,def=k==='sight'?'iron':k==='mag'?'default':k==='grip'||k==='stock'?'none':'standard',available=k==='grip'?sp.grips:k==='stock'?sp.stocks:null;z.style.opacity=available&&!available.length?0.3:1;z.querySelector('b').textContent=lbl(k,a[k]);z.draggable=a[k]!==def;
         z.ondragstart=e=>e.dataTransfer.setData('t',JSON.stringify({k,v:def,unequip:1}));
         z.ondragover=e=>{e.preventDefault();z.classList.add('over');};z.ondragleave=()=>z.classList.remove('over');
@@ -1731,18 +2161,30 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     document.getElementById('inv-close').onclick=()=>toggleInv(false);
     window.addEventListener('keydown',e=>{if(e.code==='KeyB'&&isPlaying&&!listeningAct){e.preventDefault();toggleInv();}},true);
     window.addEventListener('keydown',e=>{
-      if(e.code!=='KeyV'||!isPlaying||!player.alive||listeningAct||player.slot>3)return;
+      if(e.code!=='KeyG'||!isPlaying||!player.alive||listeningAct||isSettingsOpen||player.slot>3)return;
       const sl=player.slot,cur=loadout[sl],to=WEAPONS[cur]?.splitTo; if(!to||!WEAPONS[to])return;
-      const wasDual=!!WEAPONS[cur].dual; loadout[sl]=to;
-      if(sl<=2){const w=getWeaponStats(to);player.ammo[sl]=wasDual?Math.ceil((player.ammo[sl]||0)/2):Math.min(w.mag,(player.ammo[sl]||0)*2);}
-      player.reloading=false;equipSlot(sl);showPickupToast(wasDual?'แยกเป็นกระบอกเดี่ยว: '+WEAPONS[to].name:'รวมเป็นคู่: '+WEAPONS[to].name);
+      const wasDual=!!WEAPONS[cur].dual;
+      if(sl<=2){
+        if(player.reloading){SFX.clearTimers();player.reloading=false;player.rlSeq=null;document.getElementById('reload-bar-wrap').style.display='none';}
+        const capOld=gunCap(sl),rr=Math.floor(player.magazines[sl]*capOld+1e-6);
+        if(wasDual){ // รวมคู่ -> กระบอกเดียว: เก็บกระบอกที่กระสุนเยอะกว่า อีกกระบอกคืนเข้ากระสุนสำรอง
+          syncPairAmmo(sl);const g=player.gun[sl].slice(),hi=g[0]>=g[1]?0:1,keep=g[hi],back=g[1-hi];
+          loadout[sl]=to;player.gun[sl]=null;const capNew=gunCap(sl),k2=Math.min(keep,capNew);
+          player.ammo[sl]=k2;player.magazines[sl]=(rr+back+(keep-k2))/capNew;
+        }else{ // แยกคู่: กระบอกใหม่หยิบกระสุนจากแมกสำรองตามจำนวนที่ใช้จริง
+          const aOld=player.ammo[sl];loadout[sl]=to;const capNew=gunCap(sl),a=Math.min(aOld,capNew),take=Math.min(capNew,rr);
+          player.gun[sl]=[a,take];player.ammo[sl]=a+take;player.magazines[sl]=(rr-take)/capNew;
+        }
+        player.nextGun[sl]=0;
+      }else loadout[sl]=to;
+      player.reloading=false;equipSlot(sl);showPickupToast(wasDual?'รวมเป็นกระบอกเดียว: '+WEAPONS[to].name:'แยกคู่แล้ว: '+WEAPONS[to].name+' (กด G เพื่อรวม)');
     });
     window.addEventListener('keydown',e=>{
       if(e.code!=='KeyF'||!isPlaying||!player.alive||listeningAct)return;
       let best=null,bd=2.6;for(const l of lootItems)if(l.type==='weapon'&&l.active){const d=player.pos.distanceTo(l.pos);if(d<bd){bd=d;best=l;}}
       if(!best)return; const st=WEAPONS[best.wid]; if(!st||st.slot>3)return; const sl=st.slot, old=loadout[sl];
       if(old===best.wid)return;
-      spawnWeaponDrop(player.pos,old); loadout[sl]=best.wid; pendingLoadout[sl]=best.wid;
+      spawnWeaponDrop(player.pos,old); loadout[sl]=best.wid; pendingLoadout[sl]=best.wid; player.gun[sl]=null;
       if(sl<=2){const w=getWeaponStats(best.wid);player.ammo[sl]=w.mag;player.magazines[sl]=w.shellByShell?w.reserveShells:w.magsCount;}
       scene.remove(best.mesh);const ix=lootItems.indexOf(best);if(ix!==-1)lootItems.splice(ix,1);
       equipSlot(sl);SFX.playPickup();showPickupToast('เปลี่ยนเป็น '+st.name);
@@ -1780,7 +2222,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     jz.addEventListener('touchend',joyEnd);jz.addEventListener('touchcancel',joyEnd);
     joyHome();addEventListener('resize',()=>{if(joyId===null)joyHome();});
     // ----- look (right side) + drag-look from fire/aim buttons -----
-    const lookBy=(dx,dy)=>{if(!player.alive)return;const s=0.0042*(camera.fov/75)*settings.sens*aaFriction;player.yaw-=dx*s;player.pitch=Math.max(-1.5,Math.min(1.5,player.pitch-dy*s));};
+    const lookBy=(dx,dy)=>{if(!player.alive)return;const s=0.0042*(camera.fov/75)*settings.sens*aaFriction;player.yaw-=dx*s;{const dp=dy*s;if(dp>0)player.recOff=Math.max(0,player.recOff-dp);}player.pitch=Math.max(-1.5,Math.min(1.5,player.pitch-dy*s));};
     window.addEventListener('touchstart',e=>{if(!settings.mobile||!isPlaying||invOpen||isSettingsOpen||isNextLifeModalOpen)return;
       for(const t of e.changedTouches)if(lookId===null&&t.clientX>innerWidth*0.42&&!t.target.closest('.tb,#tmenu')){lookId=t.identifier;lx=t.clientX;ly=t.clientY;}},{passive:true});
     window.addEventListener('touchmove',e=>{for(const t of e.changedTouches){
@@ -1809,7 +2251,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     zoomHold('t-zin',1);zoomHold('t-zout',-1);
     tap('t-reload',()=>handleTriggerDown(K('reload')));tap('t-crouch',()=>handleTriggerDown(K('crouch')));tap('t-prone',()=>handleTriggerDown('KeyZ'));
     for(const n of[1,2,3,4])tap('t-'+n,()=>handleTriggerDown(K('slot'+n)));
-    tap('t-swap',()=>handleTriggerDown(K('slot'+(player.slot===1?2:1))));
+    tap('t-swap',()=>handleTriggerDown(K('slot'+(player.slot===1?2:1))));tap('t-split',()=>window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyG'})));
     // ----- menu -----
     const menuOpen=f=>{const o=f===undefined?tmenu.classList.contains('hidden'):f;tmenu.classList.toggle('hidden',!o);};
     tap('t-menu',()=>menuOpen());
@@ -1862,7 +2304,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       document.getElementById('hud-armor').textContent=Math.max(0,Math.round(player.armor)); document.getElementById('hud-armor-bar').style.width=`${Math.max(0,player.armor)}%`;
       const tb=document.getElementById('hud-team-badge'); tb.textContent=player.team==='red'?'RED TEAM (Free Rebels)':'BLUE TEAM (CT-Force)'; tb.style.color=player.team==='red'?'#f87171':'#60a5fa';
       const w=player.slot<=2?getWeaponStats(loadout[player.slot]):WEAPONS[loadout[player.slot]],ae=document.getElementById('hud-ammo'); document.getElementById('hud-weapon-name').textContent=w.name;
-      if(player.slot<=2)ae.innerHTML=w.shellByShell?`${player.ammo[player.slot]} <span>/ ${player.magazines[player.slot]} นัด</span>`:`${player.ammo[player.slot]} <span>| ${player.magazines[player.slot]} แม็ก</span>`;
+      if(player.slot<=2){syncPairAmmo(player.slot);const _m=player.magazines[player.slot],_mt=Number.isInteger(_m)?_m:(Math.round(_m*10)/10).toFixed(1),_g=isPair(player.slot)?player.gun[player.slot]:null;ae.innerHTML=w.shellByShell?`${player.ammo[player.slot]} <span>/ ${_m} นัด</span>`:(_g?`${_g[0]} <span>+</span> ${_g[1]} <span>| ${_mt} แม็ก</span>`:`${player.ammo[player.slot]} <span>| ${_mt} แม็ก</span>`);}
       else if(player.slot===4)ae.innerHTML=`${player.ammo[4]} <span>ลูก</span>`; else ae.innerHTML=`∞ <span>ประชิด</span>`;
       document.getElementById('hud-red-score').textContent=teamScores.red; document.getElementById('hud-blue-score').textContent=teamScores.blue;
       if(gameMode==='offline'&&offlineSubMode==='permadeath'){const ra=(player.team==='red'&&player.alive?1:0)+bots.filter(b=>b.alive&&b.team==='red').length,ba=(player.team==='blue'&&player.alive?1:0)+bots.filter(b=>b.alive&&b.team==='blue').length;document.getElementById('hud-alive-bar').textContent=`PERMADEATH • Red รอด: ${ra} | Blue รอด: ${ba}`;}
@@ -1914,15 +2356,21 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
         if(player.reloading){
           const w=getWeaponStats(loadout[player.slot]),pct=Math.min(100,100-((player.reloadEnd-now)/player.reloadDuration)*100);
           document.getElementById('reload-bar-fill').style.width=`${pct}%`;
-          if(now>=player.reloadEnd){if(!w.shellByShell&&player.magazines[player.slot]>0){player.magazines[player.slot]--;player.ammo[player.slot]=w.mag;}player.reloading=false;document.getElementById('reload-bar-wrap').style.display='none';updateHUD();}
+          if(player.rlSeq){const sl=player.slot,gg=player.gun[sl];for(const sg of player.rlSeq)if(!sg.done&&now>=sg.end){sg.done=true;if(gg){gg[sg.g]+=sg.take;player.magazines[sl]=Math.max(0,player.magazines[sl]-sg.take/gunCap(sl));player.ammo[sl]=gg[0]+gg[1];updateHUD();}}if(now>=player.reloadEnd){player.rlSeq=null;player.reloading=false;document.getElementById('reload-bar-wrap').style.display='none';updateHUD();}}else if(now>=player.reloadEnd){const sl=player.slot;if(!w.shellByShell){if(partialMag(sl)){const take=Math.min(w.mag-player.ammo[sl],resRounds(sl));player.ammo[sl]+=take;player.magazines[sl]=Math.max(0,player.magazines[sl]-take/gunCap(sl));}else if(player.magazines[sl]>0){player.magazines[sl]--;player.ammo[sl]=w.mag;}}player.reloading=false;document.getElementById('reload-bar-wrap').style.display='none';updateHUD();}
         }
         if(isAct('fire')&&isPointerLocked&&player.alive&&getWeaponStats(loadout[player.slot]).auto)fireWeapon(false);
+        if(player.alive){ // แรงดีดค่อย ๆ ไต่ขึ้น แล้วลำกล้องคืนจุดเดิมเมื่อหยุดยิง (ถ้าผู้เล่นกดเมาส์ลงเองจะหักลบให้)
+          const ap=player.recPend*(1-Math.exp(-dt*20)),ay=player.recYawPend*(1-Math.exp(-dt*20));player.recPend-=ap;player.recYawPend-=ay;
+          if(ap||ay){player.pitch=Math.min(Math.PI/2-0.05,player.pitch+ap);player.yaw+=ay;player.recOff+=ap;}
+          if(now-(player.lastFireT||0)>110&&player.recPend<2e-4&&player.recOff>0){const rc=Math.min(player.recOff,Math.max(player.recOff*(1-Math.exp(-dt*5)),dt*0.06));player.pitch-=rc;player.recOff-=rc;}
+        }
 
         if(player.alive){
           const spr=!!(isAct('sprint')&&!player.crouch&&!player.prone&&!player.scoped&&isAct('forward'));
+          {const _n=performance.now(),hv=Math.hypot(player.vel.x,player.vel.z);if(player.onGround&&hv>1.2&&!player.prone&&_n-(player.lastStepSnd||0)>(spr?280:380)){player.lastStepSnd=_n;emitSound(player.pos,spr?17:player.crouch?3.5:10,player.team,'player_step');}}
           player.lean+=(((isAct('leanR')?1:0)-(isAct('leanL')?1:0))-player.lean)*Math.min(1,dt*12);
           const bs=(player.prone?2.2:player.crouch?4.2:spr?9.8:6.9)*getWeaponStats(loadout[player.slot]).moveSpeed*(Math.abs(player.lean)>0.2?0.85:1);
-          const stance=(player.prone?'นอนราบ':player.crouch?'นั่งย่อ':spr?'วิ่งเร็ว':'ยืน')+(Math.abs(player.lean)>0.3?' • เอียงตัว':'')+` • [${formatBind(settings.keys.loadoutMenu)}] เปลี่ยนปืน`,stanceHud=document.getElementById('hud-stance');
+          const stance=(player.prone?'นอนราบ':player.crouch?'นั่งย่อ':spr?'วิ่งเร็ว':'ยืน')+(Math.abs(player.lean)>0.3?' • เอียงตัว':'')+` • [${formatBind(settings.keys.loadoutMenu)}] เปลี่ยนปืน`+(WEAPONS[loadout[player.slot]]?.splitTo?` • [G] ${WEAPONS[loadout[player.slot]].dual?'รวมปืน':'แยกคู่'}`:''),stanceHud=document.getElementById('hud-stance');
           if(stanceHud.textContent!==stance)stanceHud.textContent=stance;
           const fw=new THREE.Vector3(-Math.sin(player.yaw),0,-Math.cos(player.yaw)),rt=new THREE.Vector3(Math.cos(player.yaw),0,-Math.sin(player.yaw)),md=new THREE.Vector3();
           if(isAct('forward'))md.add(fw); if(isAct('backward'))md.sub(fw); if(isAct('right'))md.add(rt); if(isAct('left'))md.sub(rt); if(md.lengthSq()>0)md.normalize();
@@ -1948,13 +2396,22 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
         player.boltAnim=Math.max(0,player.boltAnim-dt*4.2); player.drawAnim=Math.max(0,player.drawAnim-dt*3.8); if(viewmodelMesh&&player.spin>0){player.spin=Math.max(0,player.spin-dt*1.6);viewmodelMesh.rotation.x=-player.spin*Math.PI*4;} player.swingAnim=Math.max(0,player.swingAnim-dt*4.5);
         if(viewmodelMesh&&player.alive){
           const spr=!!(isAct('sprint')&&!player.crouch&&!player.prone&&!player.scoped&&isAct('forward')), wb=(player.onGround&&Math.hypot(player.vel.x,player.vel.z)>1)?Math.sin(now*0.013)*0.014:0;
-          let rtz=0,rtx=0,mdy=0,magVisible=true;
-          if(player.reloading){const p=1-Math.max(0,(player.reloadEnd-now)/player.reloadDuration);rtz=Math.sin(p*Math.PI)*0.34;rtx=-Math.sin(p*Math.PI)*0.18;mdy=Math.sin(p*Math.PI)*-0.2;magVisible=!(p>0.24&&p<0.58);}
-          viewmodelMesh.position.set((player.scoped?0.0:0.27)+(spr?-0.025:0),(player.scoped?(viewmodelMesh.userData.adsY??-0.2):-0.27)+wb-player.drawAnim*0.22,(player.scoped?-0.55:-0.4)+player.recoilKick);
+          player.rkS+=(player.recoilKick-player.rkS)*(1-Math.exp(-dt*(player.recoilKick>player.rkS?26:9)));let rtz=0,rtx=0,mdy=0,magVisible=true;
+          const _pD=GA.pairOf(viewmodelMesh),_hasGA=GA.has(viewmodelMesh);
+          if(player.reloading&&!_hasGA){const p=1-Math.max(0,(player.reloadEnd-now)/player.reloadDuration);rtz=Math.sin(p*Math.PI)*0.34;rtx=-Math.sin(p*Math.PI)*0.18;mdy=Math.sin(p*Math.PI)*-0.2;magVisible=!(p>0.24&&p<0.58);}
+          {const tg=wallTuckTarget();player.wallBlend+=(tg-player.wallBlend)*Math.min(1,dt*(tg>player.wallBlend?16:7));}
+          const wl=player.wallBlend*player.wallBlend*(3-2*player.wallBlend); // ชิดกำแพง/มีของขวาง -> ดึงปืนกลับ ยกปากกระบอกหนี
+          viewmodelMesh.position.set((player.scoped?0.0:(_pD?0.0:0.27))+(spr?-0.025:0),(player.scoped?(viewmodelMesh.userData.adsY??-0.2):-0.27)+wb-player.drawAnim*0.22-wl*0.1,(player.scoped?-0.55:-0.4)+player.rkS+wl*0.28);
           {const hs=player.scoped&&viewmodelMesh.userData.adsY===-0.1375;for(const c of viewmodelMesh.children)if(c.userData.hideADS)c.visible=!hs;}
-          viewmodelMesh.rotation.set(player.recoilKick*1.5-Math.sin(player.swingAnim*Math.PI)*1.2+rtx-player.drawAnim*0.4,Math.sin(player.swingAnim*Math.PI)*0.18+(spr?0.06:0),rtz+(spr?-0.06:0));
-          if(viewmodelMesh.userData.magGroup){viewmodelMesh.userData.magGroup.position.y=mdy;viewmodelMesh.userData.magGroup.visible=magVisible;}
-          if(viewmodelMesh.userData.boltGroup)viewmodelMesh.userData.boltGroup.position.z=Math.sin(player.boltAnim*Math.PI)*0.065;
+          viewmodelMesh.rotation.set(player.rkS*1.5-Math.sin(player.swingAnim*Math.PI)*1.2+rtx-player.drawAnim*0.4+wl*1.25,Math.sin(player.swingAnim*Math.PI)*0.18+(spr?0.06:0),rtz+(spr?-0.06:0)-wl*0.3);
+          const _w=getWeaponStats(loadout[player.slot]);GA.inspect(viewmodelMesh,now,wl);
+          let _pair=null;
+          if(_pD){const gg=player.gun[player.slot]||[0,0],rl=[-1,-1],rlE=[false,false],dur=[1,1];
+            if(player.reloading&&player.rlSeq)for(const sg of player.rlSeq){const u=(now-sg.start)/(sg.end-sg.start);if(u>=0&&u<1){rl[sg.g]=u;rlE[sg.g]=sg.empty;dur[sg.g]=sg.end-sg.start;}}
+            _pair={ammo:gg,max:gunCap(player.slot),rl,rlE,dur};}
+          const _ga=GA.update(viewmodelMesh,{now,dt,scoped:player.scoped,pair:_pair,rl:player.reloading?1-Math.max(0,(player.reloadEnd-now)/player.reloadDuration):-1,ammo:player.ammo[player.slot]||0,max:_w.mag||1,fa:(now-(player.lastFireT||0))/1000,rlE:player.rlE,rlN:player.rlN,rlMs:player.rlMs,dur:player.reloadDuration});
+          if(!_ga&&viewmodelMesh.userData.magGroup){viewmodelMesh.userData.magGroup.position.y=mdy;viewmodelMesh.userData.magGroup.visible=magVisible;}
+          if(!_ga&&viewmodelMesh.userData.boltGroup)viewmodelMesh.userData.boltGroup.position.z=Math.sin(player.boltAnim*Math.PI)*0.065;
         }
 
         const gap=Math.round(6+(player.spreadBloom*450)+(Math.hypot(player.vel.x,player.vel.z)>2?5:0));
@@ -1981,7 +2438,9 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
 
         for(let i=bullets.length-1;i>=0;i--){
           const b=bullets[i]; b.life-=dt; if(b.life<=0){scene.remove(b.mesh);bullets.splice(i,1);continue;}
-          if(b.maxRange&&b.startPos.distanceTo(b.pos)>b.maxRange){scene.remove(b.mesh);bullets.splice(i,1);continue;} const prev=b.pos.clone(); b.vel.y-=b.gravity*dt; b.vel.multiplyScalar(1-0.35*dt); b.pos.addScaledVector(b.vel,dt); b.mesh.position.copy(b.pos); b.mesh.lookAt(b.pos.clone().add(b.vel));
+          const prev=b.pos.clone(); if(b.vel.length()<PHYS.minV||b.pos.y<-30||b.startPos.distanceToSquared(b.pos)>9e6){scene.remove(b.mesh);bullets.splice(i,1);continue;}
+          {const n=Math.max(1,Math.ceil(dt/0.008)),h=dt/n;for(let s=0;s<n;s++){const sp=b.vel.length(),c=b.k*machCd(sp/PHYS.arcade/PHYS.sound)*sp;b.vel.x-=b.vel.x*c*h;b.vel.y-=(b.vel.y*c+PHYS.g)*h;b.vel.z-=b.vel.z*c*h;b.pos.addScaledVector(b.vel,h);}}
+          b.mesh.position.copy(b.pos); b.mesh.lookAt(b.pos.clone().add(b.vel));
           b.trailTimer-=dt;if(settings.tracers&&b.trailTimer<=0&&!(b.isLocalOwner&&b.startPos.distanceTo(b.pos)<3)){spawnTrail(prev,b.pos,b.isLocalOwner);b.trailTimer=0.08;}
 
           // Bullet fly-by whiz sound (bullet-hit.mp3 / bullethit.mp3)
@@ -2034,7 +2493,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
           g.pos.copy(nx);g.mesh.position.copy(g.pos);g.mesh.rotation.x+=6*dt;g.mesh.rotation.z+=4*dt;
           if(now>=g.explodeAt){explodeGrenade(g);grenades.splice(i,1);}
         }
-        for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.life-=dt;if(p.life<=0){scene.remove(p.mesh);particles.splice(i,1);if(p.isTrail){p.mesh.material.dispose();activeTrailCount--;}continue;}p.vel.y-=p.gravity*dt;p.mesh.position.addScaledVector(p.vel,dt);if(p.grow>0)p.mesh.scale.addScalar(p.grow*dt);p.mesh.material.opacity=Math.max(0,(p.life/p.maxLife)*0.8);}
+        for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.life-=dt;if(p.life<=0){scene.remove(p.mesh);particles.splice(i,1);if(p.isTrail){p.mesh.material.dispose();activeTrailCount--;}else if(p.muzzleSmoke)p.mesh.material.dispose();continue;}p.vel.y-=p.gravity*dt;p.mesh.position.addScaledVector(p.vel,dt);if(p.grow>0)p.mesh.scale.addScalar(p.grow*dt);p.mesh.material.opacity=Math.max(0,(p.life/p.maxLife)*(p.muzzleSmoke?0.34:0.8));}
         for(let i=debrisItems.length-1;i>=0;i--){
           const d=debrisItems[i];d.life-=dt;
           if(d.life<=0){scene.remove(d.mesh);debrisItems.splice(i,1);continue;}
