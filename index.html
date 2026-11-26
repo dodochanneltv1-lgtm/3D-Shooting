@@ -518,6 +518,11 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     };
     for(const[id,o]of Object.entries(NEWW)){const{base,...rest}=o;WEAPONS[id]={...WEAPONS[base],...rest,id,model:base};if(ATTACHMENT_SUPPORT[base]){ATTACHMENT_SUPPORT[id]={...ATTACHMENT_SUPPORT[base]};ATTACHMENT_SUPPORT[id].mags=[...ATTACHMENT_SUPPORT[base].mags,WEAPONS[id].mag].filter((v,i,a)=>a.indexOf(v)===i);}}
     WEAPONS.vector.splitTo='vector_dual';WEAPONS.p_glock.splitTo='dual_glock';WEAPONS.m_knife.splitTo='dual_blades';
+    // ---- ballistics: speed (m/s), gravity, max range (m), full-damage range, zero-ish damage-floor range, min damage multiplier ----
+    const BALL={pistol:{speed:210,gravity:18,range:65,fs:18,fe:55,fm:0.35},sg:{speed:180,gravity:20,range:35,fs:6,fe:25,fm:0.1},smg:{speed:260,gravity:16,range:80,fs:15,fe:65,fm:0.3},ar:{speed:360,gravity:16,range:160,fs:35,fe:125,fm:0.4},lmg:{speed:340,gravity:16,range:170,fs:40,fe:135,fm:0.45},sr:{speed:620,gravity:12,range:300,fs:100,fe:260,fm:0.7}};
+    const WCLASS={ar_aug:'ar',ak47:'ar',m4a1:'ar',sg_spas:'sg',sr_l115:'sr',kar98:'sr',m200:'sr',barrett:'sr',smg_kriss:'smg',thompson:'smg',mp40:'smg',vector:'smg',vector_dual:'smg',lmg_mk46:'lmg',p_deagle:'pistol',p_glock:'pistol',p_usp:'pistol',dual_glock:'pistol',spin_usp:'pistol',revolver:'pistol'};
+    const WSPD={ak47:0.95,m4a1:1.05,thompson:0.92,vector:0.95,kar98:0.93,m200:1.12,barrett:1.08,revolver:1.1,p_deagle:1.12};
+    for(const[id,c]of Object.entries(WCLASS)){const w=WEAPONS[id],b=BALL[c];if(!w)continue;w.speed=Math.round(b.speed*(WSPD[id]||1));w.gravity=b.gravity;w.maxRange=b.range;w.falloffStart=b.fs;w.falloffEnd=b.fe;w.falloffMin=b.fm;}
     const DEFAULT_ATTACHMENT = {sight:'iron',mag:'default',barrel:'standard',grip:'none',stock:'none'};
     let weaponAttachments={};
     try { weaponAttachments=JSON.parse(localStorage.getItem('ps3d_attachments')||'{}')||{}; } catch(e) { weaponAttachments={}; }
@@ -527,8 +532,8 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       if(!support)return base;
       const stats={...base}, mag=Number(mods.mag);
       if(support.mags.includes(mag))stats.mag=mag;
-      if(mods.barrel==='range'){stats.falloffStart=Math.round((base.falloffStart||30)*1.3);stats.speed=(base.speed||0)*1.06;stats.spread=(base.spread||0)*0.92;}
-      else if(mods.barrel==='damage'){stats.dmg=Math.round(base.dmg*1.12);stats.falloffStart=Math.round((base.falloffStart||30)*0.88);stats.speed=(base.speed||0)*0.96;}
+      if(mods.barrel==='range'){stats.falloffStart=Math.round((base.falloffStart||30)*1.3);stats.maxRange=Math.round((base.maxRange||0)*1.2);stats.falloffEnd=Math.round((base.falloffEnd||0)*1.2);stats.speed=(base.speed||0)*1.06;stats.spread=(base.spread||0)*0.92;}
+      else if(mods.barrel==='damage'){stats.dmg=Math.round(base.dmg*1.12);stats.falloffStart=Math.round((base.falloffStart||30)*0.88);stats.falloffEnd=Math.round((base.falloffEnd||0)*0.9);stats.speed=(base.speed||0)*0.96;}
       const grip=support.grips?.includes(mods.grip)?GRIP_OPTIONS[mods.grip]:null;
       const stock=support.stocks?.includes(mods.stock)?STOCK_OPTIONS[mods.stock]:null;
       for(const accessory of[grip,stock])if(accessory){
@@ -1020,7 +1025,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     // PLAYER & COMBAT
     let currentUser={uid:'guest_'+Math.floor(Math.random()*99999),username:'Soldier',isGuest:true};
     let gameMode='none',offlineSubMode='tdm',botDifficulty='normal',matchDurationMin=5,currentRoomId=null,isPlaying=false,isPointerLocked=false,matchEndTime=0;
-    let SCORE_LIMIT=50; let teamScores={red:0,blue:0}; let isHost=false,roomMeta=null,roomPlayers={},onlineStarted=false,lastBotNet=0;
+    let SCORE_LIMIT=50; let teamScores={red:0,blue:0}; let isHost=false,roomMeta=null,roomPlayers={},onlineStarted=false,lastBotNet=0,myJoinedAt=0;
     const loadout={1:'ar_aug',2:'p_deagle',3:'m_knife',4:'g_frag'}, pendingLoadout={1:'ar_aug',2:'p_deagle',3:'m_knife',4:'g_frag'};
     let zoomWheelAccumulator=0;
     const player={team:'red',pos:new THREE.Vector3(0,0,-108),vel:new THREE.Vector3(),knockback:new THREE.Vector3(),yaw:Math.PI,pitch:0,lean:0,hp:100,maxHp:100,armor:50,maxArmor:100,alive:true,diedAt:0,respawnAt:0,deathRagdoll:null,onGround:false,crouch:false,prone:false,eyeH:1.64,spin:0,zoomVal:0,slot:1,ammo:{},magazines:{},reloading:false,reloadEnd:0,reloadDuration:0,nextFire:0,scoped:false,zoomIdx:0,recoilKick:0,boltAnim:0,drawAnim:0,spreadBloom:0,swingAnim:0,stepTimer:0,heartbeatTimer:0,kills:0,deaths:0,headshots:0};
@@ -1121,8 +1126,8 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     const trailGeo=new THREE.BoxGeometry(1,1,1);
     const MAX_ACTIVE_TRAILS=280; let activeTrailCount=0;
     function spawnTrail(a,b,loc){if(activeTrailCount>=MAX_ACTIVE_TRAILS)return;const len=a.distanceTo(b);if(len<0.2)return;const material=new THREE.MeshBasicMaterial({color:loc?0xfff3a0:0xffa060,transparent:true,opacity:0.8,blending:THREE.AdditiveBlending,depthWrite:false}),m=new THREE.Mesh(trailGeo,material);m.position.copy(a).lerp(b,0.5);m.lookAt(b);m.scale.set(0.025,0.025,len);scene.add(m);particles.push({mesh:m,vel:new THREE.Vector3(),life:0.45,maxLife:0.45,gravity:0,grow:0,isTrail:true});activeTrailCount++;}
-    function spawnBullet(o,d,wid,oid,oname,tm,loc,stats=null){const w=stats||WEAPONS[wid],v=d.clone().normalize().multiplyScalar(w.speed),m=new THREE.Mesh(bGeo,loc?bMatP:bMatE);m.position.copy(o);m.lookAt(o.clone().add(v));scene.add(m);bullets.push({startPos:o.clone(),pos:o.clone(),vel:v,gravity:w.gravity,dmg:w.dmg,falloffStart:w.falloffStart,falloffMin:w.falloffMin,weaponId:wid,ownerId:oid,ownerName:oname,team:tm,isLocalOwner:loc,whizzed:false,mesh:m,life:1.8,trailTimer:0});}
-    function computeBulletDmg(b,hp){const d=b.startPos.distanceTo(hp),start=b.falloffStart||30,min=b.falloffMin||0.5;return d<=start?b.dmg:Math.round(b.dmg*Math.max(min,1-(d-start)/60));}
+    function spawnBullet(o,d,wid,oid,oname,tm,loc,stats=null){const w=stats||WEAPONS[wid],v=d.clone().normalize().multiplyScalar(w.speed),m=new THREE.Mesh(bGeo,loc?bMatP:bMatE);m.position.copy(o);m.lookAt(o.clone().add(v));scene.add(m);bullets.push({startPos:o.clone(),pos:o.clone(),vel:v,gravity:w.gravity,dmg:w.dmg,falloffStart:w.falloffStart,falloffMin:w.falloffMin,falloffEnd:w.falloffEnd,maxRange:w.maxRange,weaponId:wid,ownerId:oid,ownerName:oname,team:tm,isLocalOwner:loc,whizzed:false,mesh:m,life:Math.max(0.5,(w.maxRange||300)/Math.max(60,w.speed)*1.7+0.3),trailTimer:0});}
+    function computeBulletDmg(b,hp){const d=b.startPos.distanceTo(hp),fs=b.falloffStart||30,fe=Math.max(fs+1,b.falloffEnd||fs+60),fm=b.falloffMin??0.5;return d<=fs?b.dmg:Math.round(b.dmg*(d>=fe?fm:1-(1-fm)*(d-fs)/(fe-fs)));}
     const _pg={};function spawnParticles(pos,col,cnt=8,spd=7,sz=0.09,lf=0.45,gr=14){if(particles.length>350)cnt=Math.min(cnt,2);const g=_pg[sz]||(_pg[sz]=new THREE.BoxGeometry(sz,sz,sz)),mt=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:1});for(let i=0;i<cnt;i++){const m=new THREE.Mesh(g,mt.clone());m.position.copy(pos);scene.add(m);particles.push({mesh:m,vel:new THREE.Vector3((Math.random()-0.5)*spd,Math.random()*spd*0.8+1,(Math.random()-0.5)*spd),life:lf,maxLife:lf,gravity:gr,grow:0});}}
     const casingGeo=new THREE.CylinderGeometry(0.012,0.014,0.065,8),casingMat=new THREE.MeshStandardMaterial({color:0xc89b3c,metalness:0.78,roughness:0.3});
     const debrisGeo=new THREE.BoxGeometry(1,1,1),debrisMats=[0x57534e,0x78716c,0x3f3f46,0x6b5b4b].map(color=>new THREE.MeshStandardMaterial({color,roughness:0.96}));
@@ -1166,12 +1171,12 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
         for(const rg of ragdolls) applyImpulseToRagdoll(rg,g.pos,w.radius*1.45,12,0.45);
         spawnDebris(g.pos,12,0.22,15);
         if(player.alive&&(g.team!==player.team||g.ownerId===currentUser.uid)){const pc=player.pos.clone().add(new THREE.Vector3(0,1,0)),d=g.pos.distanceTo(pc);if(d<w.radius)applyDamageToLocalPlayer(Math.round(w.maxDmg*(1-d/w.radius)),g.ownerId,g.ownerName,g.weaponId,false,pc.sub(g.pos).normalize());}
-        if(gameMode==='offline')for(const b of bots){if(!b.alive||b.team===g.team)continue;const bc=b.pos.clone().add(new THREE.Vector3(0,1,0)),d=g.pos.distanceTo(bc);if(d<w.radius)damageBot(b,Math.round(w.maxDmg*(1-d/w.radius)),g.ownerId,g.ownerName,g.weaponId,false,bc.sub(g.pos).normalize());}
+        if(gameMode==='offline'||(gameMode==='online'&&isHost))for(const b of bots){if(!b.alive||b.team===g.team)continue;const bc=b.pos.clone().add(new THREE.Vector3(0,1,0)),d=g.pos.distanceTo(bc);if(d<w.radius)damageBot(b,Math.round(w.maxDmg*(1-d/w.radius)),g.ownerId,g.ownerName,g.weaponId,false,bc.sub(g.pos).normalize());}
       } else if(w.type==='smoke'){SFX.playNoise(0.8,1200,0.5,0.3,'lowpass',0,g.pos);spawnSmokeCloud(g.pos);}
       else if(w.type==='flash'){SFX.playFlashbang(g.pos);spawnParticles(g.pos,0xffffff,15,12,0.25,0.35,0);const dist=g.pos.distanceTo(player.pos);if(player.alive&&dist<w.radius&&hasLineOfSight(g.pos.clone().add(new THREE.Vector3(0,0.3,0)),getEyePos())){SFX.playFlashRing();const el=document.getElementById('flash-overlay');el.style.transition='none';el.style.opacity=Math.max(0.25,1-dist/w.radius);setTimeout(()=>{el.style.transition='opacity 2.6s ease-out';el.style.opacity=0;},180);}}
     }
-    function checkBulletHitChar(p0,p1,cp,cr=false){
-      const h=cr?1.35:1.92,bd={minX:cp.x-0.38,maxX:cp.x+0.38,minY:cp.y,maxY:cp.y+h-0.32,minZ:cp.z-0.38,maxZ:cp.z+0.38},hd={minX:cp.x-0.23,maxX:cp.x+0.23,minY:cp.y+h-0.34,maxY:cp.y+h+0.08,minZ:cp.z-0.23,maxZ:cp.z+0.23};
+    function checkBulletHitChar(p0,p1,cp,cr=false,pr=false){
+      const h=pr?0.8:cr?1.35:1.92,bd={minX:cp.x-0.38,maxX:cp.x+0.38,minY:cp.y,maxY:cp.y+h-0.32,minZ:cp.z-0.38,maxZ:cp.z+0.38},hd={minX:cp.x-0.23,maxX:cp.x+0.23,minY:cp.y+h-0.34,maxY:cp.y+h+0.08,minZ:cp.z-0.23,maxZ:cp.z+0.23};
       const th=intersectSegmentAABB(p0,p1,hd),tb=intersectSegmentAABB(p0,p1,bd);
       if(th===null&&tb===null)return null;
       if(tb===null||th!==null&&th<tb)return{t:th,headshot:true};
@@ -1285,18 +1290,19 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       return best;
     }
     function steerBot(pos,dir){const eye=pos.clone().add(new THREE.Vector3(0,0.9,0));if(hasMovementLineOfSight(eye,eye.clone().addScaledVector(dir,2.3)))return dir;const ld=dir.clone().applyAxisAngle(UP_VEC,0.65),rd=dir.clone().applyAxisAngle(UP_VEC,-0.65),lc=hasMovementLineOfSight(eye,eye.clone().addScaledVector(ld,2.6)),rc=hasMovementLineOfSight(eye,eye.clone().addScaledVector(rd,2.6));if(lc&&!rc)return ld;if(rc&&!lc)return rd;if(lc&&rc)return Math.random()<0.5?ld:rd;const sl=dir.clone().applyAxisAngle(UP_VEC,1.45);return hasMovementLineOfSight(eye,eye.clone().addScaledVector(sl,2.0))?sl:dir.clone().applyAxisAngle(UP_VEC,-1.45);}
-    function assignBotLoadout(){const pr=['ar_aug','ak47','m4a1','thompson','mp40','vector','kar98','sg_spas','sr_l115','smg_kriss','lmg_mk46'],ps=['p_deagle','p_glock','p_usp','revolver'],pId=pr[Math.floor(Math.random()*pr.length)],sId=ps[Math.floor(Math.random()*ps.length)],pw=WEAPONS[pId];return{primary:pId,secondary:sId,activeGun:pId,magAmmo:pw.mag,spareMags:pw.shellByShell?pw.reserveShells:pw.magsCount,secMagAmmo:WEAPONS[sId].mag,secSpareMags:WEAPONS[sId].magsCount,smokeLeft:1,fragLeft:1};}
+    function assignBotLoadout(){const pr=['ar_aug','ak47','m4a1','thompson','mp40','vector','kar98','sg_spas','sr_l115','smg_kriss','lmg_mk46'],ps=['p_deagle','p_glock','p_usp','revolver'],pId=pr[Math.floor(Math.random()*pr.length)],sId=ps[Math.floor(Math.random()*ps.length)],pw=WEAPONS[pId];return{primary:pId,secondary:sId,activeGun:pId,magAmmo:pw.mag,spareMags:pw.shellByShell?pw.reserveShells:pw.magsCount,secMagAmmo:WEAPONS[sId].mag,secSpareMags:WEAPONS[sId].magsCount,smokeLeft:1,fragLeft:2};}
 
     function spawnBots(tot,pTeam,ex){
       for(const b of bots)scene.remove(b.mesh); bots.length=0;
       const names=['Alpha','Viper','Ghost','Kobra','Raven','Delta','Titan','Nova','Wolf','Reaper','Shadow','Hawk'], sh=tot<=20;
       const rn=ex?ex.red:Math.floor(tot/2)-(pTeam==='red'?1:0), bn=ex?ex.blue:Math.ceil(tot/2)-(pTeam==='blue'?1:0);
-      const mk=(tm,idx)=>{
+      const mk=(tm,idx,ov)=>{
         const ld=assignBotLoadout(), bs=spawnPoints[tm][idx%spawnPoints[tm].length], sp=bs.clone().add(new THREE.Vector3((Math.random()-0.5)*16,0,(Math.random()-0.5)*12));
         sp.x=Math.max(-MAP_HALF+4,Math.min(MAP_HALF-4,sp.x)); sp.z=Math.max(-MAP_HALF+4,Math.min(MAP_HALF-4,sp.z));
-        const m=createCharacterModel(tm,ld.activeGun,sh); m.position.copy(sp); scene.add(m);
-        bots.push({id:`bot_${tm}_${idx}`,name:`[BOT] ${names[idx%names.length]}${idx>=12?idx:''}`,team:tm,...ld,weaponId:ld.activeGun,courage:0.18+Math.random()*0.78,pos:sp,vel:new THREE.Vector3(),knockback:new THREE.Vector3(),yaw:tm==='red'?Math.PI:0,hp:100,armor:50,alive:true,respawnAt:0,nextFire:0,nextGrenade:performance.now()+7000+Math.random()*12000,reloadingUntil:0,reactReadyAt:0,nextCoverCheck:performance.now()+Math.random()*1200,strafeDir:Math.random()<0.5?-1:1,strafeTimer:0,crouching:false,inCoverUntil:0,coverPos:null,alertPos:null,alertUntil:0,cachedTarget:null,navNodeIdx:findNearestNav(sp),prevNavNodeIdx:-1,stuckTimer:0,kills:0,deaths:0,headshots:0,mesh:m});
+        if(ov){if(ov.weaponId&&WEAPONS[ov.weaponId]){ld.activeGun=ov.weaponId;ld.magAmmo=WEAPONS[ov.weaponId].mag;}sp.copy(ov.pos);}const m=createCharacterModel(tm,ld.activeGun,sh); m.position.copy(sp); m.visible=!ov||ov.alive; scene.add(m);
+        bots.push({id:ov?.id||`bot_${tm}_${idx}`,name:ov?.name||`[BOT] ${names[idx%names.length]}${idx>=12?idx:''}`,team:tm,...ld,weaponId:ld.activeGun,courage:0.18+Math.random()*0.78,pos:sp,vel:new THREE.Vector3(),knockback:new THREE.Vector3(),yaw:ov?ov.yaw:(tm==='red'?Math.PI:0),hp:ov?ov.hp:100,armor:50,alive:ov?ov.alive:true,respawnAt:ov&&!ov.alive?performance.now()+2500:0,nextFire:0,nextGrenade:performance.now()+7000+Math.random()*12000,reloadingUntil:0,reactReadyAt:0,nextCoverCheck:performance.now()+Math.random()*1200,strafeDir:Math.random()<0.5?-1:1,strafeTimer:0,crouching:false,inCoverUntil:0,coverPos:null,alertPos:null,alertUntil:0,cachedTarget:null,navNodeIdx:findNearestNav(sp),prevNavNodeIdx:-1,stuckTimer:0,kills:ov?.kills||0,deaths:ov?.deaths||0,headshots:ov?.hs||0,mesh:m});
       };
+      if(ex&&ex.list){for(const[k,p]of ex.list){const q=/^bot_(red|blue)_(\d+)$/.exec(k);if(q)mk(q[1],+q[2],{id:k,name:p.name,pos:new THREE.Vector3(p.x||0,p.y||0,p.z||0),hp:p.hp??100,alive:p.alive!==false,weaponId:p.weaponId,yaw:p.yaw||0,kills:p.kills,deaths:p.deaths,hs:p.hs});}return;}
       for(let i=0;i<rn;i++)mk('red',i); for(let i=0;i<bn;i++)mk('blue',i);
     }
 
@@ -1309,7 +1315,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       if(bot.hp<35+(1-bot.courage)*45&&performance.now()>bot.inCoverUntil&&performance.now()>bot.nextCoverCheck){
         bot.nextCoverCheck=performance.now()+1400;
         const cov=findRealCover(bot.pos,sp);
-        if(cov){bot.coverPos=cov;bot.inCoverUntil=performance.now()+3000;if(gameMode==='offline'&&bot.smokeLeft>0&&bot.courage<0.55){bot.smokeLeft--;throwGrenade(bot.pos.clone().add(new THREE.Vector3(0,1.4,0)),sp.clone().sub(bot.pos).normalize(),'g_smoke',bot.id,bot.name,bot.team,14);}}
+        if(cov){bot.coverPos=cov;bot.inCoverUntil=performance.now()+3000;if(bot.smokeLeft>0&&bot.courage<0.55){bot.smokeLeft--;{const so=bot.pos.clone().add(new THREE.Vector3(0,1.4,0)),sd=sp.clone().sub(bot.pos).normalize();throwGrenade(so,sd,'g_smoke',bot.id,bot.name,bot.team,14);if(gameMode==='online')sendOnlineEvent({type:'grenade',fromUid:bot.id,fromName:bot.name,weaponId:'g_smoke',pos:so.toArray(),dir:sd.toArray(),power:14,team:bot.team});}}}
       }
       if(bot.hp<=0){
         bot.hp=0; bot.alive=false; bot.deaths++; bot.mesh.visible=false; bot.respawnAt=offlineSubMode==='permadeath'?Infinity:performance.now()+4000;
@@ -1323,6 +1329,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     function tryBotFire(b,tgt,bEye,now,dp){
       if(now<b.reactReadyAt||now<b.nextFire||b.reloadingUntil>0||!hasLineOfSight(bEye,tgt.eye))return;
       const w=WEAPONS[b.weaponId];
+      if(w.maxRange&&tgt.dist>w.maxRange*0.85)return;
       if(b.magAmmo<=0){
         if(b.spareMags>0){
           const rm=w.shellByShell?1800:w.reloadTime*1000;
@@ -1362,17 +1369,17 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
           b.reloadingUntil=0; const w=WEAPONS[b.weaponId];
           if(w.shellByShell){const tk=Math.min(w.mag-b.magAmmo,b.spareMags);b.magAmmo+=tk;b.spareMags-=tk;} else if(b.spareMags>0){b.spareMags--;b.magAmmo=w.mag;}b.outOfAmmo=false;
         }
-        const bEye=b.pos.clone().add(new THREE.Vector3(0,b.crouching?1.1:1.58,0));
+        const bEye=b.pos.clone().add(new THREE.Vector3(0,b.prone?0.45:b.crouching?1.1:1.58,0));
         if(i%3===bk){
           let best=null,bestD=92,ne=0,na=0;
           if(player.alive){const d=bEye.distanceTo(getEyePos());if(player.team!==b.team){if(d<28)ne++;if(d<bestD&&hasLineOfSight(bEye,getEyePos())){bestD=d;best={pos:player.pos.clone(),eye:getEyePos(),dist:d};}}else if(d<20)na++;}
-          for(let j=0;j<bots.length;j++){const ob=bots[j];if(!ob.alive||j===i)continue;const d=b.pos.distanceTo(ob.pos);if(ob.team===b.team){if(d<20)na++;continue;}if(d<28)ne++;if(d<bestD){const oe=ob.pos.clone().add(new THREE.Vector3(0,ob.crouching?1.1:1.55,0));if(hasLineOfSight(bEye,oe)){bestD=d;best={pos:ob.pos.clone(),eye:oe,dist:d};}}}
-          if(gameMode==='online')for(const[,rp]of remotePlayers){const rd=rp.data;if(rd.isBot||!rd.alive||rd.team===b.team)continue;const re=rp.mesh.position.clone().add(new THREE.Vector3(0,rd.crouch?1.1:1.55,0)),d=bEye.distanceTo(re);if(d<28)ne++;if(d<bestD&&hasLineOfSight(bEye,re)){bestD=d;best={pos:rp.mesh.position.clone(),eye:re,dist:d};}}
+          for(let j=0;j<bots.length;j++){const ob=bots[j];if(!ob.alive||j===i)continue;const d=b.pos.distanceTo(ob.pos);if(ob.team===b.team){if(d<20)na++;continue;}if(d<28)ne++;if(d<bestD){const oe=ob.pos.clone().add(new THREE.Vector3(0,ob.prone?0.45:ob.crouching?1.1:1.55,0));if(hasLineOfSight(bEye,oe)){bestD=d;best={pos:ob.pos.clone(),eye:oe,dist:d};}}}
+          if(gameMode==='online')for(const[,rp]of remotePlayers){const rd=rp.data;if(rd.isBot||!rd.alive||rd.team===b.team)continue;const re=rp.mesh.position.clone().add(new THREE.Vector3(0,rd.prone?0.45:rd.crouch?1.1:1.55,0)),d=bEye.distanceTo(re);if(d<28)ne++;if(d<bestD&&hasLineOfSight(bEye,re)){bestD=d;best={pos:rp.mesh.position.clone(),eye:re,dist:d};}}
           if(best)for(const sz of smokeZones)if(now<sz.end&&best.eye.distanceTo(sz.pos)<8.5){best=null;break;}
           if(best&&!b.cachedTarget)b.reactReadyAt=now+dp.reactionMs;
           b.cachedTarget=best; b.outnumbered=ne>na+1;
         }
-        const tgt=b.cachedTarget, spd=(b.weaponId==='smg_kriss'?6.2:5.4)*(dp.speedMul||1); b.crouching=false;
+        const tgt=b.cachedTarget, spd=(b.weaponId==='smg_kriss'?6.2:5.4)*(dp.speedMul||1); b.crouching=false; b.prone=false;
         const sep=new THREE.Vector3();
         for(let j=0;j<bots.length;j++){
           if(j===i)continue;
@@ -1403,7 +1410,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
           b.strafeTimer-=dt; if(b.strafeTimer<=0){b.strafeDir=Math.random()<0.5?-1:1;b.strafeTimer=1+Math.random()*1.4;}
           if((b.weaponId==='sr_l115'&&tgt.dist>16)||(tgt.dist>28&&b.courage<0.55)){b.crouching=true;mSpd=0;}
           else{const rt=new THREE.Vector3(Math.cos(b.yaw),0,-Math.sin(b.yaw)),fw=new THREE.Vector3(-Math.sin(b.yaw),0,-Math.cos(b.yaw));dDir.addScaledVector(rt,b.strafeDir*0.6);const id=b.weaponId==='sg_spas'?9:b.weaponId==='smg_kriss'?14:21;if(tgt.dist>id*1.12)dDir.addScaledVector(fw,b.courage>0.6?0.7:0.42);else if(tgt.dist<id*0.72)dDir.addScaledVector(fw,-0.85);if(tgt.dist<3.2)dDir.addScaledVector(fw,-1.2);if(dDir.lengthSq()>0.01)dDir.normalize();}
-          if(gameMode==='offline'&&b.fragLeft>0&&now>=b.nextGrenade&&tgt.dist>11&&tgt.dist<34&&Math.random()<0.35){b.fragLeft--;b.nextGrenade=now+18000;const gd=tgt.eye.clone().sub(bEye).add(new THREE.Vector3(0,3.5,0)).normalize();throwGrenade(bEye.clone().addScaledVector(gd,0.8),gd,'g_frag',b.id,b.name,b.team,22);}
+          if(b.fragLeft>0&&now>=b.nextGrenade&&tgt.dist>11&&tgt.dist<34&&Math.random()<0.5){b.fragLeft--;b.nextGrenade=now+11000;const gd=tgt.eye.clone().sub(bEye).add(new THREE.Vector3(0,3.5,0)).normalize();{const go=bEye.clone().addScaledVector(gd,0.8);throwGrenade(go,gd,'g_frag',b.id,b.name,b.team,22);if(gameMode==='online')sendOnlineEvent({type:'grenade',fromUid:b.id,fromName:b.name,weaponId:'g_frag',pos:go.toArray(),dir:gd.toArray(),power:22,team:b.team});}}
         } else {
           if(b.mesh.userData.upperBody)b.mesh.userData.upperBody.rotation.x=0;
           if(now<b.alertUntil&&b.alertPos){const ta=b.alertPos.clone().sub(b.pos);ta.y=0;if(ta.length()>2){dDir.copy(ta.normalize());b.yaw=Math.atan2(-dDir.x,-dDir.z);}else b.alertUntil=0;}
@@ -1418,7 +1425,8 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
             else{const gl=navNodes[b.navNodeIdx].pos,tn=gl.clone().sub(b.pos);if(Math.hypot(tn.x,tn.z)<2.2&&Math.abs(tn.y-b.pos.y)<2){b.prevNavNodeIdx=b.navNodeIdx;b.navNodeIdx=pickNextNav(b);b.stuckTimer=0;}else{dDir.set(tn.x,0,tn.z).normalize();b.yaw=Math.atan2(-dDir.x,-dDir.z);}}
           }
         }
-        if(tgt&&!(now<b.inCoverUntil&&b.coverPos))tryBotFire(b,tgt,bEye,now,dp);
+        if(tgt&&!(now<b.inCoverUntil&&b.coverPos)){const wc=WCLASS[b.weaponId];if((wc==='sr'&&tgt.dist>40)||(wc==='lmg'&&tgt.dist>55)){b.prone=true;b.crouching=false;mSpd=0;}else if(!b.crouching&&tgt.dist>16&&(((now/3000)|0)+i)%3===0){b.crouching=true;mSpd*=0.5;}}
+        if(tgt&&!(now<b.inCoverUntil&&b.coverPos))tryBotFire(b,tgt,b.prone?bEye.clone().setY(b.pos.y+0.5):b.crouching?bEye.clone().setY(b.pos.y+1.1):bEye,now,dp);
         if(mSpd>0&&dDir.lengthSq()>0.01){const st=steerBot(b.pos,dDir);b.vel.x=st.x*mSpd+sep.x+b.knockback.x;b.vel.z=st.z*mSpd+sep.z+b.knockback.z;}else{b.vel.x=sep.x*0.5+b.knockback.x;b.vel.z=sep.z*0.5+b.knockback.z;}
         b.knockback.multiplyScalar(Math.exp(-4.2*dt));
         b.vel.y+=b.knockback.y;b.knockback.y=0;b.vel.y-=24*dt; const prev=b.pos.clone(),gr=moveEntityWithCollision(b.pos,b.vel,0.42,1.9,dt);
@@ -1428,7 +1436,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
           else if(l.type==='armor'&&b.armor<42){b.armor=Math.min(100,b.armor+50);consumeLoot(l,now);}
           else if(l.type==='ammo'&&(b.spareMags<2||b.secSpareMags<2)){b.spareMags+=2;b.secSpareMags+=2;b.outOfAmmo=false;consumeLoot(l,now);}
         }
-        b.mesh.position.copy(b.pos);b.mesh.rotation.y=b.yaw;b.mesh.scale.y=b.crouching?0.78:1;
+        b.mesh.position.copy(b.pos);b.mesh.rotation.y=b.yaw;{const ud=b.mesh.userData;ud.px=(ud.px||0)+((b.prone?-1.45:0)-(ud.px||0))*0.25;b.mesh.rotation.x=ud.px;}b.mesh.scale.y=b.crouching?0.78:1;
         const sw=Math.hypot(b.vel.x,b.vel.z)>0.5?Math.sin(now*0.012)*0.45:0; b.mesh.userData.legL.rotation.x=sw;b.mesh.userData.legR.rotation.x=-sw;
       }
     }
@@ -1444,7 +1452,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     onAuthStateChanged(auth,async u=>{if(u){const s=await get(ref(db,`users/${u.uid}`));currentUser={uid:u.uid,isGuest:false,...(s.val()||{username:u.email.split('@')[0],kills:0,deaths:0,headshots:0})};openLobby();}});
     const saveUserStat=(ak,ad,ahs)=>{if(currentUser.isGuest)return;currentUser.kills=(currentUser.kills||0)+ak;currentUser.deaths=(currentUser.deaths||0)+ad;currentUser.headshots=(currentUser.headshots||0)+ahs;update(ref(db,`users/${currentUser.uid}`),{kills:currentUser.kills,deaths:currentUser.deaths,headshots:currentUser.headshots});};
     function openLobby(){document.getElementById('auth-screen').classList.add('hidden');document.getElementById('lobby-screen').classList.remove('hidden');document.getElementById('lobby-user-label').textContent=`พลทหาร: ${currentUser.username}`+(currentUser.isGuest?' (Guest)':'');document.getElementById('lobby-stats-label').textContent=`Kills: ${currentUser.kills||0} | Deaths: ${currentUser.deaths||0} | Headshots: ${currentUser.headshots||0}`;document.getElementById('online-status-note').innerHTML=currentUser.isGuest?'<span style="color:#fca5a5;">เข้าแบบ Guest (เล่นออนไลน์และออฟไลน์ได้ทันที)</span>':'<span style="color:#6ee7b7;">เชื่อมต่อ Firebase RTDB พร้อมรบออนไลน์</span>';refreshRoomList();}
-    async function refreshRoomList(){const ls=document.getElementById('room-list');ls.innerHTML='<div style="color:var(--muted);text-align:center;padding:12px;">กำลังโหลดห้อง...</div>';try{const rms=(await get(ref(db,'rooms'))).val()||{};ls.innerHTML='';const ent=Object.entries(rms);if(!ent.length){ls.innerHTML='<div style="color:var(--muted);text-align:center;padding:18px;">ยังไม่มีห้องออนไลน์ — สร้างห้องใหม่ได้เลย!</div>';return;}for(const[rid,rd]of ent){const pc=rd.players?Object.keys(rd.players).length:0,m=rd.meta||{name:'Room',redScore:0,blueScore:0,minutes:5},d=document.createElement('div');d.className='room-item';d.innerHTML=`<div><strong>${m.name}</strong><small>ผู้เล่น: ${pc}/${(m.perTeam||10)*2}${m.state==='playing'?' • กำลังแข่ง':''} | เวลา ${m.minutes||5} นาที | Red ${m.redScore||0} : ${m.blueScore||0} Blue</small></div><button class="btn btn-green" style="padding:7px 14px;font-size:0.82rem;">เข้าร่วม</button>`;d.querySelector('button').onclick=()=>joinOnlineRoom(rid,document.getElementById('online-team').value);ls.appendChild(d);}}catch(e){ls.innerHTML=`<div style="color:#fca5a5;padding:12px;">โหลดไม่สำเร็จ: ${e.message}</div>`;}}
+    async function refreshRoomList(){const ls=document.getElementById('room-list');ls.innerHTML='<div style="color:var(--muted);text-align:center;padding:12px;">กำลังโหลดห้อง...</div>';try{const rms=(await get(ref(db,'rooms'))).val()||{};ls.innerHTML='';const ent=Object.entries(rms);if(!ent.length){ls.innerHTML='<div style="color:var(--muted);text-align:center;padding:18px;">ยังไม่มีห้องออนไลน์ — สร้างห้องใหม่ได้เลย!</div>';return;}for(const[rid,rd]of ent){const hp0=Object.values(rd.players||{}).filter(p=>!p.isBot).length;if(!hp0)continue;const pc=Object.keys(rd.players).length,m=rd.meta||{name:'Room',redScore:0,blueScore:0,minutes:5},d=document.createElement('div');d.className='room-item';d.innerHTML=`<div><strong>${m.name}</strong><small>ผู้เล่น: ${pc}/${(m.perTeam||10)*2}${m.state==='playing'?' • กำลังแข่ง':''} | เวลา ${m.minutes||5} นาที | Red ${m.redScore||0} : ${m.blueScore||0} Blue</small></div><button class="btn btn-green" style="padding:7px 14px;font-size:0.82rem;">เข้าร่วม</button>`;d.querySelector('button').onclick=()=>joinOnlineRoom(rid,document.getElementById('online-team').value);ls.appendChild(d);}}catch(e){ls.innerHTML=`<div style="color:#fca5a5;padding:12px;">โหลดไม่สำเร็จ: ${e.message}</div>`;}}
     document.getElementById('btn-refresh-rooms').onclick=refreshRoomList;
     document.getElementById('btn-create-room').onclick=async()=>{const rn=document.getElementById('new-room-name').value.trim()||`${currentUser.username}'s City`,tm=document.getElementById('online-team').value,mn=Math.max(1,Math.min(60,parseInt(document.getElementById('online-minutes').value,10)||5)),pt=parseInt(document.getElementById('online-perteam').value,10)||5,sl=parseInt(document.getElementById('online-score').value,10)||50,nr=push(ref(db,'rooms'));await set(ref(db,`rooms/${nr.key}/meta`),{name:rn,hostUid:currentUser.uid,hostName:currentUser.username,redScore:0,blueScore:0,minutes:mn,perTeam:pt,scoreLimit:sl,state:'waiting',createdAt:Date.now()});joinOnlineRoom(nr.key,tm);};
     async function joinOnlineRoom(rid,tm){
@@ -1455,17 +1463,17 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       currentRoomId=rid;gameMode='online';offlineSubMode='tdm';isHost=ms.hostUid===currentUser.uid;onlineStarted=false;roomMeta=ms;roomPlayers=ps;player.team=tm;matchTs=Date.now();teamScores={red:0,blue:0};
       for(const b of bots)scene.remove(b.mesh);bots.length=0;
       const myRef=ref(db,`rooms/${rid}/players/${currentUser.uid}`);
-      await set(myRef,{name:currentUser.username,team:tm,alive:false,hp:100,x:0,y:0,z:0,yaw:0,kills:0,deaths:0,updatedAt:Date.now()});
-      onDisconnect(isHost?ref(db,`rooms/${rid}`):myRef).remove();
+      myJoinedAt=Date.now();await set(myRef,{name:currentUser.username,team:tm,alive:false,hp:100,x:0,y:0,z:0,yaw:0,kills:0,deaths:0,joinedAt:myJoinedAt,updatedAt:Date.now()});
+      onDisconnect(myRef).remove();
       document.getElementById('lobby-screen').classList.add('hidden');document.getElementById('room-screen').classList.remove('hidden');
-      const mr=ref(db,`rooms/${rid}/meta`);roomLis.push({r:mr,fn:onValue(mr,s=>{const m=s.val();if(!m){if(isPlaying||!document.getElementById('room-screen').classList.contains('hidden')){alert('ห้องถูกปิดโดยหัวห้อง');leaveMatchToLobby();}return;}roomMeta=m;teamScores.red=m.redScore||0;teamScores.blue=m.blueScore||0;if(m.state==='playing'&&!onlineStarted)startOnlineMatch();renderRoom();})});
+      const mr=ref(db,`rooms/${rid}/meta`);roomLis.push({r:mr,fn:onValue(mr,s=>{const m=s.val();if(!m){if(isPlaying||!document.getElementById('room-screen').classList.contains('hidden')){alert('ห้องถูกปิดแล้ว');leaveMatchToLobby();}return;}roomMeta=m;{const was=isHost;isHost=m.hostUid===currentUser.uid;if(isHost&&!was)becomeHost();}teamScores.red=m.redScore||0;teamScores.blue=m.blueScore||0;if(m.state==='playing'&&!onlineStarted)startOnlineMatch();renderRoom();})});
       const pr=ref(db,`rooms/${rid}/players`);roomLis.push({r:pr,fn:onValue(pr,s=>{const all=s.val()||{};roomPlayers=all;
         for(const[uid,rp]of remotePlayers)if(!all[uid]||uid===currentUser.uid||(isHost&&all[uid].isBot)){scene.remove(rp.mesh);remotePlayers.delete(uid);}
         for(const[uid,pd]of Object.entries(all)){if(uid===currentUser.uid||(isHost&&pd.isBot))continue;let rp=remotePlayers.get(uid);
           if(!rp){const m=createCharacterModel(pd.team||'blue',pd.weaponId||'ar_aug');m.position.set(pd.x||0,pd.y||0,pd.z||0);scene.add(m);rp={data:pd,mesh:m,targetPos:new THREE.Vector3(pd.x||0,pd.y||0,pd.z||0),spd:0};remotePlayers.set(uid,rp);}
           else{if(rp.data.team!==pd.team||rp.mesh.userData.currentWeaponId!==pd.weaponId){const op=rp.mesh.position.clone();scene.remove(rp.mesh);rp.mesh=createCharacterModel(pd.team||'blue',pd.weaponId||'ar_aug');rp.mesh.position.copy(op);scene.add(rp.mesh);}rp.data=pd;rp.targetPos.set(pd.x||0,pd.y||0,pd.z||0);}
           rp.mesh.visible=!!pd.alive;}
-        renderRoom();})});
+        checkHostMigration();renderRoom();})});
       const er=ref(db,`rooms/${rid}/events`);roomLis.push({r:er,fn:onChildAdded(er,s=>{const ev=s.val();if(!ev||ev.ts<matchTs-1500||ev.src===currentUser.uid)return;if(ev.type==='shoot'){const o=new THREE.Vector3(...ev.pos);SFX.playShoot(ev.weaponId,o,false);spawnBullet(o,new THREE.Vector3(...ev.dir),ev.weaponId,ev.fromUid,ev.fromName,ev.team,false);const rp=remotePlayers.get(ev.fromUid);if(rp){rp.flashUntil=performance.now()+55;rp.kick=1;}}else if(ev.type==='grenade')throwGrenade(new THREE.Vector3(...ev.pos),new THREE.Vector3(...ev.dir),ev.weaponId,ev.fromUid,ev.fromName,ev.team,ev.power||26);else if(ev.type==='hit'&&isHost&&bots.some(x=>x.id===ev.targetUid))damageBot(bots.find(x=>x.id===ev.targetUid),ev.dmg,ev.fromUid,ev.fromName,ev.weaponId,ev.headshot,ev.dir?new THREE.Vector3(...ev.dir):new THREE.Vector3(0,0,1));else if(ev.type==='hit'&&ev.targetUid===currentUser.uid)applyDamageToLocalPlayer(ev.dmg,ev.fromUid,ev.fromName,ev.weaponId,ev.headshot,ev.dir?new THREE.Vector3(...ev.dir):new THREE.Vector3(0,0,1));else if(ev.type==='kill'){const kb=isHost&&bots.find(x=>x.id===ev.killerUid);if(kb){kb.kills++;if(ev.headshot)kb.headshots=(kb.headshots||0)+1;}addKillfeed(ev.killerName,ev.killerTeam,ev.victimName,ev.victimTeam,ev.weaponId,ev.headshot);if(ev.pos){const kp=new THREE.Vector3(...ev.pos);spawnPhysicsRagdoll(kp,ev.yaw||0,ev.victimTeam,ev.weaponId,ev.dir?new THREE.Vector3(...ev.dir):new THREE.Vector3(0,0,1),ev.headshot,false);spawnDroppedLoot(kp);}if(ev.killerUid===currentUser.uid){player.kills++;if(ev.headshot)player.headshots++;showKillConfirmation(ev.victimName,ev.headshot);saveUserStat(1,0,ev.headshot?1:0);}}})});
     }
     function startOnlineMatch(){
@@ -1473,7 +1481,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       document.getElementById('room-screen').classList.add('hidden');clearAllRagdolls();
       if(isHost){const ex={red:0,blue:0},rm={};for(const[k,p]of Object.entries(roomPlayers))if(p.isBot){ex[p.team]++;rm[k]=null;}
         if(Object.keys(rm).length)update(ref(db,`rooms/${currentRoomId}/players`),rm);
-        spawnBots(ex.red+ex.blue,player.team,ex);for(const b of bots)onDisconnect(ref(db,`rooms/${currentRoomId}/players/${b.id}`)).remove();}
+        spawnBots(ex.red+ex.blue,player.team,ex);}
       startMatchSession();
       matchEndTime=performance.now()+Math.max(1000,(m.startAt||Date.now())+matchDurationMin*60000-Date.now());
       setTimeout(()=>{if(isPlaying&&!settings.mobile&&!isPointerLocked)document.getElementById('pause-overlay').classList.remove('hidden');},400);
@@ -1495,6 +1503,16 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       document.getElementById('btn-room-start').style.display=isHost?'':'none';
       document.getElementById('room-wait-note').style.display=isHost?'none':'';
     }
+    function checkHostMigration(){
+      if(!currentRoomId||!roomMeta)return;const hs=Object.entries(roomPlayers).filter(([,p])=>!p.isBot);if(!hs.length)return;
+      const h=roomPlayers[roomMeta.hostUid];if(h&&!h.isBot)return;
+      hs.sort((a,b)=>(a[1].joinedAt||0)-(b[1].joinedAt||0)||(a[0]<b[0]?-1:1));
+      if(hs[0][0]===currentUser.uid)update(ref(db,`rooms/${currentRoomId}/meta`),{hostUid:currentUser.uid,hostName:currentUser.username});
+    }
+    function becomeHost(){
+      if(onlineStarted){const l=Object.entries(roomPlayers).filter(([k,p])=>p.isBot&&k.startsWith('bot_'));spawnBots(l.length,player.team,{list:l});for(const[uid,rp]of remotePlayers)if(rp.data.isBot){scene.remove(rp.mesh);remotePlayers.delete(uid);}try{showBanner('คุณเป็นหัวห้องคนใหม่ (หัวห้องเดิมออกไปแล้ว)');}catch(e){}}
+      renderRoom();
+    }
     function changeRoomTeam(t){if(!currentRoomId||onlineStarted)return;player.team=t;update(ref(db,`rooms/${currentRoomId}/players/${currentUser.uid}`),{team:t});renderRoom();}
     function addRoomBot(t){if(!isHost||!currentRoomId)return;const per=(roomMeta?.perTeam)||5;if(Object.values(roomPlayers).filter(p=>p.team===t).length>=per)return;
       set(ref(db,`rooms/${currentRoomId}/players/botw_${Date.now().toString(36)}${Math.floor(Math.random()*999)}`),{name:'[BOT] '+ROOM_BOT_NAMES[Math.floor(Math.random()*ROOM_BOT_NAMES.length)],team:t,isBot:true,alive:false});}
@@ -1504,7 +1522,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     document.getElementById('btn-room-start').onclick=()=>{if(!isHost||!currentRoomId)return;const c=t=>Object.values(roomPlayers).filter(p=>p.team===t).length;if(!c('red')||!c('blue')){alert('ต้องมีผู้เล่นหรือบอทอย่างน้อย 1 คนในแต่ละทีมก่อนเริ่ม');return;}update(ref(db,`rooms/${currentRoomId}/meta`),{state:'playing',startAt:Date.now()});};
     function publishBots(now){
       if(!isHost||!currentRoomId||now-lastBotNet<90||!bots.length)return;lastBotNet=now;const u={};
-      for(const b of bots)u[b.id]={name:b.name,team:b.team,x:+b.pos.x.toFixed(2),y:+b.pos.y.toFixed(2),z:+b.pos.z.toFixed(2),yaw:+b.yaw.toFixed(3),lean:0,crouch:!!b.crouching,prone:false,scoped:false,pitch:+(b.mesh.userData.upperBody?.rotation.x||0).toFixed(2),hp:b.hp,alive:b.alive,weaponId:b.weaponId,kills:b.kills,deaths:b.deaths,hs:b.headshots||0,isBot:true};
+      for(const b of bots)u[b.id]={name:b.name,team:b.team,x:+b.pos.x.toFixed(2),y:+b.pos.y.toFixed(2),z:+b.pos.z.toFixed(2),yaw:+b.yaw.toFixed(3),lean:0,crouch:!!b.crouching,prone:!!b.prone,scoped:false,pitch:+(b.mesh.userData.upperBody?.rotation.x||0).toFixed(2),hp:b.hp,alive:b.alive,weaponId:b.weaponId,kills:b.kills,deaths:b.deaths,hs:b.headshots||0,isBot:true};
       update(ref(db,`rooms/${currentRoomId}/players`),u);
     }
     function animateRemotes(dt,now){
@@ -1525,8 +1543,8 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     }
     const sendOnlineEvent=p=>{if(currentRoomId)set(push(ref(db,`rooms/${currentRoomId}/events`)),{fromUid:currentUser.uid,fromName:currentUser.username,...p,src:currentUser.uid,ts:Date.now()});};
     const incrementOnlineTeamScore=async t=>{if(!currentRoomId)return;const mr=ref(db,`rooms/${currentRoomId}/meta`),m=(await get(mr)).val()||{},k=t==='red'?'redScore':'blueScore';await update(mr,{[k]:(m[k]||0)+1});};
-    const syncOnlinePlayerState=now=>{if(gameMode!=='online'||!currentRoomId||now-lastNet<55)return;lastNet=now;set(ref(db,`rooms/${currentRoomId}/players/${currentUser.uid}`),{name:currentUser.username,team:player.team,x:+player.pos.x.toFixed(2),y:+player.pos.y.toFixed(2),z:+player.pos.z.toFixed(2),yaw:+player.yaw.toFixed(3),lean:+player.lean.toFixed(2),crouch:player.crouch,hp:player.hp,prone:player.prone,scoped:player.scoped,pitch:+player.pitch.toFixed(2),hs:player.headshots,alive:player.alive,weaponId:loadout[player.slot],kills:player.kills,deaths:player.deaths,updatedAt:Date.now()});};
-    const cleanupOnline=()=>{for(const l of roomLis)off(l.r);roomLis=[];for(const[,rp]of remotePlayers)scene.remove(rp.mesh);remotePlayers.clear();if(currentRoomId){remove(ref(db,isHost?`rooms/${currentRoomId}`:`rooms/${currentRoomId}/players/${currentUser.uid}`));currentRoomId=null;}isHost=false;onlineStarted=false;roomPlayers={};document.getElementById('room-screen').classList.add('hidden');};
+    const syncOnlinePlayerState=now=>{if(gameMode!=='online'||!currentRoomId||now-lastNet<55)return;lastNet=now;set(ref(db,`rooms/${currentRoomId}/players/${currentUser.uid}`),{name:currentUser.username,team:player.team,x:+player.pos.x.toFixed(2),y:+player.pos.y.toFixed(2),z:+player.pos.z.toFixed(2),yaw:+player.yaw.toFixed(3),lean:+player.lean.toFixed(2),crouch:player.crouch,hp:player.hp,prone:player.prone,scoped:player.scoped,pitch:+player.pitch.toFixed(2),hs:player.headshots,joinedAt:myJoinedAt,alive:player.alive,weaponId:loadout[player.slot],kills:player.kills,deaths:player.deaths,updatedAt:Date.now()});};
+    const cleanupOnline=()=>{for(const l of roomLis)off(l.r);roomLis=[];for(const[,rp]of remotePlayers)scene.remove(rp.mesh);remotePlayers.clear();if(currentRoomId){remove(ref(db,Object.entries(roomPlayers).some(([k,p])=>k!==currentUser.uid&&!p.isBot)?`rooms/${currentRoomId}/players/${currentUser.uid}`:`rooms/${currentRoomId}`));currentRoomId=null;}isHost=false;onlineStarted=false;roomPlayers={};document.getElementById('room-screen').classList.add('hidden');};
 
     // SETTINGS UI & CUSTOM INPUTS (Keyboard + Mouse Back/Forward)
     let listeningAct = null;
@@ -1697,7 +1715,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
       document.getElementById('inv-tabs').innerHTML=[1,2].map(n=>`<button class="wtab ${n===invSlot?'on':''}" data-s="${n}">${n===1?'ปืนหลัก':'ปืนพก'}: ${WEAPONS[loadout[n]].name}</button>`).join('');
       document.querySelectorAll('#inv-tabs .wtab').forEach(b=>b.onclick=()=>{invSlot=+b.dataset.s;picked=null;renderInv();});
       document.getElementById('inv-name').textContent=WEAPONS[w].name;
-      document.getElementById('inv-stats').textContent=`ดาเมจ ${st.dmg} • แม็ก ${st.mag} • ซูม ${st.sightZoom}x • ระยะเต็มดาเมจ ${st.falloffStart}m • ความเร็วกระสุน ${Math.round(st.speed)} m/s`;
+      document.getElementById('inv-stats').textContent=`ดาเมจ ${st.dmg} • แม็ก ${st.mag} • ซูม ${st.sightZoom}x • ระยะเต็มดาเมจ ${st.falloffStart}m • ดาเมจลดถึง ${st.falloffEnd||'-'}m • ระยะสูงสุด ${st.maxRange||'-'}m • ความเร็วกระสุน ${Math.round(st.speed)} m/s`;
       document.querySelectorAll('.zone').forEach(z=>{const k=z.dataset.k,def=k==='sight'?'iron':k==='mag'?'default':k==='grip'||k==='stock'?'none':'standard',available=k==='grip'?sp.grips:k==='stock'?sp.stocks:null;z.style.opacity=available&&!available.length?0.3:1;z.querySelector('b').textContent=lbl(k,a[k]);z.draggable=a[k]!==def;
         z.ondragstart=e=>e.dataTransfer.setData('t',JSON.stringify({k,v:def,unequip:1}));
         z.ondragover=e=>{e.preventDefault();z.classList.add('over');};z.ondragleave=()=>z.classList.remove('over');
@@ -1795,7 +1813,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
     // ----- menu -----
     const menuOpen=f=>{const o=f===undefined?tmenu.classList.contains('hidden'):f;tmenu.classList.toggle('hidden',!o);};
     tap('t-menu',()=>menuOpen());
-    tap('t-exit',()=>{menuOpen(false);if(confirm(gameMode==='online'&&isHost?'ออกจากด่าน? (หัวห้องออก = ห้องจะถูกปิด)':'ออกจากด่านและกลับล็อบบี้?'))leaveMatchToLobby();});
+    tap('t-exit',()=>{menuOpen(false);if(confirm(gameMode==='online'&&isHost?'ออกจากด่าน? (ห้องจะยังอยู่ และโอนหัวห้องให้คนอื่นอัตโนมัติ)':'ออกจากด่านและกลับล็อบบี้?'))leaveMatchToLobby();});
     window.addEventListener('touchstart',e=>{if(!tmenu.classList.contains('hidden')&&!e.target.closest('#tmenu,#t-menu'))menuOpen(false);},{passive:true});
     tap('t-set',()=>{menuOpen(false);openSettings();});
     tap('t-loadout',()=>{menuOpen(false);handleTriggerDown(K('loadoutMenu'));});
@@ -1963,7 +1981,7 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
 
         for(let i=bullets.length-1;i>=0;i--){
           const b=bullets[i]; b.life-=dt; if(b.life<=0){scene.remove(b.mesh);bullets.splice(i,1);continue;}
-          const prev=b.pos.clone(); b.vel.y-=b.gravity*dt; b.vel.multiplyScalar(1-0.05*dt); b.pos.addScaledVector(b.vel,dt); b.mesh.position.copy(b.pos); b.mesh.lookAt(b.pos.clone().add(b.vel));
+          if(b.maxRange&&b.startPos.distanceTo(b.pos)>b.maxRange){scene.remove(b.mesh);bullets.splice(i,1);continue;} const prev=b.pos.clone(); b.vel.y-=b.gravity*dt; b.vel.multiplyScalar(1-0.35*dt); b.pos.addScaledVector(b.vel,dt); b.mesh.position.copy(b.pos); b.mesh.lookAt(b.pos.clone().add(b.vel));
           b.trailTimer-=dt;if(settings.tracers&&b.trailTimer<=0&&!(b.isLocalOwner&&b.startPos.distanceTo(b.pos)<3)){spawnTrail(prev,b.pos,b.isLocalOwner);b.trailTimer=0.08;}
 
           // Bullet fly-by whiz sound (bullet-hit.mp3 / bullethit.mp3)
@@ -1976,21 +1994,21 @@ body.mob .modal-overlay>*{max-height:94dvh;overflow:auto}
           if(b.isLocalOwner){
             if(gameMode==='offline'||(gameMode==='online'&&isHost)){
               let target=null,impact=null;
-              for(const bot of bots){if(!bot.alive||bot.team===b.team)continue;const res=checkBulletHitChar(prev,b.pos,bot.pos,bot.crouching);if(res&&res.t<wallT&&(!impact||res.t<impact.t)){target=bot;impact=res;}}
+              for(const bot of bots){if(!bot.alive||bot.team===b.team)continue;const res=checkBulletHitChar(prev,b.pos,bot.pos,bot.crouching,bot.prone);if(res&&res.t<wallT&&(!impact||res.t<impact.t)){target=bot;impact=res;}}
               if(target){const hp=prev.clone().lerp(b.pos,impact.t),bd=computeBulletDmg(b,hp);damageBot(target,impact.headshot?Math.round(bd*2.5):bd,b.ownerId,b.ownerName,b.weaponId,impact.headshot,bDir);showHitmarker(impact.headshot);spawnParticles(hp,0xdc2626,7,5,0.08,0.3);hit=true;}
             }
             if(!hit&&gameMode==='online'){
               let target=null,targetUid=null,impact=null;
-              for(const[uid,rp]of remotePlayers){if(!rp.data.alive||rp.data.team===b.team)continue;const res=checkBulletHitChar(prev,b.pos,rp.mesh.position,rp.data.crouch);if(res&&res.t<wallT&&(!impact||res.t<impact.t)){target=rp;targetUid=uid;impact=res;}}
+              for(const[uid,rp]of remotePlayers){if(!rp.data.alive||rp.data.team===b.team)continue;const res=checkBulletHitChar(prev,b.pos,rp.mesh.position,rp.data.crouch,rp.data.prone);if(res&&res.t<wallT&&(!impact||res.t<impact.t)){target=rp;targetUid=uid;impact=res;}}
               if(target){const hp=prev.clone().lerp(b.pos,impact.t),bd=computeBulletDmg(b,hp);showHitmarker(impact.headshot);sendOnlineEvent({type:'hit',targetUid,dmg:impact.headshot?Math.round(bd*2.5):bd,weaponId:b.weaponId,headshot:impact.headshot,dir:bDir.toArray()});spawnParticles(hp,0xdc2626,7,5,0.08,0.3);hit=true;}
             }
           } else if(gameMode==='online'&&isHost&&String(b.ownerId).startsWith('bot_')){
             let tu=null,imp=null;
-            if(player.alive&&b.team!==player.team){const r=checkBulletHitChar(prev,b.pos,player.pos,player.crouch||player.prone);if(r&&r.t<wallT){const bd=computeBulletDmg(b,prev.clone().lerp(b.pos,r.t));applyDamageToLocalPlayer(r.headshot?Math.round(bd*1.8):bd,b.ownerId,b.ownerName,b.weaponId,r.headshot,bDir);hit=true;}}
-            if(!hit)for(const[uid,rp]of remotePlayers){if(rp.data.isBot||!rp.data.alive||rp.data.team===b.team)continue;const r=checkBulletHitChar(prev,b.pos,rp.mesh.position,rp.data.crouch);if(r&&r.t<wallT&&(!imp||r.t<imp.t)){tu=uid;imp=r;}}
+            if(player.alive&&b.team!==player.team){const r=checkBulletHitChar(prev,b.pos,player.pos,player.crouch,player.prone);if(r&&r.t<wallT){const bd=computeBulletDmg(b,prev.clone().lerp(b.pos,r.t));applyDamageToLocalPlayer(r.headshot?Math.round(bd*1.8):bd,b.ownerId,b.ownerName,b.weaponId,r.headshot,bDir);hit=true;}}
+            if(!hit)for(const[uid,rp]of remotePlayers){if(rp.data.isBot||!rp.data.alive||rp.data.team===b.team)continue;const r=checkBulletHitChar(prev,b.pos,rp.mesh.position,rp.data.crouch,rp.data.prone);if(r&&r.t<wallT&&(!imp||r.t<imp.t)){tu=uid;imp=r;}}
             if(!hit&&tu){const bd=computeBulletDmg(b,prev.clone().lerp(b.pos,imp.t));sendOnlineEvent({type:'hit',targetUid:tu,fromUid:b.ownerId,fromName:b.ownerName,dmg:imp.headshot?Math.round(bd*1.8):bd,weaponId:b.weaponId,headshot:imp.headshot,dir:bDir.toArray()});hit=true;}
           } else if(gameMode==='offline'&&player.alive&&b.team!==player.team){
-            const res=checkBulletHitChar(prev,b.pos,player.pos,player.crouch||player.prone);
+            const res=checkBulletHitChar(prev,b.pos,player.pos,player.crouch,player.prone);
             if(res&&res.t<wallT){const hp=prev.clone().lerp(b.pos,res.t),bd=computeBulletDmg(b,hp);applyDamageToLocalPlayer(res.headshot?Math.round(bd*1.8):bd,b.ownerId,b.ownerName,b.weaponId,res.headshot,bDir);hit=true;}
           }
 
