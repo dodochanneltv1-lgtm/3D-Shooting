@@ -17,7 +17,8 @@
     {id:'smart-x4-12',label:'สโคปอัจฉริยะ x4–12 (ปรับซูมได้)',zoom:6,min:4,max:12,smart:true,price:270},
     {id:'smart-x3-9',label:'สโคปอัจฉริยะ x3–9 (ปรับซูมได้)',zoom:4,min:3,max:9,smart:true,price:260},
     {id:'smart-x6-24',label:'สโคปอัจฉริยะ x6–24 (ปรับซูมได้)',zoom:8,min:6,max:24,smart:true,price:300},
-    {id:'smart-x8-32',label:'สโคปอัจฉริยะ x8–32 (ระยะไกลพิเศษ)',zoom:10,min:8,max:32,smart:true,price:300}
+    {id:'smart-x8-32',label:'สโคปอัจฉริยะ x8–32 (ระยะไกลพิเศษ)',zoom:10,min:8,max:32,smart:true,price:300},
+    {id:'thermal-x4',label:'กล้องจับความร้อน x4',zoom:4,thermal:true,price:320}
   ];
 
   window.NEW_ATTACHMENT_DATA = {
@@ -65,6 +66,6 @@
       hollowPoint:{label:'หัวกลวง (+20% ดาเมจ, เจาะเกราะลดลง, กระสุนตกไวขึ้น)',damage:1.2,armorPierce:-0.2,cdMul:1.15,recoil:1.03,price:130},
       armorPiercing:{label:'เจาะเกราะ (เจาะเกราะเพิ่มมาก, วิถีตรงขึ้น, +5% แรงดีด)',damage:0.94,armorPierce:0.5,cdMul:0.95,recoil:1.05,price:180}
     },
-    magazinePrices:{25:40,30:40,35:50,50:70,60:100,90:160,100:200,150:250,200:300}
+    magazinePrices:{8:25,10:40,16:80,20:110,25:40,30:40,35:50,40:65,50:70,60:100,75:130,90:160,100:200,150:250,200:300,250:350}
   };
 })();

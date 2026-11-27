@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D STRIKE — ตัวจัดตำแหน่งกล้อง</title>
+  <style>
+    :root { color-scheme: dark; --panel: rgba(10, 16, 27, .94); --border: #334155; --gold: #fbbf24; --cyan: #38bdf8; --muted: #9ca3af; }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #080d17; color: #f8fafc; font: 14px "Segoe UI", Tahoma, sans-serif; }
+    #view { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+    #panel { position: fixed; z-index: 2; top: 12px; left: 12px; width: min(390px, calc(100vw - 24px)); max-height: calc(100vh - 24px); overflow: auto; padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--panel); box-shadow: 0 16px 48px #0009; }
+    h1 { margin: 0; color: var(--gold); font-size: 19px; }
+    .hint { margin: 4px 0 12px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+    h2 { margin: 14px 0 7px; color: var(--cyan); font-size: 13px; letter-spacing: .03em; }
+    .row { display: grid; grid-template-columns: 1fr 118px; gap: 8px; align-items: center; margin: 6px 0; }
+    .row label { color: #cbd5e1; font-size: 12px; }
+    .pair { display: flex; gap: 5px; align-items: center; }
+    input[type="range"] { width: 100%; min-width: 40px; accent-color: var(--gold); }
+    input[type="number"], select, textarea { width: 100%; min-width: 0; border: 1px solid var(--border); border-radius: 6px; padding: 6px; background: #111827; color: #f8fafc; font: inherit; }
+    input[type="number"] { text-align: right; }
+    .select-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 7px 0; }
+    .select-row label { display: block; margin-bottom: 4px; color: var(--muted); font-size: 11px; }
+    button { border: 1px solid #475569; border-radius: 7px; padding: 8px 10px; background: #1e293b; color: white; font-weight: 700; cursor: pointer; }
+    button:hover { border-color: var(--cyan); background: #26364e; }
+    .buttons { display: flex; gap: 7px; margin: 10px 0; }
+    .buttons button { flex: 1; }
+    #copy { border-color: #fcd34d; background: #b45309; color: #fff; }
+    #output { height: 128px; resize: vertical; font: 11px/1.45 Consolas, monospace; user-select: text; }
+    #status { min-height: 17px; color: #86efac; font-size: 11px; }
+    #aim { position: fixed; z-index: 1; top: 50%; left: 50%; width: 16px; height: 16px; transform: translate(-50%, -50%); pointer-events: none; opacity: .8; }
+    #aim::before, #aim::after { content: ""; position: absolute; background: #42f5a1; }
+    #aim::before { top: 0; left: 7px; width: 2px; height: 16px; }
+    #aim::after { top: 7px; left: 0; width: 16px; height: 2px; }
+    #inset-frame { position: fixed; z-index: 1; top: 12px; right: 12px; width: 230px; height: 290px; border: 1px solid #64748b; border-radius: 9px; background: transparent; box-shadow: 0 8px 26px #0008; pointer-events: none; }
+    #inset-label { position: fixed; z-index: 1; top: 16px; right: 20px; padding: 5px 8px; border-radius: 5px; background: #0b1220d9; color: #bae6fd; font-size: 11px; pointer-events: none; }
+    @media (max-height: 760px) { #panel { padding: 10px; } h2 { margin-top: 9px; } .row { margin: 3px 0; } }
+  </style>
+</head>
+<body>
+  <canvas id="view"></canvas>
+  <div id="aim"></div>
+  <div id="inset-frame"></div>
+  <div id="inset-label">ตัวละครและตำแหน่งปืน</div>
+  <aside id="panel">
+    <h1>จัดมุมกล้องบุคคลที่หนึ่ง</h1>
+    <p class="hint">ปรับตำแหน่งกล้องและปืนบนตัวละครโดยตรง • ค่าแกนเป็นเมตร • ช่องมุมใช้องศา แต่ผลลัพธ์ส่งออกเป็นเรเดียน</p>
+
+    <div class="select-row">
+      <div><label for="gender">ตัวละคร</label><select id="gender"><option value="female">หญิง</option><option value="male">ชาย</option></select></div>
+      <div><label for="team">ทีม/สีชุด</label><select id="team"><option value="red">ทีมแดง</option><option value="blue">ทีมน้ำเงิน</option><option value="specops">หน่วยพิเศษ</option></select></div>
+      <div><label for="hair">ทรงผม</label><select id="hair"></select></div>
+      <div><label for="outfit">ชุด</label><select id="outfit"></select></div>
+    </div>
+    <div class="select-row">
+      <div style="grid-column:1 / -1"><label for="weapon">อาวุธที่ใช้จัดตำแหน่ง</label><select id="weapon"></select></div>
+    </div>
+
+    <h2>กล้อง • ตำแหน่งออฟเซ็ตจากดวงตา (เมตร)</h2>
+    <div id="camera-position"></div>
+    <h2>กล้อง • ทิศทางและ FOV</h2>
+    <div id="camera-angle"></div>
+    <h2>ปืน • ตำแหน่งบนลำตัว (เมตร)</h2>
+    <div id="weapon-position"></div>
+    <h2>ปืน • การหมุน</h2>
+    <div id="weapon-angle"></div>
+
+    <div class="buttons">
+      <button id="reset">คืนค่าเริ่มต้น</button>
+      <button id="copy">คัดลอกค่าที่จัด</button>
+    </div>
+    <textarea id="output" readonly aria-label="ผลลัพธ์ตำแหน่งกล้องและปืน"></textarea>
+    <div id="status" role="status"></div>
+  </aside>
+
+  <script src="./new-attachments.js"></script>
+  <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js" } }</script>
+  <script type="module">
+    import * as THREE from 'three';
+    import {
+      FEMALE_HAIRSTYLES, MALE_HAIRSTYLES, FEMALE_OUTFITS, MALE_OUTFITS,
+      createArticulatedCharacter, updateArticulatedCharacter
+    } from './Characters.js';
+    import { CUSTOM_WEAPON_LIST, createCustomWeaponModel } from './CustomWeapons.js';
+
+    const CAMERA_PRESETS = {
+      female: { x: 0, y: -0.01, z: 0, pitch: 0, yaw: 0, fov: 90 },
+      male: { x: 0, y: 0, z: 0.01, pitch: 0, yaw: 0, fov: 90 }
+    };
+    const DEFAULT_WEAPON_POSE = { x: -0.04, y: 0.59, z: -0.265, rx: 0, ry: 0, rz: 0 };
+    const FEMALE_WEAPON_PRESETS = {
+      hk416_tac: { x: 0.13, y: 0.32, z: -0.5, rx: 0, ry: 0, rz: 0 },
+      m134_minigun: { x: 0.2, y: 0, z: -0.5, rx: 0, ry: 0, rz: 0 },
+      m590_pump: { x: 0.13, y: 0.28, z: -0.39, rx: 0, ry: 0, rz: 0 },
+      cheytac_m200_pro: { x: 0.13, y: 0.28, z: -0.39, rx: 0, ry: 0, rz: 0 },
+      python_357: { x: 0.13, y: 0.28, z: -0.5, rx: 0, ry: 0, rz: 0 },
+      ump45_tac: { x: 0.13, y: 0.28, z: -0.5, rx: 0, ry: 0, rz: 0 },
+      katana_edge: { x: 0.23, y: 0.28, z: -0.5, rx: 0.6981, ry: 0.8029, rz: 0.4363 }
+    };
+    const settings = {
+      camera: { ...CAMERA_PRESETS.female },
+      weapon: { ...(FEMALE_WEAPON_PRESETS[CUSTOM_WEAPON_LIST[0].id] || DEFAULT_WEAPON_POSE) },
+      gender: 'female', team: 'red', hair: 'ponytail', outfit: 'combat_skirt',
+      weaponId: CUSTOM_WEAPON_LIST[0].id
+    };
+    const getWeaponPreset = () => settings.gender === 'female'
+      ? (FEMALE_WEAPON_PRESETS[settings.weaponId] || DEFAULT_WEAPON_POSE)
+      : DEFAULT_WEAPON_POSE;
+    const canvas = document.getElementById('view');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.1;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x101827);
+    scene.add(new THREE.HemisphereLight(0xdbeafe, 0x273449, 1.2));
+    const key = new THREE.DirectionalLight(0xfff1dc, 2.2);
+    key.position.set(-5, 9, 6);
+    key.castShadow = true;
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0x74c9ff, 0.7);
+    fill.position.set(6, 4, -7);
+    scene.add(fill);
+
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(200, 200),
+      new THREE.MeshStandardMaterial({ color: 0x1b2636, roughness: 0.92 })
+    );
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = -0.012;
+    floor.receiveShadow = true;
+    scene.add(floor);
+    const grid = new THREE.GridHelper(80, 80, 0x286080, 0x243244);
+    grid.position.y = 0.004;
+    scene.add(grid);
+
+    const camera = new THREE.PerspectiveCamera(settings.camera.fov, window.innerWidth / window.innerHeight, 0.03, 250);
+    camera.rotation.order = 'YXZ';
+    scene.add(camera);
+    const insetWidth = 230, insetHeight = 290, insetMargin = 12;
+    const insetCamera = new THREE.PerspectiveCamera(43, insetWidth / insetHeight, 0.03, 100);
+    insetCamera.position.set(2.4, 1.65, -2.8);
+    insetCamera.lookAt(0, 1.0, 0);
+    const target = new THREE.Mesh(
+      new THREE.BoxGeometry(0.55, 1.6, 0.12),
+      new THREE.MeshStandardMaterial({ color: 0x263244, roughness: 0.8 })
+    );
+    target.position.set(0, 0.8, -8);
+    scene.add(target);
+    const targetMark = new THREE.Mesh(
+      new THREE.SphereGeometry(0.08, 12, 8),
+      new THREE.MeshBasicMaterial({ color: 0x35f5a0 })
+    );
+    targetMark.position.set(0, 1.55, -7.9);
+    scene.add(targetMark);
+
+    let character = null;
+    const eyeL = new THREE.Vector3(), eyeR = new THREE.Vector3();
+    const cameraOffset = new THREE.Vector3(), characterYaw = new THREE.Quaternion();
+    const cameraPosition = new THREE.Vector3();
+    const status = document.getElementById('status');
+    const output = document.getElementById('output');
+
+    function selectOptions(select, items, selectedId) {
+      select.replaceChildren(...items.map(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        option.textContent = item.label;
+        return option;
+      }));
+      if (items.some(item => item.id === selectedId)) select.value = selectedId;
+    }
+
+    function updateAppearanceOptions() {
+      const female = settings.gender === 'female';
+      const hair = female ? FEMALE_HAIRSTYLES : MALE_HAIRSTYLES;
+      const outfits = female ? FEMALE_OUTFITS : MALE_OUTFITS;
+      if (!hair.some(item => item.id === settings.hair)) settings.hair = hair[0].id;
+      if (!outfits.some(item => item.id === settings.outfit)) settings.outfit = outfits[0].id;
+      selectOptions(document.getElementById('hair'), hair, settings.hair);
+      selectOptions(document.getElementById('outfit'), outfits, settings.outfit);
+    }
+
+    function buildCharacter() {
+      if (character) scene.remove(character);
+      character = createArticulatedCharacter({
+        gender: settings.gender,
+        team: settings.team,
+        hairstyle: settings.hair,
+        outfit: settings.outfit,
+        weaponId: settings.weaponId,
+        castShadow: true,
+        buildWeaponFn: id => createCustomWeaponModel(id, {}, true, window.NEW_ATTACHMENT_DATA)
+      });
+      character.rotation.y = THREE.MathUtils.degToRad(settings.camera.yaw);
+      character.userData.weaponHolder.visible = true;
+      scene.add(character);
+      applyPose(1 / 60, performance.now());
+      updateOutput();
+    }
+
+    function applyPose(dt = 1 / 60, now = performance.now()) {
+      if (!character) return;
+      character.rotation.y = THREE.MathUtils.degToRad(settings.camera.yaw);
+      updateArticulatedCharacter(character, dt, now, {
+        vel: new THREE.Vector3(),
+        pitch: THREE.MathUtils.degToRad(settings.camera.pitch),
+        firstPerson: true,
+        onGround: true,
+        floorY: 0,
+        weaponTransform: settings.weapon
+      });
+      const joints = character.userData.joints;
+      joints.headSkinMesh.visible = false;
+      for (const eye of joints.eyeOpenMeshes) eye.visible = false;
+      for (const lid of joints.eyeClosedMeshes) lid.visible = false;
+      character.updateMatrixWorld(true);
+      joints.eyeOpenMeshes[0].getWorldPosition(eyeL);
+      joints.eyeOpenMeshes[1].getWorldPosition(eyeR);
+      cameraPosition.copy(eyeL).add(eyeR).multiplyScalar(0.5);
+      characterYaw.setFromAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(settings.camera.yaw));
+      cameraOffset.set(settings.camera.x, settings.camera.y, settings.camera.z).applyQuaternion(characterYaw);
+      camera.position.copy(cameraPosition).add(cameraOffset);
+      camera.rotation.set(
+        THREE.MathUtils.degToRad(settings.camera.pitch),
+        settings.camera.yaw,
+        0,
+        'YXZ'
+      );
+      camera.fov = settings.camera.fov;
+      camera.updateProjectionMatrix();
+    }
+
+    const controlSpecs = [
+      ['camera-position', 'camera', [
+        ['x', 'X', -0.4, 0.4, 0.01, 2],
+        ['y', 'Y', -0.2, 0.5, 0.01, 2],
+        ['z', 'Z', -0.4, 0.4, 0.01, 2]
+      ]],
+      ['camera-angle', 'camera', [
+        ['pitch', 'ก้ม/เงย (°)', -75, 75, 1, 0],
+        ['yaw', 'หันซ้าย/ขวา (°)', -45, 45, 1, 0],
+        ['fov', 'FOV (°)', 45, 110, 1, 0]
+      ]],
+      ['weapon-position', 'weapon', [
+        ['x', 'X', -0.6, 0.6, 0.01, 2],
+        ['y', 'Y', -0.25, 0.9, 0.01, 2],
+        ['z', 'Z', -0.9, 0.35, 0.01, 2]
+      ]],
+      ['weapon-angle', 'weapon', [
+        ['rx', 'หมุน X (°)', -90, 90, 1, 0],
+        ['ry', 'หมุน Y (°)', -90, 90, 1, 0],
+        ['rz', 'หมุน Z (°)', -90, 90, 1, 0]
+      ]]
+    ];
+
+    function toDegrees(group, key, value) {
+      return group === 'weapon' && ['rx', 'ry', 'rz'].includes(key) ? THREE.MathUtils.radToDeg(value) : value;
+    }
+
+    function fromControl(group, key, value) {
+      return group === 'weapon' && ['rx', 'ry', 'rz'].includes(key) ? THREE.MathUtils.degToRad(value) : value;
+    }
+
+    function addControls() {
+      for (const [containerId, group, specs] of controlSpecs) {
+        const container = document.getElementById(containerId);
+        for (const [key, label, min, max, step, digits] of specs) {
+          const row = document.createElement('div');
+          row.className = 'row';
+          const title = document.createElement('label');
+          title.textContent = label;
+          const pair = document.createElement('div');
+          pair.className = 'pair';
+          const range = document.createElement('input');
+          range.type = 'range';
+          range.min = String(min);
+          range.max = String(max);
+          range.step = String(step);
+          const number = document.createElement('input');
+          number.type = 'number';
+          number.min = String(min);
+          number.max = String(max);
+          number.step = String(step);
+          number.setAttribute('aria-label', label);
+          const val = toDegrees(group, key, settings[group][key]);
+          range.value = String(val);
+          number.value = val.toFixed(digits);
+          const apply = source => {
+            const value = Number(source.value);
+            if (!Number.isFinite(value)) return;
+            const clamped = Math.max(min, Math.min(max, value));
+            settings[group][key] = fromControl(group, key, clamped);
+            range.value = String(clamped);
+            number.value = clamped.toFixed(digits);
+            applyPose();
+            updateOutput();
+          };
+          range.addEventListener('input', () => apply(range));
+          number.addEventListener('input', () => apply(number));
+          pair.append(range, number);
+          row.append(title, pair);
+          container.append(row);
+        }
+      }
+    }
+
+    function syncControlInputs() {
+      for (const [containerId, group, specs] of controlSpecs) {
+        const rows = [...document.getElementById(containerId).querySelectorAll('.row')];
+        specs.forEach(([key,,,,,digits], index) => {
+          const value = toDegrees(group, key, settings[group][key]);
+          rows[index].querySelector('input[type="range"]').value = String(value);
+          rows[index].querySelector('input[type="number"]').value = value.toFixed(digits);
+        });
+      }
+    }
+
+    function updateOutput() {
+      const result = {
+        camera: {
+          offset: {
+            x: Number(settings.camera.x.toFixed(3)),
+            y: Number(settings.camera.y.toFixed(3)),
+            z: Number(settings.camera.z.toFixed(3))
+          },
+          pitch: Number(THREE.MathUtils.degToRad(settings.camera.pitch).toFixed(4)),
+          yaw: Number(THREE.MathUtils.degToRad(settings.camera.yaw).toFixed(4)),
+          fov: settings.camera.fov
+        },
+        weaponTransform: Object.fromEntries(
+          Object.entries(settings.weapon).map(([key, value]) => [key, Number(value.toFixed(4))])
+        ),
+        appearance: {
+          gender: settings.gender,
+          team: settings.team,
+          hairstyle: settings.hair,
+          outfit: settings.outfit,
+          weaponId: settings.weaponId
+        }
+      };
+      output.value = JSON.stringify(result, null, 2);
+    }
+
+    document.getElementById('gender').addEventListener('change', event => {
+      settings.gender = event.target.value;
+      Object.assign(settings.camera, CAMERA_PRESETS[settings.gender]);
+      Object.assign(settings.weapon, getWeaponPreset());
+      updateAppearanceOptions();
+      syncControlInputs();
+      buildCharacter();
+    });
+    for (const id of ['team', 'hair', 'outfit']) {
+      document.getElementById(id).addEventListener('change', event => {
+        settings[id] = event.target.value;
+        buildCharacter();
+      });
+    }
+    for (const item of CUSTOM_WEAPON_LIST) {
+      const option = document.createElement('option');
+      option.value = item.id;
+      option.textContent = item.stats.name;
+      document.getElementById('weapon').append(option);
+    }
+    document.getElementById('weapon').value = settings.weaponId;
+    document.getElementById('weapon').addEventListener('change', event => {
+      settings.weaponId = event.target.value;
+      Object.assign(settings.weapon, getWeaponPreset());
+      syncControlInputs();
+      buildCharacter();
+    });
+
+    document.getElementById('reset').addEventListener('click', () => {
+      Object.assign(settings.camera, CAMERA_PRESETS[settings.gender]);
+      Object.assign(settings.weapon, getWeaponPreset());
+      syncControlInputs();
+      applyPose();
+      updateOutput();
+      status.textContent = 'คืนค่าเริ่มต้นแล้ว';
+    });
+    document.getElementById('copy').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(output.value);
+        status.textContent = 'คัดลอกค่าแล้ว';
+      } catch (error) {
+        output.focus();
+        output.select();
+        status.textContent = 'เลือกข้อความไว้แล้ว กด Ctrl+C เพื่อคัดลอก';
+      }
+    });
+
+    updateAppearanceOptions();
+    addControls();
+    buildCharacter();
+
+    const clock = new THREE.Clock();
+    function animate() {
+      const dt = Math.min(0.033, clock.getDelta());
+      if (character) {
+        updateArticulatedCharacter(character, dt, performance.now(), {
+          vel: new THREE.Vector3(),
+          pitch: THREE.MathUtils.degToRad(settings.camera.pitch),
+          firstPerson: true,
+          onGround: true,
+          floorY: 0,
+          weaponTransform: settings.weapon
+        });
+        const joints = character.userData.joints;
+        joints.headSkinMesh.visible = false;
+        for (const eye of joints.eyeOpenMeshes) eye.visible = false;
+        for (const lid of joints.eyeClosedMeshes) lid.visible = false;
+        character.updateMatrixWorld(true);
+        joints.eyeOpenMeshes[0].getWorldPosition(eyeL);
+        joints.eyeOpenMeshes[1].getWorldPosition(eyeR);
+        cameraPosition.copy(eyeL).add(eyeR).multiplyScalar(0.5);
+        characterYaw.setFromAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(settings.camera.yaw));
+        cameraOffset.set(settings.camera.x, settings.camera.y, settings.camera.z).applyQuaternion(characterYaw);
+        camera.position.copy(cameraPosition).add(cameraOffset);
+        camera.rotation.set(THREE.MathUtils.degToRad(settings.camera.pitch), settings.camera.yaw, 0, 'YXZ');
+      }
+      const joints = character?.userData.joints;
+      const oldTarget = target.visible, oldTargetMark = targetMark.visible;
+      renderer.setScissorTest(false);
+      renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
+      renderer.render(scene, camera);
+      renderer.clearDepth();
+      const insetLeft = window.innerWidth - insetWidth - insetMargin;
+      const insetBottom = window.innerHeight - insetHeight - insetMargin;
+      renderer.setScissorTest(true);
+      renderer.setViewport(insetLeft, insetBottom, insetWidth, insetHeight);
+      renderer.setScissor(insetLeft, insetBottom, insetWidth, insetHeight);
+      target.visible = false;
+      targetMark.visible = false;
+      if (joints) {
+        joints.headSkinMesh.visible = true;
+        for (const eye of joints.eyeOpenMeshes) eye.visible = true;
+      }
+      renderer.render(scene, insetCamera);
+      if (joints) {
+        joints.headSkinMesh.visible = false;
+        for (const eye of joints.eyeOpenMeshes) eye.visible = false;
+      }
+      target.visible = oldTarget;
+      targetMark.visible = oldTargetMark;
+      renderer.setScissorTest(false);
+      renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
+      requestAnimationFrame(animate);
+    }
+    animate();
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
